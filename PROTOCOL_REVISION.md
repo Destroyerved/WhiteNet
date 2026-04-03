@@ -1,221 +1,105 @@
 # WhiteNet Protocol Revision Notes
 
-This file summarizes the protocol work completed in `cli.py`, including command syntax and expected outputs so you can quickly revise.
+This document is updated using the current `Problemstatement.md` goals and live execution of the CLI in this repo.
 
-## What Was Implemented
+## Problem Statement -> Implementation Status
 
-The CLI now matches the protocol flow described in the project design.
+Based on `Problemstatement.md`, WhiteNet should be identity-first, Zero Trust, IPv6-bound, and resistant to spoofing.
 
-- Added protocol commands:
-  - `handshake`
-  - `send`
-  - `resolve`
-  - `list`
-  - `security-demo`
-- Extended identity binding:
-  - `bind` now also creates a DNS-like trusted record in `dns_records.json`
-  - Format: `<user_id>.whitenet.local -> <ipv6>`
-- Improved trust handling:
-  - `verify_node()` now returns `True` or `False` (besides printing status)
-  - `send` and `handshake` enforce Zero Trust checks using this result
-- Windows output compatibility fix:
-  - UTF-8 stdout reconfigure added to avoid Unicode banner crash
+### Covered in current prototype
 
----
+- **Certified identity issuance** via `issue` (certificate JSON signed by CA key).
+- **IPv6 identity binding** via `bind` (cert <-> generated IPv6 in `registry.json`).
+- **Trust verification before communication** via `verify`, `handshake`, and `send`.
+- **Spoof/tamper detection** via signature verification and `security-demo` / `spoof-test`.
+- **Overlay-style software prototype** (runs on existing internet stack as CLI, no hardware dependency).
 
-## Commands and Syntax
+### Partially covered / next step items
 
-## 1) Issue Certificate
-
-```bash
-python cli.py issue --user <username>
-```
-
-Example:
-
-```bash
-python cli.py issue --user user1
-```
-
-Expected output (sample):
-
-- Certificate issuance section appears
-- `✔ Certificate issued -> cert.json`
+- **TLS 1.3 / DNSSEC / VPN integration** is simulated (logic level), not integrated with real network stack yet.
+- **Trust-based routing protocol** is represented by policy checks in CLI, not a full packet-forwarding router.
+- **Decentralized governance model** is not implemented yet (future multi-authority control plane).
 
 ---
 
-## 2) Bind Identity to IPv6
+## Commands Run (Actual Session)
 
-```bash
-python cli.py bind --cert cert.json
+### 0) Environment and dependency check
+
+```powershell
+python --version
+python -m pip install -r requirements.txt
 ```
 
-Expected output (sample):
+Observed:
 
-- Identity binding section appears
-- `✔ IPv6 Assigned -> <generated_ipv6>`
-- `✔ DNS Record Added -> user1.whitenet.local -> <generated_ipv6>`
+- Python available: `Python 3.11.9`
+- `requirements.txt` currently fails because `hashlib` is listed (stdlib module, not pip package).
+- `cryptography` was missing initially, so it was installed directly:
 
-Generated/updated files:
-
-- `registry.json`
-- `dns_records.json`
-
----
-
-## 3) Verify Node Identity
-
-```bash
-python cli.py verify --ipv6 <ipv6_address>
+```powershell
+python -m pip install cryptography
+python -m pip show cryptography
 ```
 
-Expected output (sample):
+Verified install:
 
-- Verification engine section appears
-- Trusted case: `✔ Trusted Node (Identity Verified)`
-- Failure case: `🚨 Tampered or Fake Node Detected`
+- `Name: cryptography`
+- `Version: 46.0.6`
 
----
+### 1) End-to-end protocol demo
 
-## 4) Handshake (TLS-like Simulation)
-
-```bash
-python cli.py handshake --ipv6 <ipv6_address>
-```
-
-Expected output (sample):
-
-- Handshake layer section appears
-- Internally verifies certificate first
-- On success:
-  - `Challenge nonce: <random_hex>`
-  - `✔ Handshake success: secure context established`
-- On failure:
-  - `✖ Handshake failed: untrusted node`
-
----
-
-## 5) Secure Send (Zero Trust Communication)
-
-```bash
-python cli.py send --from <source_ipv6> --to <destination_ipv6>
-```
-
-Example:
-
-```bash
-python cli.py send --from 2001:db8::1 --to 2001:db8::2
-```
-
-Expected output (sample):
-
-- Secure transport layer section appears
-- Verifies both source and destination identities
-- On success:
-  - `✔ Secure packet sent: <source_ipv6> -> <destination_ipv6>`
-- On failure:
-  - `✖ Communication blocked (Zero Trust policy)`
-- Validation:
-  - `✖ Source and destination cannot be the same` if both are identical
-
----
-
-  ## 6) Resolve Domain (DNSSEC-like)
-
-  ```bash
-  python cli.py resolve --domain <domain_name>
-  ```
-
-  Example:
-
-  ```bash
-  python cli.py resolve --domain user1.whitenet.local
-  ```
-
-  Expected output (sample):
-
-  - DNSSEC-like resolution section appears
-  - If found:
-    - `✔ user1.whitenet.local -> <ipv6>`
-    - Then runs trust verification for that IPv6
-  - If not found:
-    - `✖ Domain not found in trusted records`
-
-  ---
-
-## 7) Spoof Attack Test
-
-```bash
-python cli.py spoof-test
-```
-
-Expected output (sample):
-
-- Attack simulation section appears
-- Mutates first node identity to attacker value
-- Verification should fail with tampering/fake node message
-
----
-
-## 8) List Current State
-
-```bash
--
-```
-
-Expected output (sample):
-
-- Network state section appears
-- Shows number of bound nodes from `registry.json`
-- Lists each node in format:
-  - `<index>. <user_id> | <ipv6> | cert_id=<cert_id>`
-- Shows number of DNS records from `dns_records.json`
-- Lists each DNS mapping:
-  - `<index>. <domain> -> <ipv6>`
-- Empty-state handling:
-  - `✖ No bound identities found in registry.json`
-  - `⚠ No DNS records found in dns_records.json`
-
----
-
-## 9) Security Demo (End-to-End Attack Resilience)
-
-```bash
+```powershell
+python cli.py issue --user "user1"
+python cli.py bind --cert "cert.json"
+python cli.py issue --user "user2"
+python cli.py bind --cert "cert.json"
+python cli.py list
+python cli.py handshake --ipv6 "3ee6:9767:f8bc:4577:a9a4:b961:b64c:2940"
+python cli.py send --from "3ee6:9767:f8bc:4577:a9a4:b961:b64c:2940" --to "89b7:b3e1:b6b4:42d4:b60b:2ca9:bbc0:189e"
+python cli.py resolve --domain "user1.whitenet.local"
 python cli.py security-demo
 ```
 
-Expected output (sample):
+Key outputs observed:
 
-- Security resilience demo section appears
-- Step 1: baseline verification
-- Step 2: spoof injection
-- Step 3: re-verification shows tamper detection
-
----
-
-## Quick Revision Flow
-
-Use this sequence for demo/revision:
-
-```bash
-python cli.py issue --user user1
-python cli.py bind --cert cert.json
-
-python cli.py issue --user user2
-python cli.py bind --cert cert.json
-
-# Use values from registry.json
-python cli.py handshake --ipv6 <ip1>
-python cli.py send --from <ip1> --to <ip2>
-python cli.py resolve --domain user1.whitenet.local
-python cli.py security-demo
-```
+- `✔ Certificate issued -> cert.json` (for `user1`, `user2`)
+- `✔ IPv6 Assigned -> ...`
+- `✔ DNS Record Added -> user1.whitenet.local -> ...`
+- `✔ DNS Record Added -> user2.whitenet.local -> ...`
+- `list` showed existing bound nodes and DNS records already present in repo state.
+- `handshake` on a non-registered IPv6: `✖ Node not found`, `✖ Handshake failed: untrusted node`
+- `send` with non-registered endpoints: `✖ Communication blocked (Zero Trust policy)`
+- `resolve` success: `✔ user1.whitenet.local -> ...` then `✔ Trusted Node (Identity Verified)`
+- `security-demo` tamper check: `🚨 Tampered or Fake Node Detected` after spoof step
 
 ---
 
-## Output Style Notes
+## What This Demonstrates
 
-- Colored console output is used (`GREEN`, `RED`, `YELLOW`, `CYAN`).
-- Banner and status lines include Unicode symbols.
-- Windows console compatibility was improved via UTF-8 stdout configuration.
+- The core trust pipeline is functional: issue -> bind -> verify -> communicate.
+- Identity is mandatory for trust decisions (Zero Trust behavior is enforced).
+- Spoofing attempts are detectable by certificate/signature mismatch.
+- DNS-like trusted name resolution connects identity to routing/lookup workflow.
+
+---
+
+## What I Like In This Project
+
+- Clear identity-first architecture aligned with the problem statement.
+- Practical CLI command flow that is easy to demo and explain in a hackathon/review.
+- Good security narrative: baseline trust, attack injection, and tamper detection evidence.
+- Modular command structure makes it easy to extend toward real protocol integrations later.
+
+---
+
+## Recommended Next Revisions
+
+1. Fix `requirements.txt` by removing stdlib-only modules (`hashlib`, `uuid`, `secrets`) and keeping real pip dependencies only.
+2. Add one command that performs a complete happy-path auto-demo and prints captured IPv6 values for replay.
+3. Add tests for:
+   - verify success path
+   - verify tampered cert path
+   - send blocked when either endpoint is untrusted
+4. Add a governance placeholder spec (multi-CA / authority rotation) aligned with the problem statement.
 
