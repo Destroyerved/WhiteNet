@@ -4,9 +4,16 @@ import uuid
 import ipaddress
 import os
 import time
+import sys
 
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
+
+try:
+    # Prevent Windows console encoding issues with banner/status symbols.
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
 
 
 # =========================
@@ -45,6 +52,7 @@ class Colors:
 REGISTRY_FILE = "registry.json"
 CA_KEY_FILE = "ca_private.pem"
 CA_PUBLIC_FILE = "ca_public.pem"
+DNS_FILE = "dns_records.json"
 
 
 # =========================
@@ -166,6 +174,18 @@ def save_registry(reg):
         json.dump(reg, f, indent=4)
 
 
+def load_dns_records():
+    if not os.path.exists(DNS_FILE):
+        return {}
+    with open(DNS_FILE) as f:
+        return json.load(f)
+
+
+def save_dns_records(records):
+    with open(DNS_FILE, "w") as f:
+        json.dump(records, f, indent=4)
+
+
 def bind_identity(cert_file):
     print(Colors.CYAN + "\n[ Identity Binding ]" + Colors.RESET)
     loading("Assigning IPv6")
@@ -180,7 +200,14 @@ def bind_identity(cert_file):
 
     save_registry(reg)
 
+    # Simple deterministic name for DNS-like resolution in demos.
+    node_name = f"{cert.get('user_id', 'node')}.whitenet.local"
+    dns_records = load_dns_records()
+    dns_records[node_name] = ipv6
+    save_dns_records(dns_records)
+
     print(Colors.GREEN + f"✔ IPv6 Assigned → {ipv6}" + Colors.RESET)
+    print(Colors.GREEN + f"✔ DNS Record Added → {node_name} -> {ipv6}" + Colors.RESET)
 
 
 # =========================
@@ -195,7 +222,7 @@ def verify_node(ipv6):
 
     if ipv6 not in reg:
         print(Colors.RED + "✖ Node not found" + Colors.RESET)
-        return
+        return False
 
     cert = reg[ipv6].copy()
     signature = bytes.fromhex(cert.pop("signature"))
@@ -210,8 +237,108 @@ def verify_node(ipv6):
             hashes.SHA256()
         )
         print(Colors.GREEN + "✔ Trusted Node (Identity Verified)" + Colors.RESET)
+        return True
     except:
         print(Colors.RED + "🚨 Tampered or Fake Node Detected" + Colors.RESET)
+        return False
+
+
+# =========================
+# HANDSHAKE + TRANSPORT
+# =========================
+
+def handshake_node(ipv6):
+    print(Colors.CYAN + "\n[ Handshake Layer ]" + Colors.RESET)
+    loading("Performing certificate + challenge-response")
+
+    if verify_node(ipv6):
+        challenge = uuid.uuid4().hex[:16]
+        print(Colors.YELLOW + f"Challenge nonce: {challenge}" + Colors.RESET)
+        print(Colors.GREEN + "✔ Handshake success: secure context established" + Colors.RESET)
+        return True
+
+    print(Colors.RED + "✖ Handshake failed: untrusted node" + Colors.RESET)
+    return False
+
+
+def send_secure(source_ipv6, dest_ipv6):
+    print(Colors.CYAN + "\n[ Secure Transport Layer ]" + Colors.RESET)
+    loading("Validating trust before communication")
+
+    if source_ipv6 == dest_ipv6:
+        print(Colors.RED + "✖ Source and destination cannot be the same" + Colors.RESET)
+        return
+
+    src_ok = verify_node(source_ipv6)
+    dst_ok = verify_node(dest_ipv6)
+
+    if not (src_ok and dst_ok):
+        print(Colors.RED + "✖ Communication blocked (Zero Trust policy)" + Colors.RESET)
+        return
+
+    print(Colors.GREEN + f"✔ Secure packet sent: {source_ipv6} -> {dest_ipv6}" + Colors.RESET)
+
+
+def resolve_domain(domain):
+    print(Colors.CYAN + "\n[ DNSSEC-like Resolution ]" + Colors.RESET)
+    loading("Resolving trusted domain")
+
+    records = load_dns_records()
+    ipv6 = records.get(domain)
+
+    if not ipv6:
+        print(Colors.RED + "✖ Domain not found in trusted records" + Colors.RESET)
+        return
+
+    print(Colors.GREEN + f"✔ {domain} -> {ipv6}" + Colors.RESET)
+    print(Colors.YELLOW + "Running trust verification on resolved node..." + Colors.RESET)
+    verify_node(ipv6)
+
+
+def list_state():
+    print(Colors.CYAN + "\n[ Network State ]" + Colors.RESET)
+    loading("Collecting registered identities")
+
+    reg = load_registry()
+    dns_records = load_dns_records()
+
+    if not reg:
+        print(Colors.RED + "✖ No bound identities found in registry.json" + Colors.RESET)
+    else:
+        print(Colors.GREEN + f"✔ Bound Nodes: {len(reg)}" + Colors.RESET)
+        for idx, (ipv6, cert) in enumerate(reg.items(), start=1):
+            user_id = cert.get("user_id", "unknown")
+            cert_id = cert.get("cert_id", "unknown")
+            print(f"  {idx}. {user_id} | {ipv6} | cert_id={cert_id}")
+
+    if not dns_records:
+        print(Colors.YELLOW + "⚠ No DNS records found in dns_records.json" + Colors.RESET)
+    else:
+        print(Colors.GREEN + f"✔ DNS Records: {len(dns_records)}" + Colors.RESET)
+        for idx, (domain, ipv6) in enumerate(dns_records.items(), start=1):
+            print(f"  {idx}. {domain} -> {ipv6}")
+
+
+def security_demo():
+    print(Colors.CYAN + "\n[ Security Resilience Demo ]" + Colors.RESET)
+    loading("Executing spoof resilience scenario")
+
+    reg = load_registry()
+    if not reg:
+        print(Colors.RED + "✖ No nodes available. Create and bind at least one node first." + Colors.RESET)
+        return
+
+    victim = list(reg.keys())[0]
+    print(Colors.YELLOW + f"Victim node: {victim}" + Colors.RESET)
+    print(Colors.YELLOW + "Step 1: Baseline verification" + Colors.RESET)
+    verify_node(victim)
+
+    print(Colors.YELLOW + "Step 2: Injecting spoofed identity" + Colors.RESET)
+    reg[victim]["user_id"] = "attacker_node"
+    save_registry(reg)
+
+    print(Colors.YELLOW + "Step 3: Re-verification after tampering" + Colors.RESET)
+    verify_node(victim)
 
 
 # =========================
@@ -258,7 +385,19 @@ def main():
     verify = sub.add_parser("verify")
     verify.add_argument("--ipv6", required=True)
 
+    handshake = sub.add_parser("handshake")
+    handshake.add_argument("--ipv6", required=True)
+
+    send = sub.add_parser("send")
+    send.add_argument("--from", dest="source", required=True)
+    send.add_argument("--to", dest="destination", required=True)
+
+    resolve = sub.add_parser("resolve")
+    resolve.add_argument("--domain", required=True)
+
+    sub.add_parser("list")
     sub.add_parser("spoof-test")
+    sub.add_parser("security-demo")
 
     args = parser.parse_args()
 
@@ -273,8 +412,23 @@ def main():
     elif args.command == "verify":
         verify_node(args.ipv6)
 
+    elif args.command == "handshake":
+        handshake_node(args.ipv6)
+
+    elif args.command == "send":
+        send_secure(args.source, args.destination)
+
+    elif args.command == "resolve":
+        resolve_domain(args.domain)
+
+    elif args.command == "list":
+        list_state()
+
     elif args.command == "spoof-test":
         spoof_test()
+
+    elif args.command == "security-demo":
+        security_demo()
 
     else:
         parser.print_help()
