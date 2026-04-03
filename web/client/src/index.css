@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+/* subtle scanline */
+.scanlines::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  z-index: 50;
+}
+
+.glass-panel {
+  @apply rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl shadow-xl;
+}
+
+.text-gradient {
+  background-image: linear-gradient(
+    to right,
+    rgb(103 232 249),
+    rgb(56 189 248),
+    rgb(167 139 250)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

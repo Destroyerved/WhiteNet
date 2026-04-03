@@ -1,0 +1,1149 @@
+[
+    {
+        "event_id": "b1ad583c-aea4-42ae-b5df-a4a51cc677e3",
+        "timestamp_utc": "2026-04-03T17:13:40.026380+00:00",
+        "action": "demo_run",
+        "status": "success",
+        "details": {
+            "phase": "start"
+        },
+        "prev_hash": "GENESIS",
+        "event_hash": "9beeb508ac15ee9b19163b4e89d67335bbe7a34cf8b8544a3bbb819d68257b72",
+        "signature": "10abf3330b1282a6722c790de427de2bcf1827574e350d172ce7747b4dc740a4b99614784ae62aa918bc78014ffa4e293d072a58c3aa4f060f90125c88804a2319cfdb424e1e80123b9103fa2090396f5514d5564d26c7c9c346bfbef94af57dbaaaa193067d38a19c22de37fd1d185714e9e2324dc7b748fc2b1f9501368514531f8103117b95df884940a214482e59d916f27a770fa2d132eca729f0af2738ad88d3cb3b4dafd584b6cb4d5216f97fc33f10b5541f9ad46012cdf69fd64aff432376a5e24b1b96bac765e90f477bf68e3d70de871cec2fb82a9bf2bb227a8e87402b95a55c894c7b0dc8a9b926b8b05889852f68e05553d32cbf4a0b3137f0"
+    },
+    {
+        "event_id": "03bcdeda-58b2-4ab3-a093-0c7ac9990d04",
+        "timestamp_utc": "2026-04-03T17:13:40.147351+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "ad70eeb0-901f-4630-aac7-6beee310511f"
+        },
+        "prev_hash": "9beeb508ac15ee9b19163b4e89d67335bbe7a34cf8b8544a3bbb819d68257b72",
+        "event_hash": "fb8597fe7ac0ff23140f09c66282fa716d798387130ae6c9b6166fc3e5110658",
+        "signature": "bcc12b47a77b42ef3beca433c05478858f58d20a1f8d01482b6946c6f882c8691a8cddd781d0b9dab6a1f9a64a78c4b8bb4a0cd1421a8cd4834c5e329a840dc3eb9feada518262fa2c334c7916192ccfbe7a49d5a4ff37824a2cb1b79481c69826e0f36f1ca011a55c232ae56b69fa4ad7e20cf87124cf6adbd0f218ca2dfc401a675dd5f81378d0a0aaf63e770b50312b9df58fd093de8747b7d3ce958720b1e41bf0882c95ce237fe5660aca01856f6eb62099bc258ea0ca4a0311c2227d36ec799dd8bd0401b3425964b07aee61372c2e20dccdb5a25094861abb9efeae09a1f20b49e783c66786ef656045844323b5799b0b4346a6d6fd3577f6819e6668"
+    },
+    {
+        "event_id": "a49e29ad-b86f-4e3d-9b1a-35873a10d0d8",
+        "timestamp_utc": "2026-04-03T17:13:40.200436+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "ipv6": "e41b:a504:d265:445d:aea1:9e0a:818e:f8b9",
+            "domain": "alice.whitenet.local"
+        },
+        "prev_hash": "fb8597fe7ac0ff23140f09c66282fa716d798387130ae6c9b6166fc3e5110658",
+        "event_hash": "df9e4223c733d754f7f2f43b3926496ddc1a4b27d00e1ce1c511c1b255f45986",
+        "signature": "b4dbfa677c00c2c882c70d5cf02d1eb71dc79f2caebe25503924de76402dca785792446b3f4a4eb6e38d060015b52f6cb973ca0cfec2d42b03a79e7415e06966bfeafcd80f021b6bef1e0a1290a224305476f0a4be999377731cad56044d8f3bccb90fd6c002e5981a45208b6a9916d97b019e89836c91f68100b5ea4b60191eb3b1fa2cf43c4742ca5b445f1de2e82e2bb25413bff9988011246ff6dd33d151103099018e5c3f2d895986ca9538e1fceef879a69d9880a83be4be76fb59836fea2a4096a9fa3fad70457c4ae2990a6ce826a7b77a880706effa91ae2ca34afb2cb2afb0a347213eb47f78b1cf792282e9bb6137efed81ebd1b3a11822b92f0d"
+    },
+    {
+        "event_id": "38fd058f-2927-4841-8448-fa76ccd14a0d",
+        "timestamp_utc": "2026-04-03T17:13:40.341239+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "bob",
+            "cert_id": "8e1f4817-aca3-465b-aa11-5dbd56d644cc"
+        },
+        "prev_hash": "df9e4223c733d754f7f2f43b3926496ddc1a4b27d00e1ce1c511c1b255f45986",
+        "event_hash": "60d7cc62eea4c4b772ecf16edbf3dc2b4386387b7e3338c6e69aa96e1140c8f2",
+        "signature": "8d1432d2dc788a4e926b57f0e98fdd9c8d0d381dee1b7132da8ec24c9cb3a8f1498ee33c699f47eeefe807abdbc2ed87bf66ce062aaceccab212281bd22af6268367a8a3c20e56f846772dae410063c45ddadd15e99779cc7164e27eacbdf10c4cbdae70f2b2653138ac0111ab698fe33ca9c5d05ad870ae27fd50732e2905983a4653de682750f58174f0b1c3d6bb7df58edba81ca01190f7acbea2f0a6b7a8dde5f5276df4389d82209795e1861d635fbfb2727d1f8ef6b22caca043de2129630460ce82a0186f5c31bf27bf8c9b011e6e7d68fa5eab80b331790421b56b2dfa57a74bdacb3f1fb8dd1ee8fac2ca6a0a95a0a2b3657b008c94e83b699e96da"
+    },
+    {
+        "event_id": "b656c197-077e-4033-b6cb-cd3271a3c280",
+        "timestamp_utc": "2026-04-03T17:13:40.470781+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "bob",
+            "ipv6": "f374:9cb5:d9fb:4046:a28a:26a:3a86:2fd6",
+            "domain": "bob.whitenet.local"
+        },
+        "prev_hash": "60d7cc62eea4c4b772ecf16edbf3dc2b4386387b7e3338c6e69aa96e1140c8f2",
+        "event_hash": "6889579080ab32758f4a209e4157c39dfb843f5cf648a3a9c42437eea86112ae",
+        "signature": "8af134f35eccc259481809667185500ccff37bb2e556ea553c7cca69352c66b4189c2637ad4340d5d5224450b055df18b35a34edfb0b09aa3b49303eb9fcbb531417fe86f6f170b083da63fd1c9127a90183cc043de6ff9c09079985bd992983de8ee4c86bc21708fe9fde1857bc74aaf4f778a38382fd5f3163075ca7548791395f2525eccc43613c9250e5da73ddc3063fa27b570c81a434e5114609c58bf56376a62846e6c71dd2c351848d822f4b14e648e195a1a738e970dadc42d598a9063194a5baa16497e2654cf34ddb662203cfd676dbe607b94dd3e463703e09bc68165fa0927d84418ef3769416ff1606557a07325a83432fa37f9aa0bef61742"
+    },
+    {
+        "event_id": "46eefb2b-efc3-40ba-b544-5fc4f2696244",
+        "timestamp_utc": "2026-04-03T17:13:40.537474+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "e41b:a504:d265:445d:aea1:9e0a:818e:f8b9"
+        },
+        "prev_hash": "6889579080ab32758f4a209e4157c39dfb843f5cf648a3a9c42437eea86112ae",
+        "event_hash": "43e55ca7793a0fe8b375a083c7d9a51f336592c58e64126ebe2b10ebf5fffcc9",
+        "signature": "d4f15b24322e0d3d710f6cb7782400365c1e6254a07c0ebccf0ba521d40188cd8ba557b2eae47c786e638f803e14a8df700db39792064c59214f0fdff01cad9893f009aac532d11f476662344442f7678f7a2ce25b365aa15ff9b17d0a22b251d54e6f1751c8d7d3901d246d02a08928dc4be2fd4a68303a967776fae08a6ca50be2332506e9f053a07fd1bea954fb60eeef1a91f547420b090b296bd201b2646db459a78c7a6cfb2f46ee351cbd9202c944922b5e858716b4a4a3954e9cc55aa1d884748511365e3681d19d421561154bb73ca5d354310f91e15c72e88ff601cd64e0f06d414a86669a6129be4b93f1ea6a3458308ac1fd0ee25b4cc583f2bf"
+    },
+    {
+        "event_id": "95da5d22-cd52-4ee8-bbf8-42113abe05e5",
+        "timestamp_utc": "2026-04-03T17:13:40.582475+00:00",
+        "action": "handshake",
+        "status": "allowed",
+        "details": {
+            "ipv6": "e41b:a504:d265:445d:aea1:9e0a:818e:f8b9",
+            "challenge": "34df4682a58a47b0"
+        },
+        "prev_hash": "43e55ca7793a0fe8b375a083c7d9a51f336592c58e64126ebe2b10ebf5fffcc9",
+        "event_hash": "7a7ff84b7b4bc1ef9ea0269b5b3110647be36c9704b81a1233b0714f1aea8514",
+        "signature": "cac67b4f1531276b4432fee640e0c5a6a94f8e1f5b6e267a42c013ad70cf3f7af60e3516192019f14877a1e64789f076fc5172e98afe3c63ba53f03b8216191dd74c8bbaa8478e3ee874d02c7b3eee85f9ccb4603a6951d3062f758431a16fe37c5bd06491e8a8026ca2c24896d6d9b599258e70e5146a1bfdb050a4c6bb29f08a41dfaa30babe33dd716fd0a1bd8c75f0b850e81d1605207031df637ebdba5402bda1356df3ba0bd5b64204e4aa79ab8809a8b4c6c0a3e9bb714dd4d38edc7c3e3be8fceb185eb620adb203df1d6999cf985e9611bc1262503f7d41cfad5bba063a2a71c2878dc07bacabee874c3a28b686928d751fe107a36434515fa8c1b4"
+    },
+    {
+        "event_id": "976e35ac-4dbc-4066-a1fb-df290d76c28c",
+        "timestamp_utc": "2026-04-03T17:13:40.625181+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "e41b:a504:d265:445d:aea1:9e0a:818e:f8b9"
+        },
+        "prev_hash": "7a7ff84b7b4bc1ef9ea0269b5b3110647be36c9704b81a1233b0714f1aea8514",
+        "event_hash": "1d1fb3f199d1d8d663d682285cc9328aba9cd12f8627b504923b1732ca3abab9",
+        "signature": "13c0574c340267777c0c99e5810687c715de8c04db7252a356516e0298e73882b4ebdb775c7af83c75550ead98f2b11762ef832506d3afa588d04897400cb01b4c04256a04d9f06d4171d1db3fdd238066353c911c44f93e16503984dafa8258aa8bb96ca8cafc65fd5f6a9625dc853399fddd7d55c44cb2fbdee941421331f6b7a02a49874fd579f8f9093d16896aa0509f3f817f5e0b00bd3b8a021af62861b7663c448f8914ec8ba5e9d90458396d0e3cd94201b7345b6913a82d9461351caedfea4a3583f8a32ad077a6090d3cfe2dcea578480a079482eaf229cb6f83ac6d87564e27babee15d392bec03277e623f6a745ab0e88dda6caaa4bf5d10dba0"
+    },
+    {
+        "event_id": "eb70379c-f731-40f8-b79f-713f4580c7c7",
+        "timestamp_utc": "2026-04-03T17:13:40.675773+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "f374:9cb5:d9fb:4046:a28a:26a:3a86:2fd6"
+        },
+        "prev_hash": "1d1fb3f199d1d8d663d682285cc9328aba9cd12f8627b504923b1732ca3abab9",
+        "event_hash": "8e690b7372d247c58854bb841dbd0e1b63b8db64c94ca4b02af03aa633005e4d",
+        "signature": "2a0783fc2f90b506d9ab8bdf27025b6a4f76c91049af5c87e85e2a93c5f9590c8c7d2e7ac9a8c382dab9b4d133abeabafdf58c13db28f12f4d63a7fa9b17a8eb21aee9758e27d0c04a315e1457fd8212d34e8452c7f7a8c88312ecfb84765e4fe956b8e2778aa7ebd38b6c623729ff60eff3a325525e63c0e9dbb9e03bb5c9b69355e52d6b20ad1954cbc36e8d45d30ebfa29323f09f3dda52d790c589994b01ad76aa3a55360aaf8900619a42e9f745a86419247f0b86fbfaeb2b0faf3895a26033030e8a7ab2d68fbbd9fa2a9f29d05512ad57fa0cae769dc350d4ddd35d2a15cc2b86b04ca5fe657dcc82e800956f8c755f3e0392963abb7a2ac853e28ac4"
+    },
+    {
+        "event_id": "d20f93ef-3757-4426-bd65-cd5a9ed9da6f",
+        "timestamp_utc": "2026-04-03T17:13:40.719696+00:00",
+        "action": "send_secure",
+        "status": "allowed",
+        "details": {
+            "source_ipv6": "e41b:a504:d265:445d:aea1:9e0a:818e:f8b9",
+            "dest_ipv6": "f374:9cb5:d9fb:4046:a28a:26a:3a86:2fd6"
+        },
+        "prev_hash": "8e690b7372d247c58854bb841dbd0e1b63b8db64c94ca4b02af03aa633005e4d",
+        "event_hash": "b9667d7b293061de248a0b8b97ce23573a96c17a00e09871ae3fb1823465d48c",
+        "signature": "1019a105f85c5e37da5a3a2a395fc5e9ff2c1f1a2102ddc63d9c9469164de38028fd9c1724def435458d963835c6d257a7eed35cc3ec000d9cc0580f3c72123144ac07efe28b0221e0f1afbab3afe317cf1a28d54a4f54b25558747a43453b53bc282c18da35a39be792f100662f027b7246e74378f591c1c9295a66075ca2bdc3f0f4e977815f292cdfde57814d169309c1ca3a9eff0e0d99a39c62e8b96db8e55d57476dc1e06211a05b223a02760e3239d1531eb0458d7dd3f07c4e11039e254180f58252d9f44f0a6f020669fa10e22c41613ac4382fe240981d5cc158b57996fd126bd01d84ef004086ee9f4d9ce76dc1968bda25890108a6707a7d1bc2"
+    },
+    {
+        "event_id": "4cd129d0-6d2b-49d9-805f-7d72c07b3e6a",
+        "timestamp_utc": "2026-04-03T17:13:40.765896+00:00",
+        "action": "resolve_domain",
+        "status": "allowed",
+        "details": {
+            "domain": "alice.whitenet.local",
+            "ipv6": "e41b:a504:d265:445d:aea1:9e0a:818e:f8b9"
+        },
+        "prev_hash": "b9667d7b293061de248a0b8b97ce23573a96c17a00e09871ae3fb1823465d48c",
+        "event_hash": "e57624304b9e3859a5453ed078d3ccdc144f6cd6edce4b44132ea874d5682395",
+        "signature": "51c895029b0b01f310e8dd466991d566671615ca7c523375b9b0f34584c475937491aca565c5fd8d410c6c0a02c7d36af9fbf7804700d9400a818572fc101d13175c33bccec0732a454c7571520fe1ebbc7889914fbf44c59d900eab2f2284decfad3b7f9049a76af72ad572b853a8f92595620b4f288393c2d4117580761da34645c7f1447535d833b98533f16d12ede05382f70427fcd3ac7dab295f3106f01933547aa583c12a929a9f46a85629e118638e98d2551f98a9d10008641df8276cb10801b1d14d89a790889c7088e71296d178a7dd84d51659b3ff74717410ce80bd14d8b4cec677450065a20e43e7fae0b2b2b741486d5ed2c114fbddd33f5b"
+    },
+    {
+        "event_id": "efab8115-5c26-4175-aa38-2fbedfdbb5ae",
+        "timestamp_utc": "2026-04-03T17:13:40.812108+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "e41b:a504:d265:445d:aea1:9e0a:818e:f8b9"
+        },
+        "prev_hash": "e57624304b9e3859a5453ed078d3ccdc144f6cd6edce4b44132ea874d5682395",
+        "event_hash": "e461168265290ebdebabf46b5b2104978ad7580d035ff4d8299b756ae9085aae",
+        "signature": "7db003ad01d8bf00ea6b6460c5b22357744e9e6925a1c878e4986256b0db8d814e579be70a10bd9cca75673c456946aec05caffed4da336d3818eadd4868e3862ead58f7ecf00afef6f825e6012a5fe0c4bd1ff40dd7e48c9863e01ad599495fcce9f3fdd67373b4eb34262bf7774d571f55f506ee97d02fcebbd76319013b3a75f85a46b2740a22c12e4a003ac56cbbb6ba78e4929caf606fe66fd6394f4db21a8f9c2d4c140313920e1f9d249f4a33c19a93ed0399be3e515b0d7a67592bab0fef95b8a590db28ced31755829521a737ee46c5f6d2397d414973e5dbfcf21a46cf03556752b5e4635ad645b10c0491b32ac0736ddfdacf7cca48d6e33ff0ab"
+    },
+    {
+        "event_id": "9f0cf25d-eeac-4ef6-b47f-5087e53a7140",
+        "timestamp_utc": "2026-04-03T17:13:40.861796+00:00",
+        "action": "assess_posture",
+        "status": "allowed",
+        "details": {
+            "ipv6": "e41b:a504:d265:445d:aea1:9e0a:818e:f8b9",
+            "verdict": "TRUSTED",
+            "score": 100
+        },
+        "prev_hash": "e461168265290ebdebabf46b5b2104978ad7580d035ff4d8299b756ae9085aae",
+        "event_hash": "49d4a0dbdaa4189af978ffc03b798088e0bbd31f9952ba76e3ec254a171148c4",
+        "signature": "a33824de769179e6cca6edb479134804f1b7f92f9af70b5415ea72d7a258d4278a500925df8060b193f2ba23f29774991096deb83b6911b4232b8dd831fc220e8e75fbfb5e29dd39d499d1a3d8f6a97a91a308895c9daa6ab4201a3988959e6f61204cdd6aadd6a2a866edbe74ef945c6cf05c526c1860b59a2ede7daf9b516910f6d1467fb7aa5caef606a096c26c7ecb191a0571a2f36f0190310c03469292919aec84a85f8318df7749538f34c776461b4d41dede663ece5f703e542cd0e5559b4165de2bd5500fcf2aeb53bb427655e4275e1435f292151682278c77b425984120e15aa6967356d11da3f3f5e3c141bdb60a0b670d65b63cc70b5a8ba7e4"
+    },
+    {
+        "event_id": "ab5555bd-b5c6-4d75-ad19-19d388be42d9",
+        "timestamp_utc": "2026-04-03T17:13:40.909104+00:00",
+        "action": "assess_posture",
+        "status": "allowed",
+        "details": {
+            "ipv6": "f374:9cb5:d9fb:4046:a28a:26a:3a86:2fd6",
+            "verdict": "TRUSTED",
+            "score": 100
+        },
+        "prev_hash": "49d4a0dbdaa4189af978ffc03b798088e0bbd31f9952ba76e3ec254a171148c4",
+        "event_hash": "3174e29caa99573bfc763976e0f7fb6097caf322c08254d5c2881623e22a32ea",
+        "signature": "916504649a14adf7968ed9b67ae877c12bdfbafc700d52971bfe5498fba58965a862f6bf03272ae807543802af39e04b8d0be4e945a7f04de7a35911e049f9daf57df940ad36b968dd2cd61004392c272040f0704e340b6e9161ce02fbd570f5bf9a344084161271b67f4e0f86f1189a2d48f386a387904aa0b4f61bc3dae0aef9251f3ebeac7bfd1f0cfd63f180591a27f0b23e4f88e853cbf53aec9591249bd7c67885dea08d2f31ffa1083f9f356fc98d6d93f191774895dfea0d4f513829530f955c7b84d63f6874ed84c5c10264792e21c5c6da718d85ae631e680f9ff6ce6748ff8705f0b3356eeee82e797f78086feb2fc9eb78294ba37a6121787b51"
+    },
+    {
+        "event_id": "005aee8c-f1db-475c-ba69-4256492eb705",
+        "timestamp_utc": "2026-04-03T17:13:40.960780+00:00",
+        "action": "demo_run",
+        "status": "success",
+        "details": {
+            "phase": "complete",
+            "alice_ipv6": "e41b:a504:d265:445d:aea1:9e0a:818e:f8b9",
+            "bob_ipv6": "f374:9cb5:d9fb:4046:a28a:26a:3a86:2fd6"
+        },
+        "prev_hash": "3174e29caa99573bfc763976e0f7fb6097caf322c08254d5c2881623e22a32ea",
+        "event_hash": "896cab06a66259bccb84098ab0d0c4248d8fab729727ea3b7427a2564b916fe7",
+        "signature": "a7ce1880a1e84ca1690e7a618c7f7d86af96a98dbe745dbdbf49662d1fb46796a75d980c2d658835774d612dc9c68eab0d7ab74c05a5a6d24c1a1327d39e92d4abecaa623e258ec4351d915391d86a0eb78caffb6c9b5f7e7881b2e4c1b2672e0e31531c0439361ab3616bef1ef068a8447131dd02d7623e5318d8312db658f7fa89667d937d224069dd1fa61852c355bbccd18c3a26cbc4f62e215e4b458edb89152cb883b3f4c506ca2af50814e10b02680b62676ec7385197b82e44662e372fac7c487ad36bccf6a8aa5fa142402e4e19a8fafe311a3c0b9d2e6d28dd181b387380968696428105b6f7fae17f00b8384939965127475cd48414112150cdcd"
+    },
+    {
+        "event_id": "bace5c12-d79d-4c60-b27f-b5318563af4a",
+        "timestamp_utc": "2026-04-03T17:13:41.251573+00:00",
+        "action": "trust_report",
+        "status": "success",
+        "details": {
+            "out": "trust_report.json",
+            "node_count": 2
+        },
+        "prev_hash": "896cab06a66259bccb84098ab0d0c4248d8fab729727ea3b7427a2564b916fe7",
+        "event_hash": "7ec63a379405ab6d8fd09b8720e9bb48d8495e8245515b5124a3f623129bfb7a",
+        "signature": "1872be38bddebce08766fa17881408041a09fcce12302b27ecb308bccdbedf830b075c717dc881d9c4f893224b4e3a67e32e3fa62007bc07f993510b93127803821d0feff1a8073dd25a6ac1475e2e7a52af57229d033e2354af63944b39c05606ba51fc2a703627f9d8a4d0030741abdfe1dd4f7c4442beeca23a05d1fc6f1414497c9ac4db11c62f5e04b3ab4814a709018b03bafe2b6b26be7f9395bded0d118ce0e2132a99ea4b60a9036a2b81b5160560be6999764ecb665209175a21f9e93d2386859406d4ce680489502ef9d6c95ea17adda8409a784657b03964ebc87a9a89ff7284eeefe2ec75ec64a0233826cdbfdce50f1f785258c54edfac0bbe"
+    },
+    {
+        "event_id": "ef86ea49-6b88-434a-896f-f85abb346599",
+        "timestamp_utc": "2026-04-03T17:24:04.350909+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "4c02c006-7eb3-4851-8ba2-aa4afbb6ece0"
+        },
+        "prev_hash": "7ec63a379405ab6d8fd09b8720e9bb48d8495e8245515b5124a3f623129bfb7a",
+        "event_hash": "f43c086806effbf312cd34a0b8ed040e2849b4d7b3963b2fc6b2aa8ceac518fe",
+        "signature": "3e56363c3793f9b6bc3784b7f0c3a1b9c53b7244090af05e860a4e61e941b12d21087499ce53004bf1fe6a6f4ae056cbd0c8245f6b291ec0980112e2594320f77ab6588b1a5c5935b4462181bc86957cd2aaae0fdf5773f3c062a4b6bd8e76e335fb64eb42776fec9e9ab0c713382babffd9e8bc71aeca043bcbae09d1f193b52f2cd291fa7f5081a076752f095c50b7845780d2cd0159ff2268da021fa178e3815434506b352973aebc2fc0ccc139d34a0800b1a2a501f29b9b0b796b08471dc8ef98ad3e7be0d762a9b1299dcef4242681fe755d5f8aa9bf71a0f956cde285f6323f2a29adf124605bc21c177085f7853d8c707cca0fd3c57a3d2a1f222153"
+    },
+    {
+        "event_id": "ede56860-5197-4233-8552-727ab0e02677",
+        "timestamp_utc": "2026-04-03T17:34:56.524213+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "46f06e2e-3127-4510-89b2-def471fc675a"
+        },
+        "prev_hash": "f43c086806effbf312cd34a0b8ed040e2849b4d7b3963b2fc6b2aa8ceac518fe",
+        "event_hash": "4c3705c8db6a4658495db217081ba4e4bc912f9f1d72713e534d64f9ae81705a",
+        "signature": "db3f6e8eee44fb60737db2bd273407cd0183e121a98f00f7cc45e2ec1f5b0fb1838204f964090effae81c739f990a17adccaf4f34d118b8ce0a1661ef488e9a90d4cf48503bb005afd97395119a3af6813058949634ff6c5548ccd1440252a5d0a4ea4ff6e75ba535140fa79f532cd2b80e8ea2ddf936a7ff599d0b49581f80885962909b614a70c74ba461c69e25f564d897ad7eba8f3cc013b2bdb6e9e2ab3930f5d6a55d0428c7f5f1d7ed317c40929c636524201878b792b1f40eb7037ccfc4bf68ff944b14127c034c8b7ca7939f6f664859bf4c3ff08617b5dd3eef66e05f25ecc426c58c6457117a849135e8577283fb221d078de63dab689ef1f421b"
+    },
+    {
+        "event_id": "e145a48a-530d-442f-a36c-25dc94477445",
+        "timestamp_utc": "2026-04-03T17:34:57.889716+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "ipv6": "a02d:6465:e24d:456a:a7ee:7532:d23:3d4",
+            "domain": "alice.whitenet.local"
+        },
+        "prev_hash": "4c3705c8db6a4658495db217081ba4e4bc912f9f1d72713e534d64f9ae81705a",
+        "event_hash": "bc40d2149cb8d5ed3b1cc3824db06b6ab48acba7d82fceab0f8fdc773ca70bef",
+        "signature": "218c4216ceb169787c73917a307a29f31d21d066d6ad5cf44e9404785ba0ad731f70800ea0cf4698f3e0c46c2c5aa16644813c8c5bd9231b5d208c1cfe79ae8f75cb2665ade1b771e3ce86671648ceb02c6b7e76dfdd6f51e147a13bb5335c93c409afdc0162ffb1f8eae4c09ed8cacf5d64602959474fc08eeb9cc6a3182662789350f47002316769d370f6854ec847883ec2628bb8038997b1038ccfb5b47f32740f1b6adb6308724ef6669ecf347e2dfb78fb9d4f4ae9a6458e5cf67693775310de7a19c0768eb18f805bb4bb290781d4aaf75f41c9239954c0b23a7b0c5719a58b144e93b3eee3ffd230f73e8718b897fde77b96d6416160cfa80dbbfd97"
+    },
+    {
+        "event_id": "043f5870-0f48-45cf-a54f-adefdab367ad",
+        "timestamp_utc": "2026-04-03T17:34:59.451898+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "bob",
+            "cert_id": "5f78f52a-b8de-40f6-a4a8-a34da500deec"
+        },
+        "prev_hash": "bc40d2149cb8d5ed3b1cc3824db06b6ab48acba7d82fceab0f8fdc773ca70bef",
+        "event_hash": "879ffb60f3ca92ef0d1c0595e219252eb2cd51e6368fba259cec05894750ef87",
+        "signature": "4424972a7d0c1ba17461e5f5ebe6b510a092cd5d46bdb8e9a00c5d9e989f2d03edeab19ceff492b020d2771c80a7077eca3bb2739b76190797f807a1842893ace9c5a2be4b29bdb387d11ea3bc697e1a49b9d5278cf2cecb2037c92f08ea4ce1de8fa58e694d821d6b99966ddcce875e63a65b8d20657ea46d49f3cb62d168b76ba7757ddbb87d0378931c84e4ed16d8dd05cafdc4caadd6bcb4d934031df76829b29dcf4afc8196f05f9b94da860c16c3c2b8ae9e16af3d1d761ce40db5bc044604eaa57e59308c6ec9169b69b134893ca8d6f030b3c638b551dfc7100056d76dc5f03bf6b252bccc01153460b2687bff6b8199e9133cf92f25149a58903856"
+    },
+    {
+        "event_id": "f96a8cc7-720d-45b0-b534-a715b556137b",
+        "timestamp_utc": "2026-04-03T17:35:00.960260+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "bob",
+            "ipv6": "4851:9c49:f2d7:44f1:9c01:6140:9bd2:3a3b",
+            "domain": "bob.whitenet.local"
+        },
+        "prev_hash": "879ffb60f3ca92ef0d1c0595e219252eb2cd51e6368fba259cec05894750ef87",
+        "event_hash": "837763bca2eea232d6f6513a1fd49eefc1ecff0e5920178be39be0d30b01250d",
+        "signature": "91ba303a8d1704f69c60638c9b3cdab0cbcc7c13c3819aa5ce11348fd78d78ae82a5a5bcdd6252df39285386b75a177967400e4861847531b1a0c2ecdcc141c4af6dbac985d119f6a0190e4dc2e9036eea5427cd42ccd177fa292063db3a7fe8f9757859ebc8f899424ae7a03712ca466ec717d9e6000d4ab9a38d90ec56e63f76da4565964bd208ffcae4efcfe0ef11c0164e28524f17dc70b486a7c67b71f05879302c336eb9b48bbd86da699d3eef6cfb97db8f4fa9ece476ffb2672f4de939caf6182fa8d1539118d881b49a72f79d859877f8173cc22de08e187d19b7130452cf7e284991669068537bbc01c80e501263073a1f708ba167df8c39a41ad7"
+    },
+    {
+        "event_id": "b032b8c9-9918-47ad-b560-4b4f55cde28e",
+        "timestamp_utc": "2026-04-03T17:35:03.719215+00:00",
+        "action": "resolve_domain",
+        "status": "allowed",
+        "details": {
+            "domain": "alice.whitenet.local",
+            "ipv6": "a02d:6465:e24d:456a:a7ee:7532:d23:3d4"
+        },
+        "prev_hash": "837763bca2eea232d6f6513a1fd49eefc1ecff0e5920178be39be0d30b01250d",
+        "event_hash": "15a79da3e962502feceffdf26efb8506eabc9fa4af2a284cef27c94b5d410ca0",
+        "signature": "273017fcf82bbdc75c293f87f7da7328a96ea6eace134c1d675ec11c73e1aabbede6efac647f3db3f24fa49864cecc84f4cb849b362b3850b729e2113c6f1377d366b029bc1bda7bf7bcaee3b66ffef6cd3ef400e186bafd5a126dd4d898590c8696be7111f3a806e090d094cdd4adc0921471400ec64c1fb7bcbf04248551aa5b6b28e4e1eed10623da9d10e544cea52317d5617fbdeb2244a67386961360501691d307f90dffa95134a32e474a373e41053d50ffbd37757defb66d2d6aef9b84ec5e3fae0028855aa468543362e544274cf4fe49b1288e40208ea430c4da968880ea23c8edff8bf29b0de740d91205f0b3c450925e9c3ed7f82f971f3963dc"
+    },
+    {
+        "event_id": "7df1be99-01a7-494b-8a2d-bf122321a1b2",
+        "timestamp_utc": "2026-04-03T17:35:04.707950+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "a02d:6465:e24d:456a:a7ee:7532:d23:3d4"
+        },
+        "prev_hash": "15a79da3e962502feceffdf26efb8506eabc9fa4af2a284cef27c94b5d410ca0",
+        "event_hash": "24fb05b58377d3e0194eccf606b11837fc37306fbb4e14582253fec2b3cc98f1",
+        "signature": "d1db64c4eb322168b3b0fd2de0c6517979c11cd76177eecb5b6eabed3c3623baaab833d55983c24e7fca1ecfcf40096c379282b4672301aa77a3667ddbd126680a4e942a7a57ec28e157c21ebdc27f482ba1e0ece065aec39fc968ae96108c2f620812e8a02823114467648263cbeaad99461bd8633666e3d3af4df30d11cff85d3a97bd2fd373226a604498366856263af05b9167d32227f61414abfbb0714cd23e04ccdefc3558f11f900cf3da45df6b91d9eacafc3f266aaa6a59013a5707de8557992c844fff46d44abe645c6acb40ea64955ee0c8237924cd18545eecf20e1f510ded87e8b95742e53149a3361f884ecb2bb4c993a9c70d8b8a05877f79"
+    },
+    {
+        "event_id": "6ae0a6bb-cefe-49c5-b03f-bc1a66ecbf33",
+        "timestamp_utc": "2026-04-03T17:35:06.993831+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "e41b:a504:d265:445d:aea1:9e0a:818e:f8b9"
+        },
+        "prev_hash": "24fb05b58377d3e0194eccf606b11837fc37306fbb4e14582253fec2b3cc98f1",
+        "event_hash": "107cfbf8fa4ed5392715a612e0476332ac3123d993343f5cb0e23c4f1f4cb5a9",
+        "signature": "ab8a73c490c52782c0e1720297e62cde0c38d509ccedd8de47236ad8da0a519eb2e7c6fa42b5d3e2b2e7ad57428ff1e2bf7ff3400ada25a0bfbc85dd76718804a43f89441eed28971224d6a01dec96c96ad9e7bff03797921c7a26cf6b5377109ae32d8a3ffd75a1965c014c690d4c1f4d03cde2c9b4bd2a087ed7516d78481806800a4cf8e3e42e8bb93ba16bd18cb81d0853abe67d2693c5f4ff72fdcdc846173da35fb2df73f0b51026af73e60fb998811a4fa962c569f5e8d042972af36d89b2fafe7917d4441a798179d55d7ede57a9c4a0a89e4bc3b248c5676acbdb7c0fbac51a75251714770f34155b9f168413e3e2bdbbf126675d5f032597a589c2"
+    },
+    {
+        "event_id": "bef05408-0f0f-4d2f-a92e-ba04ae864a6e",
+        "timestamp_utc": "2026-04-03T17:35:07.106294+00:00",
+        "action": "security_demo_tamper",
+        "status": "success",
+        "details": {
+            "victim_ipv6": "e41b:a504:d265:445d:aea1:9e0a:818e:f8b9"
+        },
+        "prev_hash": "107cfbf8fa4ed5392715a612e0476332ac3123d993343f5cb0e23c4f1f4cb5a9",
+        "event_hash": "f2cbce3f8c44463eaedfc87e8821599fcc11ab43cc936444d8326a9ed899702b",
+        "signature": "62e5c1c32061f2efd8b6a5d23e79fbb091d15986026b42b8c4ef8db7730e8406b8958407e4613b29fe0df946d59806d4c59fb71732cc71bd1e867f9ae6786cd94b27691ae74e17ef0f1b65764b7cc102fff025589f9a4a8b85db2ec179a875774f1ea59c4600758e9297437c1247e756535f6941d1890e6bf2aaf902bb451464ee7e2082d99db33679106a37cd636026b1f15fa37b2f19460b48eef28a1e2bffe52736c3bc837ea111adb7da6ddd3f8b60108a2cd55bc0ccfadb52fcdf6a4456c909dbb252c9ea79293c11ef72071b52e1478ff91dbf8150aa4e32d3f5ab005b4b9e05f70b33ebdb1457e7edf801e1b20a7a3c0041101f8d66a94199ca7f3961"
+    },
+    {
+        "event_id": "17bf858b-8ce7-4588-86c0-2b9a1bd31c98",
+        "timestamp_utc": "2026-04-03T17:35:08.136267+00:00",
+        "action": "verify_node",
+        "status": "blocked",
+        "details": {
+            "ipv6": "e41b:a504:d265:445d:aea1:9e0a:818e:f8b9",
+            "reason": "tampered_or_fake"
+        },
+        "prev_hash": "f2cbce3f8c44463eaedfc87e8821599fcc11ab43cc936444d8326a9ed899702b",
+        "event_hash": "bee863a842fbabf700de8234aa391614b7a4b0a0bdfd9c2d1a02317407bdd318",
+        "signature": "dc212dfcb24d62536970b81493497aac8d67266d6dd6b4b761e6708b8bb3db292d3cb1f969ae368af3b4764c05746a8fdaed84aaa3eba04b13055abb40e5835897d6a1e7e1944089566862bc1a5ee5f1b1a6c6ad60f8d343696e76eb18c71ac85e67ed8e2583c2d37c5651ecaa931888ab5f644c2b767b181b24198fd9413cc237ff7a7c584249a50054d6868c765bbc4bed14acac3e54e6559a276d3d0dfa4401854c468cc616ad19ad6d8342a72489d1daa7e75eb1eef963ac0032bd2b23897042675da667d2a5228646525035491a14debec98e4cc6e1e6b4fd1ccd45afc9523e94dc5ce77ed125a71b700ab8013ed624f27583684fea74bce916532d6c8d"
+    },
+    {
+        "event_id": "0c41e242-5c19-4adb-a76b-fe52fe7417d4",
+        "timestamp_utc": "2026-04-03T17:35:10.939567+00:00",
+        "action": "assess_posture",
+        "status": "allowed",
+        "details": {
+            "ipv6": "a02d:6465:e24d:456a:a7ee:7532:d23:3d4",
+            "verdict": "TRUSTED",
+            "score": 100
+        },
+        "prev_hash": "bee863a842fbabf700de8234aa391614b7a4b0a0bdfd9c2d1a02317407bdd318",
+        "event_hash": "a35f6a862a1561958b8d226a4dc0c6425a38989924eea5b600ce74f5fdf896af",
+        "signature": "5565644198fbd414321f8a17a07b1eb1073f7f68d5f57d9b48185a6bd8389eef6229b5a3a4ffeafbbb05d6759e168954943855436131fabc8af97c73fdde87507cf409e2f4ce51bfff04d577c72e497b5613ad22c9885d603c4166b1999d333a8addb969a7f953a896a50b361a47f2db57d17f8efafa052faf292940031a5df7e9e5148229ffb9faf10753134b44e9b3b7141c568f1fdc12bb0d0e881240f94603f71ec48d90ad2de04d2187163aaf2a44b225299783db0659d65146be65d4b720c55032de94a1d700136fe6405c5a3860c19174c25677b4fb518c0d03ccd4ef872e8249367981e769552b77f2d52f7664fa1baf01a1e58b50586fc0f65e73bc"
+    },
+    {
+        "event_id": "696c9d89-35fa-4025-ae01-6a6cd8eb71cf",
+        "timestamp_utc": "2026-04-03T17:40:01.210571+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "1b9aa6a7-1e1f-4123-b306-73b2eccea810"
+        },
+        "prev_hash": "a35f6a862a1561958b8d226a4dc0c6425a38989924eea5b600ce74f5fdf896af",
+        "event_hash": "3ca0281c87b95fd8bff480a7fac3402258d2bd745d6684acfd610052ca0968b1",
+        "signature": "1c9539500782d23b0bd53bcf4740eed1413c5cb968f9837bdc412755fa41f573a3b123d0ef60d44f12faeed0346d333960219f8afc20804142aa5cf6c42d5d8c2e1494a140084cfdabdf948b523af1bdba6853691361ac3eefe248caa2e40c21fef8fc02cb8e7b54fea18386514db5e9ed5bd9973ea719e0964f7fa20ff70fb278a154f65037c93b764bf9a3766ea981f04ac57014bffdab31003ad05965e79899d94d526e5a631daa3ca023d3b4e98390a55e62f35e6f877b1b764912145a97c124fe86c89fc018c1f812c0cc4eb2a4787c731504423d12a2d779d466b29bdf829d586b5dcfa0f4ab4bd1be28365f9787053816ae2527e65b93fe04ffec4963"
+    },
+    {
+        "event_id": "c685c1c8-3768-43e2-b38d-08b40b6c22b1",
+        "timestamp_utc": "2026-04-03T17:40:02.894516+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "c7087470-3bfb-432c-b69e-f82c60337d07"
+        },
+        "prev_hash": "3ca0281c87b95fd8bff480a7fac3402258d2bd745d6684acfd610052ca0968b1",
+        "event_hash": "904048e6ef8ec462d6457d2b7aff836f690bbc430c6106415c80d85eef182aa3",
+        "signature": "48db5f6cee215531f88bbb494b96017daed19dec4c80b8b5bc249562c28e5ceaba53e4e8625cc5076640077a7b3b7aa24298615b48f743ef7cb02f89299638634008df8ef1eb8e8f603aa6d8f339fe9d381311649b2a67b4ecfeed9b7c7ead08b464051cfc373c97089e6f40b9ed7ba42bb634943f1bb1363b3651ec40c07b546f7da91a9987a54f1a932c7ff01f3385506ca75dff775e4f1396155869256ec35913b9ea3381d158f052abc732004a0f68212d1758509122cf3b9a23a26d6a76ade944ab40a031560749bfbd3bdfe73823b5098ea391828a99fbd9822c0051e3c4632ec1c2b88b39e470df5d2e222844bfa01906725da58f53a5220bb9d92a35"
+    },
+    {
+        "event_id": "e8b34012-0662-47c8-b273-fb43de3db2fa",
+        "timestamp_utc": "2026-04-03T17:40:03.815176+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "926d7110-df19-4626-8f6a-65a37d28d265"
+        },
+        "prev_hash": "904048e6ef8ec462d6457d2b7aff836f690bbc430c6106415c80d85eef182aa3",
+        "event_hash": "c4f065d4e3bb90e27489563dbc491152eefcc3428d8ad7760134990617e7d7ad",
+        "signature": "5d76b8fd4c04aae243c7339b7e1117bfed8eaafd5cef03eaa0013a1162964a5954b943d9d0795a0e483be84896a177c1699c52037ad1c7e5cd2ef70e4001f7884fdc31ebf1d141d8f8b18db23cdf5835356f58a4378b240d27fcd82f1c322d5054e3f43bca0f8c30a0b2a89c71e10cf2ba8fb845ffbde12d26de2908ce4397c07dbf7f39d4f40e974b9ec1c844a186172b9bcabe64fe659c020672ad9d6778931f04558561b93ff3ab494a6d133d0d6fed8a5cb01afdd6c517acb975ea2add2020439d2034228347f9d6e42992763205642d8583dc6e03b3296ff37b4c793a3cfed1d685ebf4374671c36fc73e2db0b6bb0cf57dab77b481a38e4cedc95f61d8"
+    },
+    {
+        "event_id": "dba7415f-7b1e-4b78-93b9-5e2b090e7a94",
+        "timestamp_utc": "2026-04-03T17:40:12.445192+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "ipv6": "38bc:5388:c763:452f:8c8e:213e:ae81:f28",
+            "domain": "alice.whitenet.local"
+        },
+        "prev_hash": "c4f065d4e3bb90e27489563dbc491152eefcc3428d8ad7760134990617e7d7ad",
+        "event_hash": "a2058f5bfadee7b5184351549568663ae57d142b7dab7d1b758368dae12a4363",
+        "signature": "2c065b53adf1ef86cc7f4712a0c78ffef29c9c0bd6e2cca1b8bbf5caefd194d920a321572cf5d914b563f414a1556f14e53ed07a37891ac8e7327a96bb65e742c330f84fa352bd06253121213155bcc0b808b42fa3f4977d9f8159098bcdb00f77094ba91e2ee4cbec0c9fc886fd6eb9bc7abf3ee6a3f591182e5dca1e00a0a4ab4ec45a23e4e7ebbcfa71b8f18de72fa8d7ee205b5933debfb29b57c02eef7ee61476660343081cc75e4c8de6b9f68be29475049c083eace50a97ac5356f26eb1b8e0a45e44320681a29daf26e989a4401ec77c16778decae42ccdae29374d45d2a699e004ffbaa2920fbc001184273582689bfc2b9413dabc5c546a9ae8795"
+    },
+    {
+        "event_id": "1e745ad9-f342-4b8e-a780-438ed59ac9f5",
+        "timestamp_utc": "2026-04-03T17:41:41.669257+00:00",
+        "action": "demo_run",
+        "status": "success",
+        "details": {
+            "phase": "start"
+        },
+        "prev_hash": "a2058f5bfadee7b5184351549568663ae57d142b7dab7d1b758368dae12a4363",
+        "event_hash": "09b633c0d85b7494dbb061c393fef72158a7f2bc8fc799f0758a18f84f588530",
+        "signature": "8941da11bde2de9b1c7e40fa269169664f78e51f322d0834bb090266ac0d4d5fd0da2963757b78abdede63226e8fc08a087350af57a2b39fccaf1527a8c1af164b1879d76707cbdbb8f29cee0b8efca2fa03bbe2becff5f3446e127e8b1aa7666d67714edeab326ad012c82d8b8ed006a50a51930349e6d84efa76568dfeb7dc46f17136aa711e6db0cc458699075f876c703bd52a56c99cf8218a3d847607ce3401cd0f14d890fd43fe5ca4e310416782d257abc6e5b7be87db7a75ef223c80964759749e4a3e5d65ad055632cc0a7310847561b3492a7772971498eeaf64ec9a1da1d0b2fc54e7407a3b32a15aa94de3bf8c7b5649fa15e294a5563d213d28"
+    },
+    {
+        "event_id": "ac4dfd49-79c6-4205-8cbd-ad1dadb849ac",
+        "timestamp_utc": "2026-04-03T17:41:41.855875+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "6dd8cdb6-d4e5-4d3e-ac78-e6edb835f283"
+        },
+        "prev_hash": "09b633c0d85b7494dbb061c393fef72158a7f2bc8fc799f0758a18f84f588530",
+        "event_hash": "df5231445d8f590717b7ef5a4b25b3bc055785c63583989055a8ba4fc1d1ae9a",
+        "signature": "436f4ab2223e88b60620785b73dd340b1ed5121d9f22d812196ff11442d6289610b0a3112a010818cb59a015b1d8332df933b5d2e503b3d5a3d4b64d15a86e67ec3de9d5aad175052812f3463494b0fcdc7be157a70dd26e9a1bb71c237c071d727446e96a90c74308c397b68df3e5044ca319f1e8959cf919235798bfe664a8a2b7888dd6a77dc8d1b03e625f3c28df93696063c346c2893ef45abf6b8d76b22bd11314bf442fc8eafdc3020412e260a8a8d117854d8ddf08b29b629348e9460f4155babb0083a3712f82b86db2574e3375b543ca42ccf6487feb2ca9f9c94054d4257f41ffaa0b208b209461bbc077fea7b3e0897955173a7d639ade8f6994"
+    },
+    {
+        "event_id": "d8599c53-6055-4d3f-a54a-2aef8e414a44",
+        "timestamp_utc": "2026-04-03T17:41:41.938833+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "ipv6": "8680:1453:8a70:4159:8073:32f8:19bc:be4c",
+            "domain": "alice.whitenet.local"
+        },
+        "prev_hash": "df5231445d8f590717b7ef5a4b25b3bc055785c63583989055a8ba4fc1d1ae9a",
+        "event_hash": "0f91c2bcaddf815cac79bfc93e852f2abee98a29a365881bf0f227f322ad103f",
+        "signature": "357d757bdbf982d13049fcf2d1394fd836e16b71f49362f799978a11dae05055cfa2294f8a1fb5c7e428d87ed844e1ce128409404c63c13d1f898bce94471893eaa9077858e8f59e5c014183f5b3aa71da47468e9020e33f08d9409dd371ee7b393edab99ead202e1903a576b0beccb25525c8b6bac015b5774234f82e159d8ff9053d647cdf97da39298065a3439c0512fc77a792673e081a18856bb851d5cb7a9dde0b4d7772726c67c0b94cd3dbd6107cf96075606b727e197dcd59216ecac49dc21d3dfec1ca7e94063cc947573a049ba3a114500ccaa46bb32e3c8b3935458c945fcea878df6d1239e1e7c0dfe28af666d304021636dc9282c42412eb44"
+    },
+    {
+        "event_id": "de720bb1-0a6a-4d97-9356-87ed46c1a92a",
+        "timestamp_utc": "2026-04-03T17:41:42.114268+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "bob",
+            "cert_id": "e583ad29-32c9-40a5-9353-5049264b9d9b"
+        },
+        "prev_hash": "0f91c2bcaddf815cac79bfc93e852f2abee98a29a365881bf0f227f322ad103f",
+        "event_hash": "7b88564df3d397d1bdd2db4fe7de2ea7521b7020789299280e258ebd90db6221",
+        "signature": "5efe63c7eb347f5daec41453f8dec549d35bbbb6f75462ae4b3d8a299b5b7c3c1029c6055910fbeda607d95e3c2429e92642601dfafd6531384ad2f1c63bc677f31712f8f19db2ad28a53088a5190c36eb8b74a99252fd81a113869c03697617fd592771c2c911a6b55cb9bee8a19f2e9818e96c36b0e6a6ae2216468edf1754e9e84b386bf33225b9cc0711b32cd51463e8626c6805a18a1d48ce946a90254ade2bfe9172b7ab4a0883168b55a02438ce10f8659a61bb5be5d79f1d1c9fa434a4556eb9dfb2be76ab7b0965d8bf957f2204d10ae32e52117469a3e3cf9609f23f4a2914b43d4d91644246a06d2b1b08a82ca07d7c0e004cb8474af181ac3b76"
+    },
+    {
+        "event_id": "25b92e39-ef42-4bf9-ae8e-9ef521823ac7",
+        "timestamp_utc": "2026-04-03T17:41:42.218042+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "bob",
+            "ipv6": "df95:12d3:680a:460e:be8c:29aa:58e0:3ca",
+            "domain": "bob.whitenet.local"
+        },
+        "prev_hash": "7b88564df3d397d1bdd2db4fe7de2ea7521b7020789299280e258ebd90db6221",
+        "event_hash": "113bee2c4cf9f7feb88f65af78de5aa664e1eeb6c92593465acbe3f26d7dbf4d",
+        "signature": "7119759a6cd160f4725ef57c5dc40e9c4b7642158fbb74c53a3b868d1ec04bdb6de364fc4f473699723036170ac92653d90cc5117b3fdb7cf0956468f47630eb531193ee94523990d2d9d34008cdfddce1abd0eb44a7496346b784c914292047904aecba05c06f4a3ef21b37a7390cda20eaaf31b3d95e3116bfdcafcb2597923d14d1d5ee6d66a28bcdb1e567792e0d7e41efc63985300446f0b10411a60ce9beedc6cde421738563dc58bfdca5603d7733485cf09d9129dd5259bf8c7cd086bfc132aa411fc4aa9f9b31650e97ef38b0518b66766dbb22692cf6b112658ad171d5243d93b5a456d20ab22b8778461a6dd19b02b844d27a67602be9a311a4e8"
+    },
+    {
+        "event_id": "bcd03351-77cf-4dd1-bbc9-88cfdabe5c99",
+        "timestamp_utc": "2026-04-03T17:41:42.341781+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "8680:1453:8a70:4159:8073:32f8:19bc:be4c"
+        },
+        "prev_hash": "113bee2c4cf9f7feb88f65af78de5aa664e1eeb6c92593465acbe3f26d7dbf4d",
+        "event_hash": "77d0f297b7ee27f8dda825c87739e7878c6dbbb9176f30acf7c8f72496c4094f",
+        "signature": "c2852f0cfdaea3ffe8df87b392e0afb18bde1cc13fec6c50b9e46b5de060957a79cfca402923dd46db9d78399026e2071539ee943dbee86f8f26e76bea2719552d7bfb4670d1c980b6dfafa55aa0622690c880065954559002de12f3ce116f4a30d59d5d2da3241791194306ccbb65b25d89ba35885fac6bd1a93853543b251a15551d795d36b0fb198270ca700ed9fe67b8ac0081db58fa39da17fa0c510681bc75d362dc9d6b0505d8578c6d01505b86917bc2cbd47c009d4ce1e23f31d07b0a0b59787ac8ce3b666bf1fd0d3d06997dbe680b32dc04386df04c8c7d918d34d2c38679173d4fdec3282dcc6a9d9b2e5cd365079689d407dc465515d060f641"
+    },
+    {
+        "event_id": "1ee094b4-00fb-4de4-8948-a97167ed3b59",
+        "timestamp_utc": "2026-04-03T17:41:42.437685+00:00",
+        "action": "handshake",
+        "status": "allowed",
+        "details": {
+            "ipv6": "8680:1453:8a70:4159:8073:32f8:19bc:be4c",
+            "challenge": "cf546c5424f745ec"
+        },
+        "prev_hash": "77d0f297b7ee27f8dda825c87739e7878c6dbbb9176f30acf7c8f72496c4094f",
+        "event_hash": "8c1df074861c7f7c9b4496ab17f31c05771bedb89abe3ec71019bd19d8f0d396",
+        "signature": "70fb2072aedb59b53e98d340aedea450c7bf65f821c05897b3cb8e55ba0e350dc74d05d4d12cc4a7afa14fba593fb26ca212bf5b338335be7e15259d947c95c04a9e8d67d9a08990cc9d6a7dacc06fb68c7af29c3bf647d619cf993e21640fe9ec18a22ea7e90d97d30f5bf56b9bd377643f4832c11eba05bfb3fe980b4572d8f5bfa6586c5d333d74c01efd5743379f8a5bf12024e32b21ee269453304784d6df389e6e89fead3a02d05979528027bb1ad98a39af70ba32317295a7a84daf049dc1f4f37fadb2dc0cbff53b52fb545df1292a10492c98275beabe095b61f1ef4d5a4efe0012507610ebede7803c2e7338f732300097a55b4084458a96625689"
+    },
+    {
+        "event_id": "bb8d8beb-62bb-4f76-996a-0e72203ba291",
+        "timestamp_utc": "2026-04-03T17:41:42.508319+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "8680:1453:8a70:4159:8073:32f8:19bc:be4c"
+        },
+        "prev_hash": "8c1df074861c7f7c9b4496ab17f31c05771bedb89abe3ec71019bd19d8f0d396",
+        "event_hash": "a705d8bf4e81f48aca7db3e3c3061d2b2c6ddff8ad7326ce48eb44af2c1abc98",
+        "signature": "60d044f72226a1e848411327b24d87559f62a7c2cfd14200d405f1ca8bee874e7098d6fdcb18f72a1aa0680348d42706ecc4f1d7cef9fe4d26ce52b735999d7ef761d86ec4859075f9eb5d883fccd604c5daca6aaf6cfa87ae730292a64a85e6e0e7ab13e71ff868a67dc096373189f57d6fb8cce8494f1471ea60635bc080ab472f4aa70cbb46b262c57a548c1604b0944a9c97f0529c4718091c313ff8b3b78a995fb8140856f356817e77e0cb357a756ad7dac5d52f9fb325cd6525abc161e22ba691afc667d10386f81d62b286300f7931ae89310dd25e015b1c323a006b9136f89fd1819787b8721f40a33611a51180459efdf4666d5a92e34a9950cca9"
+    },
+    {
+        "event_id": "ece85c0e-d196-4058-b3ad-470a954e934e",
+        "timestamp_utc": "2026-04-03T17:41:42.588180+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "df95:12d3:680a:460e:be8c:29aa:58e0:3ca"
+        },
+        "prev_hash": "a705d8bf4e81f48aca7db3e3c3061d2b2c6ddff8ad7326ce48eb44af2c1abc98",
+        "event_hash": "c46e0a7551ca08ead14b1a06d37e649257cc73e6f1f1b22a55b049c9d7c9a68d",
+        "signature": "2be4c78aaf0be4d165a710670f3a5340488057701018ac93f2d57f3d3c42b4c89c765c01cb07409cbb73e976b4a8757cf2ccb923b59e4aafd32fc2685e8c11d80a0f4fd5ed9b178eaddab4c000ac7b6750f0b72b834bafdd21e0640a9a1609a715960d67b9ef8f0bd0fc1f5e49fbb1ea93cf9af1caae5273294129279c5dfebeda8f0935ad5bedad83000e00d91fc53e445c46fcbc1fe758b5c524cf5dd08b41f8c66c8ff3155f693f049d260c6a0f23a8670c12792ec7904acc8f96089bf6f70f3c3731a45a34005ea7b0b28da23ef46612e853ab394e40185322d52f077fe0b55eefd3f3bbcdb9d3918ed9b9b0867d3f21953c4f72511ff2bfc6e50cb4c3fb"
+    },
+    {
+        "event_id": "205fe6c4-77a9-49c8-849c-265f16c820cc",
+        "timestamp_utc": "2026-04-03T17:41:42.681072+00:00",
+        "action": "send_secure",
+        "status": "allowed",
+        "details": {
+            "source_ipv6": "8680:1453:8a70:4159:8073:32f8:19bc:be4c",
+            "dest_ipv6": "df95:12d3:680a:460e:be8c:29aa:58e0:3ca"
+        },
+        "prev_hash": "c46e0a7551ca08ead14b1a06d37e649257cc73e6f1f1b22a55b049c9d7c9a68d",
+        "event_hash": "912634c6bfa7b8e1a1d57354b010abf96cf5c2e7c7f86eac2674bbed130aecea",
+        "signature": "ba99319d86d568b24e931c70cb7b71bda7396efc7bbfcf430d6e5ca2c6ef166618aca602d82e0213b41823a5a9a5063651a47cd5a84285780f675880e4838b15b1f225b558ceb918edf39be784202906fa2ad98163f8ccec9efb9458c46c2e03d41d21e53f774b1b67f21c8c2c217b9ec2e0df7cfa1ccc2fa515beae6a76ab7c49fef1bfc88d31fb9d4049f57649c77ad0adb6f33b351e12e4626f9dddcb4050c79947d88bc91615257d6317265fc9f1d5291fc52c97ff93aac7da4622d0ad4c4090ab88ecdab818e3253b1f99bf409d0f6d535e02659466498d59cd22b8b102d0b787d1d8479ef3f8b40f119336d4895f76c34df12be3052a66151691721836"
+    },
+    {
+        "event_id": "2201926f-7bad-449a-b0cf-3387a2f03cdf",
+        "timestamp_utc": "2026-04-03T17:41:42.751376+00:00",
+        "action": "resolve_domain",
+        "status": "allowed",
+        "details": {
+            "domain": "alice.whitenet.local",
+            "ipv6": "8680:1453:8a70:4159:8073:32f8:19bc:be4c"
+        },
+        "prev_hash": "912634c6bfa7b8e1a1d57354b010abf96cf5c2e7c7f86eac2674bbed130aecea",
+        "event_hash": "a40616f17cfb24051331d9f92df8c0eebf0f9adf5ef057cc2e9fdc1efd4be8f1",
+        "signature": "57a25fb20e5f4eb9f86ba163bcbe1807bed8636fda84398f212ba6a0115750710278b774426af4db432a9d032d70c3fd82dc96152667ab0f324d4304bf38b1d485ebe5a90e233b9679331a530ccd0a0f485ba6b7668f5e02977aeffbc9b9384d4bc3cda6595d9fd1c8226febb4093e531e46ee2a9d192718dfec7a6c1c824f3f2c4e3881c4541720ee5e97fac746fcdf6171ffd18290a5dcdd8abe01b072cad129be6e594f02f9539edd4e90b77abc7af5388e226d5f027c69664135579dfdb2d2292fd06a345be98d4cc3ccda7e9da9d8aea2a26d4173ff458a0f6b06490c847cdb94f43c640020e2ad44c0afff069d6ac02a041700a62e76aa7fd52b7989e2"
+    },
+    {
+        "event_id": "c8919909-10d1-48c7-a146-d023271cd645",
+        "timestamp_utc": "2026-04-03T17:41:42.861937+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "8680:1453:8a70:4159:8073:32f8:19bc:be4c"
+        },
+        "prev_hash": "a40616f17cfb24051331d9f92df8c0eebf0f9adf5ef057cc2e9fdc1efd4be8f1",
+        "event_hash": "cf4ec05e029c8ae13f79befd0fe8da624ec3afda3908c2095073a4e846401e03",
+        "signature": "c54fc0a67238d056ca3471315e357851e7caf76185481dacea96be52dd5f8eff9cb563e02fb3aaf771bc6ff9225e0e7dcd967220b640f448213d3e9af43eec4c1e5e25e93ac744a473021ecfed3aa930e7e584ae397db074edfb1376c91911251febae221b564b16b0acabaf1caa7aaa811b24dfac3f092c427cb2603a656c5bcfe3bdf543fc2b2dbb976363aaf514e59f02fc49e88cb8f60d1ffda1d1b54a6df169020ab930043a8c03b89c3806a65ab1570066a20fb1cb0fb1993a7e8fd453cf6e3bf96d852fd25fe3b63f4eba96f45478b993606d5bd0abdd366adbd86cd757eae1756e3f7c5bd6cc175222bc284cfada645ce446adce0ebf0d9da823f588"
+    },
+    {
+        "event_id": "4d8cd477-a666-4d38-ac10-3f0a8976b884",
+        "timestamp_utc": "2026-04-03T17:41:42.933676+00:00",
+        "action": "assess_posture",
+        "status": "allowed",
+        "details": {
+            "ipv6": "8680:1453:8a70:4159:8073:32f8:19bc:be4c",
+            "verdict": "TRUSTED",
+            "score": 100
+        },
+        "prev_hash": "cf4ec05e029c8ae13f79befd0fe8da624ec3afda3908c2095073a4e846401e03",
+        "event_hash": "4f53e372c13a4175fa662673f47a126a28df8cca8040e8de11ce984f077c4cee",
+        "signature": "51316569cc8877930601d301005626d868f21bc48868fb8216566cb96a81cde214ba3ec3a44f9c0f7f945495995cf614724c3c4f748b3823be777588b34d3e80e103a0f1926cd9e036911693ea07d4d03c2a7b998c27bbb0384942d0b77c9339387eef145b5821f177db12d4310614b9d0c3dd1d87f2b5f0ee128527b95e92f15a694bbf55457b4372952a082ff212cf60142c9e49586a167a7a4b65495ac9d04f18a87eed30f94b5335cfa6ba11d0eccd776e60b323640d6f953f1554624a6e90189c0c6194cb4254d782102b2cad12225dc597d80205d932436cbebf9e2f269b4735c82b57cc3466f7e5ceb196f3febaf0f896207d9468b0903810ab0436ab"
+    },
+    {
+        "event_id": "2d492f4e-4c6b-4dd6-8bc0-8734b24c2b1a",
+        "timestamp_utc": "2026-04-03T17:41:43.008445+00:00",
+        "action": "assess_posture",
+        "status": "allowed",
+        "details": {
+            "ipv6": "df95:12d3:680a:460e:be8c:29aa:58e0:3ca",
+            "verdict": "TRUSTED",
+            "score": 100
+        },
+        "prev_hash": "4f53e372c13a4175fa662673f47a126a28df8cca8040e8de11ce984f077c4cee",
+        "event_hash": "d38718761b9cfe75e3d3f9f484611ed08b235c28a8d8d31cba83d080d49688a5",
+        "signature": "93b6f6502e95eb8c4811334d5b34f2c4c583d8d00c1c4d06a127d33fb4775be58c4b64220e8a30324ba2bfade854727696f1e56dca7ae9e89600d98fcf9acb19c343cf11b76b93cab7fa0ab70964b73fb10cd153618320204a19cf1a691eb39539ac8eaef74f67ec2e92dbcee9caeefc3b210fe1c295ce03c3d058121676248346494ec188e331808f7143ff5f0509dc2272b245ec88a288988cc0155b4ca914fe95a64ecb6d670a9c590746cf4ddc71e81a9a163462de3793a62e1d98150e5d0bf5e3ef6fae0c96fa174327a245793168dc5e30cd8b6038bbcac528cdf85c83fe4792a6cca3dd8359826e47997425fc6004f90bf8a4df0f6b8496ee7938e364"
+    },
+    {
+        "event_id": "d2cd8aaa-c236-4aa2-a809-598bca421895",
+        "timestamp_utc": "2026-04-03T17:41:43.069933+00:00",
+        "action": "demo_run",
+        "status": "success",
+        "details": {
+            "phase": "complete",
+            "alice_ipv6": "8680:1453:8a70:4159:8073:32f8:19bc:be4c",
+            "bob_ipv6": "df95:12d3:680a:460e:be8c:29aa:58e0:3ca"
+        },
+        "prev_hash": "d38718761b9cfe75e3d3f9f484611ed08b235c28a8d8d31cba83d080d49688a5",
+        "event_hash": "2967b23f5143b9c1b76266a4120e2747584662c01c812a037456cf229e6aaa5a",
+        "signature": "c9018ee5ef1a8f87124f5b1c5b8490c9f96581232aa157971d2fd6ca644502f4c27dbf6e9b36d70d27699e751245ee8b87e3390dfa7cf51f0716a6dd579e55dcaea7f28dbec56d76352495a3f3ddd95abbbc7a076463ebd4e694db3b57623b7d00e70d55e105579cbf06936e4d8ddc669ca67d8b780d4ef7b884bd95139e65f0b1ce93b986b8797791344e8ff0e28c977e240905ad712af3ba63ca0e994771c98b2773d83b74e697892927407c1a99b0958d56bdaff29cda62e8b5d9ff373c15231defcff50a05ee3ffd2b4c88fc7476c7ab38f597f060fc483a2e47b3deb13ec6cd27d434894a861a5244d27fda0ff98ff2ee38053fcae486a0af3cc070b2b0"
+    },
+    {
+        "event_id": "a4f10af7-b8d5-4d43-999d-70b32f3a493e",
+        "timestamp_utc": "2026-04-03T17:58:59.324249+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "65f988a8-05cd-499b-b0cb-c3665b968bc1"
+        },
+        "prev_hash": "2967b23f5143b9c1b76266a4120e2747584662c01c812a037456cf229e6aaa5a",
+        "event_hash": "fbb5eab6fba73dcbd4198d6a14a2497ee8046f51b3bfdc15b44cb96f5b0a448a",
+        "signature": "63a55962d83acdb30cffb2739e2b70445e463ce25a10be195c21b8d077e14d67ea2901c4541c6cffbdc561505f2dfb623f8b5fb474fa497b9b6eed98e0dfcadbe6735a5400d1767e19e0b19a3ad3f688805f06701a95c7656caa8392c9521407ea7c44b17200c8cbf6aa08082ce42ed7bd8d1eba882527eeee2575b181efd99ba24c1bb812bbfd0146fda963fd464d9fe74cc736360444f7b9c6c770e86a3c47066f118f47061c8e0ba5824a6e41900b591de7dee9b00a99279e67eb49bfc93f0f5d4ee46cf523c541c511695e7579662500dbb4aa4fa3f0ba7bad76ed0d4afff50009d9cf684e13bae72ed9614a387c78a847114413c6ba0df38258849179e8"
+    },
+    {
+        "event_id": "8c1f8d38-93c1-49f5-a5a4-4159e89c75d6",
+        "timestamp_utc": "2026-04-03T17:59:07.797932+00:00",
+        "action": "demo_run",
+        "status": "success",
+        "details": {
+            "phase": "start"
+        },
+        "prev_hash": "fbb5eab6fba73dcbd4198d6a14a2497ee8046f51b3bfdc15b44cb96f5b0a448a",
+        "event_hash": "c2a7905f419873dcf6da4cfd2d3eaa53c3c66417a2fc6def534ca3cb568c54d7",
+        "signature": "d7e7fdf88971cac4fac1819d4cbec7a9a0618ebf922f5065b2095dc2e7f242f53c699c575372da2ad0a223bf1d94ece3608a5c222b40e0a87864ba7560eb45087ef7c9dc58e7ce5f5f71f9e5073dca771d6b5976d5f7aa803cee922a2fe39d3a257e3e430fe20ef5ccf6b1a9e75018ca9df0bdcf46cb01b54dba42d35b6c0dc93ca6592235064eae1f49015e7901e16c2ebb80d476216ce10fc9e19f951fea749222b8d0e3655f2c61efe46a1542714f0200ac0251473a0504c00f6ab8c5ae2a85cab5b9647f7744cca7797541076dd1a470b1b68cbbe9a4b1af69de1848d302f700a7bd139c8e11efbebb7c57a09066f891a78735349f50a3cebac7f0fe17e3"
+    },
+    {
+        "event_id": "be2d0cce-30aa-4812-934a-cf79bb920a65",
+        "timestamp_utc": "2026-04-03T17:59:08.209404+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "e51526fe-1260-480e-a53f-7c74fb143eda"
+        },
+        "prev_hash": "c2a7905f419873dcf6da4cfd2d3eaa53c3c66417a2fc6def534ca3cb568c54d7",
+        "event_hash": "eb53c2d24172ead841ff9cc02c36f74d1a7c482ffc6a0b8326bf457447966427",
+        "signature": "a99d119db742bf8cf34af75403ab51ca1b339f9a25f2b990e47e0247146b2b06bfd14225f2421eea81e7c315c90e2b8933ddc272f71acdd070eb66d3c864b540a5213e2531ec698dd730fb4e0e89290b4ca0e5f04abe982b021e6e387dff72987b4b15824f73dab0dccebd84c5f4a4e14e7d69414aaf1961b69c29a4d2cb4d4b1b0cd06f1bf6ccb4d637fbc75de343da1edcb5e9b26985fce0bfca8179ce7730fcf3426a7c48b6276eeac9e098210a60e2be221cab395e0b299426ed8ec7516dd7bd0160f2680fb6583d518193e692bb8488b6da416e752e91f8cd1cc1b4ea3451b90be4fe91cee916ada30b43cfbc6eac6b37dba8a3207fc8e686e8a0a1b5fd"
+    },
+    {
+        "event_id": "58ecc299-5be9-4f8b-b004-60a917f1df2a",
+        "timestamp_utc": "2026-04-03T17:59:08.420819+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "ipv6": "93f4:a67c:17c1:424b:825c:6cdf:3f81:2ae6",
+            "domain": "alice.whitenet.local"
+        },
+        "prev_hash": "eb53c2d24172ead841ff9cc02c36f74d1a7c482ffc6a0b8326bf457447966427",
+        "event_hash": "87c17f5034599b7ae6fd275d473023a9e082249507013a1a0f09920b7ca10498",
+        "signature": "5c0e350bbb0fb4dbdef355285bf99b7dac9e06f62f64d77fafb7eb6e68d59ffd450e6aff573e34ddae976ada9262dd0ea968060f352412906f2b59bfaee429745de850ab403535916b40488e7855d1a0838eead1bcaf0f2cba5b7f36d650eb2d4dc3cef124d61316d453b7f36b79765095caa7f2c85b9a76f56fbe588f17c19442244c4e5128bbd8f76fe187eb8c655627547f3b20d92f1ace6c3d76a8f0687d296a54c56db02faedddc237a5fa2e7617e934a18dd5ff85671e608d826e54da1f1d327a538af33e98efa5f091c9c1f4ea00467141c270796b220afba982c86d124cf1d172bc065d2756f22fa71e4538fae85b46151a03d3061a7da0652dfa30d"
+    },
+    {
+        "event_id": "3f99ac68-dc83-4c8a-903b-a0b768ca30b0",
+        "timestamp_utc": "2026-04-03T17:59:08.984960+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "bob",
+            "cert_id": "8a3d4408-5580-416d-97b1-f1a890c55803"
+        },
+        "prev_hash": "87c17f5034599b7ae6fd275d473023a9e082249507013a1a0f09920b7ca10498",
+        "event_hash": "54e9fc22874b800590be158717fdb197f5956db761a6661e3f94df1c8da1b831",
+        "signature": "0d95d514f77f36901fe317fa422cbc0928426d5538f4d14d3ad1ec6a2409146a7564d86cf52b07350cb86817a9a1cb5e05a6a854f1452bb3ff7f3a44269554363db14207116f88124545e4029602076987c4f3875a1f868fb4015cef18589022cb1f578ea7f8d957ed6b16b2c707a537516603478ebcdd192aedd1f391956a7cae124585bfaeb4cb4c95aca727b22393a7e34a1aad30183cf1e84ce8c8d68835d8f283314be95ecd3678008edb724de68035abe6c592959bcaa3d96ef470728b0e14442ac321a8a938027a3362d204cdb69ae328cae15d7a69d68a81c9d19dfc2d20a849734be6d3ad50a01ad1216f53acf083f7da035b627b44482f4d2212ea"
+    },
+    {
+        "event_id": "e2f126f4-b53f-40a3-9c74-c6e2750efda7",
+        "timestamp_utc": "2026-04-03T17:59:09.206423+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "bob",
+            "ipv6": "e82b:c493:7f62:4e44:9712:82b4:aebd:8191",
+            "domain": "bob.whitenet.local"
+        },
+        "prev_hash": "54e9fc22874b800590be158717fdb197f5956db761a6661e3f94df1c8da1b831",
+        "event_hash": "7b2008488f7c17a6626093fdaa18fe55bb5c364b46719d80dfebd0f00a1db1c4",
+        "signature": "5e812faa14a9e6042e60a0314b42e109d0e35db33287bdb27afc0381ceda364bf8b6944e6028dee92c73f60b17ba802c2db77d0529f35ca806d79ee3f20073f7a6d01309af11188a309895b9728483643215b8cc279f8df332845e834bbd4cb983fa4ac7d4866a5d99a905ba0cb64efcf548c2b31c1bf234acc18d4ae43ade7026587f2bf30e3502c731fa5d6e463b68247c818ef951061a3fae42d10f0e9683eb5b8c9dbd5d6100c15d603b5d6c50703cd1e643f761ee616531c894d714985d0472b2c27e5074a645103d7c941646a3b89a98c07ee73be7c233cc4dc9121e26d1d212452de11f2d7779270dc49784afe908b10077200457eca7387bbaad12cb"
+    },
+    {
+        "event_id": "50c0df6c-9be0-4d39-8050-91560f0f128e",
+        "timestamp_utc": "2026-04-03T17:59:09.438283+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "93f4:a67c:17c1:424b:825c:6cdf:3f81:2ae6"
+        },
+        "prev_hash": "7b2008488f7c17a6626093fdaa18fe55bb5c364b46719d80dfebd0f00a1db1c4",
+        "event_hash": "a655e17b5c6ec61cb5033ab25d77985eac20356783a067d3833a7d9f3634cc93",
+        "signature": "d5b03ff38f6e0ec904fe2928f243f70a22ea2d187aec603bae9d94fb80b28196c4fb2b053fdc0b9c041c8a8793a347802da6059a8bca4594c212055893341d48fe7344123fe731b7b0ae5ca2f59cd15625c4ef0eaa67953ff2bcd29dfa78a7d347673c50df633d08e3884eb4dff5284776d8c35ec9b0b812afbe0fb5064145bb0bea5f1ba0c42d510edcf53a9aa68de37bab4948c25aed4f0d4a926b1c8e82bebb21fd550e1230648e959e942bdab3df2f235e79a57d78420061ae34f78812dbf4cce1cf2167cc4632e09d31079938d941ea31a7aff7c5a54a7c57b9f8219d8539efe32caa4424a8508a676462a6578b282deabfe2b1e09c9a5f3c45f091475a"
+    },
+    {
+        "event_id": "5a481910-de52-4270-b846-e88bdaa20840",
+        "timestamp_utc": "2026-04-03T17:59:09.624169+00:00",
+        "action": "handshake",
+        "status": "allowed",
+        "details": {
+            "ipv6": "93f4:a67c:17c1:424b:825c:6cdf:3f81:2ae6",
+            "challenge": "8930a426fd314a2f"
+        },
+        "prev_hash": "a655e17b5c6ec61cb5033ab25d77985eac20356783a067d3833a7d9f3634cc93",
+        "event_hash": "1e48e9ad18417517afe4f0a0381e2df20682ffccd8dbda3cb4764c696dbc3837",
+        "signature": "6eff16a7d0965be056cc2f7bb660052bfe2bd9cc3ad59d083e8610756f45823235d9520be0aee3d0ba6b0fada0c3192d799ad9d8fd794076807a7b643d7d7b8b93b2da5baca3585840d1d50462e86f8ea2eb353b2276c2381fefffaa0feb4c368c66a2c5d009936bf32f6e8b239321d31606ca37f990b4d3fdbe2a20a2d1e17cf645a65ae121ae4c1b92bb6c784fe1852eb95c267eaeb5bd576d76f65e64105400fb1ac2be71aef6466eff29d46cbc1ba1926a9de26069d15295215b07de5d93b6d5cd0b11ab199f6541faf99f0a70f5026864dd56ada78060a2554c32503e3b6ab06550d20cedec963f5699526dbb87557f2bcb5448c9d3570860e6ff2cb5d9"
+    },
+    {
+        "event_id": "cdae4abd-2827-4176-8ac1-c0415faa4648",
+        "timestamp_utc": "2026-04-03T17:59:09.813299+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "93f4:a67c:17c1:424b:825c:6cdf:3f81:2ae6"
+        },
+        "prev_hash": "1e48e9ad18417517afe4f0a0381e2df20682ffccd8dbda3cb4764c696dbc3837",
+        "event_hash": "0d26083cc6fe87a59cb0b488de01f57ff7ff1f8aae719bf11b4a89189624b9f4",
+        "signature": "078e7fa7097b7d7c15d04fcc304e43ed8ff8a706c025775101b44d88c15c33b0e2778314bb9c31072eb837e588619a96e2dfb8d4371efbb7320c700bcfac8726177d62ce79f7e29a7e5ca10876e7a222e6f711ff23b9eed2b87eda2bc3a43d94a4631e23f8f4115f4c67ffea68956922dee28ebe2e57f0c01d74d5b14c9f80208d46691e04aff661a88e2f15ea5daa5dcd5ffeb2fedf03244a004729706bd03b66bfa5d5d23539ab926be77a30d13e071e36e244d868f9928ee6b49b95acbdc6f99ba4c40118c39eecb3e2b1b2d4e2572431f026df8680e878a049ba8ab0f81fc2b1dfdd3861380cda25bb7d0b5d861e4f0ac63cdfccb97795b7a1bbf346149e"
+    },
+    {
+        "event_id": "f03b5fc4-db14-4e07-b344-a699b8d70199",
+        "timestamp_utc": "2026-04-03T17:59:10.020661+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "e82b:c493:7f62:4e44:9712:82b4:aebd:8191"
+        },
+        "prev_hash": "0d26083cc6fe87a59cb0b488de01f57ff7ff1f8aae719bf11b4a89189624b9f4",
+        "event_hash": "b2ca377b9e85f40f41881a433c3ea21dee4b3f87ec623a635cbd9bfccfb54342",
+        "signature": "75820f59ac417ed5eed5c2867d247deb5f62d84ede1c4a89585b76d45669672622a9241ab409daab6363f0b30ef2961ae07104f0785425a17d569c250b6b424391088a5e7e56e23f509b88bbe2378176c18159b773728e1549f70ab5bd36e39e139716154c73785ee1255e3b149817af62960cd2a6ac4514a16823d44b1c9f187f1cb1662989f1b765be37569b8d560edad363abefaf9ddf50249dbcdaec0cacd49f69d539fd872111bd0091698ca3947c8690dbe3bc4fbdcdafb8085520b77e81e017b8ba4075b925af64567fc1a8a2fd839699cb289100ce517807002fc86b398f8d0d1ff43b8e0dca050cb1b5e528c410adc223f9b2735648cb0dfb8092a4"
+    },
+    {
+        "event_id": "fe744c39-0630-4969-871a-858686479f43",
+        "timestamp_utc": "2026-04-03T17:59:10.207771+00:00",
+        "action": "send_secure",
+        "status": "allowed",
+        "details": {
+            "source_ipv6": "93f4:a67c:17c1:424b:825c:6cdf:3f81:2ae6",
+            "dest_ipv6": "e82b:c493:7f62:4e44:9712:82b4:aebd:8191"
+        },
+        "prev_hash": "b2ca377b9e85f40f41881a433c3ea21dee4b3f87ec623a635cbd9bfccfb54342",
+        "event_hash": "ec6bf5bac16618565784ed8a062aebbe3689ab78ca2eff9ab457be3248d93b73",
+        "signature": "90462d26b0e42b3cc0ca7fa99859f7cd4f8511ee024daae6925b11c04c8c2633a10d10eeab5db55ade3cbef86a3ce1c352b2b5f2018f0518d5dda76abf920c575b130193959ab5165854e9366845f7e87844cf0b816cb201b8de22adc712dbe8399cb06b506b51f25281400137ab4d1826c162f58bba5e7dc8a5df0bcb6cfbe5610a5768ec3f27da7c7e39a4e2cdef2001d36a05b61ab9b5ee11fb9ab093b53cd4c79085d62e22ebe08fc63132739001cb711f60b9d5496f2d6b48c0301e9de61392c5ce48b296c6e03aee69ffc75f496a64271f3911114914d15f0373cb8d9d909bb32b088a00dddf1792ac7517752e612c7dccf803cbd5eba4d826d7d9ab9d"
+    },
+    {
+        "event_id": "35079d24-8635-4fef-9002-2f05db8b16dc",
+        "timestamp_utc": "2026-04-03T17:59:10.407592+00:00",
+        "action": "resolve_domain",
+        "status": "allowed",
+        "details": {
+            "domain": "alice.whitenet.local",
+            "ipv6": "93f4:a67c:17c1:424b:825c:6cdf:3f81:2ae6"
+        },
+        "prev_hash": "ec6bf5bac16618565784ed8a062aebbe3689ab78ca2eff9ab457be3248d93b73",
+        "event_hash": "3baa1a815cb54840fdd973892a613a3faea92365ef50c3d238373f77f07c0a56",
+        "signature": "883d4f43887673e4a53a447e242f3ab75e0249ad76e7b97b935a738584b0f6c28d5e425cf42006bcc34b53bdd524c967da3f8da75e201e1f6f39f87ea2d37a1af0ba232e0023ce7b491b51a2b168b3747eb9109ba855d4487ceaf83aa4b3d388a8c69e4d8b8477bcde3de50e015ed3af2f3c04a0287dca2993a384dc5a258336480b8e0aa4b5ae9cdb1451f86444d4b989acec8220cdac4da71f0027ef7257ba3704733d350bb693a0cab3526b0d533ab193ffbc07eef3fb56563f3f4db96c76b16b91087bb243fafd295af7cb7c47f7e6ec8c02c564aa7514ec1e00781496d7b1259c3f095394f067caa59db5174df121ccd84c9eda8f820c6169c767cb1490"
+    },
+    {
+        "event_id": "de6776ae-7407-418f-b30f-749ddd9960dc",
+        "timestamp_utc": "2026-04-03T17:59:10.600679+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "93f4:a67c:17c1:424b:825c:6cdf:3f81:2ae6"
+        },
+        "prev_hash": "3baa1a815cb54840fdd973892a613a3faea92365ef50c3d238373f77f07c0a56",
+        "event_hash": "800327077e8d20a933f4a6287abf47c379baaf533b0be92f69236fd19cc10a8b",
+        "signature": "b53fcad0fd9852a4aa8baebb1600982a92964eb632976a1dc4a244b16241cc33188b1cf7d3cf98e434887eb0a221843458f117324cb97a9a774aaf71fc45c9f2716ecede8ab0b8d034b87956aba93a74fef3a30abdf4bba99cb3e50048f756de63b8f3d8fbb089a4bdd804db3785fcb976908b45670c8c118525ab05f919b42417c693010af664b384ee1dc95ac7566670ce29a01af634e78c81af4fd99cddffe20b77b238c05754c26b4c4e5eba8d63d8fd2af4516ce7346325e3a71e87948e4987dff74f1c7617edfa517e1fa75d707172bf796cdc8b2326f516e2a1ee3015c187889621ed0db9f2432aca6cfed64a26ca2afb1895f15305b1e230230e1683"
+    },
+    {
+        "event_id": "b5c8944a-19df-4113-a35d-02a6d9838832",
+        "timestamp_utc": "2026-04-03T17:59:10.810955+00:00",
+        "action": "assess_posture",
+        "status": "allowed",
+        "details": {
+            "ipv6": "93f4:a67c:17c1:424b:825c:6cdf:3f81:2ae6",
+            "verdict": "TRUSTED",
+            "score": 100
+        },
+        "prev_hash": "800327077e8d20a933f4a6287abf47c379baaf533b0be92f69236fd19cc10a8b",
+        "event_hash": "9581a9912b4d2c2950c3fc99fe24343deee19e204ef066785e4504715a773f99",
+        "signature": "d71044d959c09f3b8ae38408ebcaaf05d32de4cfb60e83d53471047ea5188694e42cbdcb1454cd8abce7a05d6b85b5755d408d6a61e1b450bb23a60e5cac3ccda930a236c95ac6c2f58ea94986325b1355b990a05ad7807c2503519e9fc0ebc86b5cc9f7a3034f3452ca35915316af2465e0113ee15c1590946260bce40fb8edefb1070962cc74391e06e62d1136a66d3dd7c06a203b505adb5176a26b4a0751306a0a4029853d1871f2b1b44fd256b699c7e3f6fede51003387a7f842eeafd3c07eab6bae3aa87ed662657177fe91ba80b105e2497118d2c2c97ce29e3c378cdb8878d1466823ebc593e7d8384a59cc4d928ac6dc7928bc68a6b41742dcc313"
+    },
+    {
+        "event_id": "f93ef2f0-5376-4fee-b52f-7c93a9bd3f55",
+        "timestamp_utc": "2026-04-03T17:59:11.032919+00:00",
+        "action": "assess_posture",
+        "status": "allowed",
+        "details": {
+            "ipv6": "e82b:c493:7f62:4e44:9712:82b4:aebd:8191",
+            "verdict": "TRUSTED",
+            "score": 100
+        },
+        "prev_hash": "9581a9912b4d2c2950c3fc99fe24343deee19e204ef066785e4504715a773f99",
+        "event_hash": "2153db133eb2fc32c4f2b5cf56e2f234463b56a2d2f586074e7adc64759e1470",
+        "signature": "405f55dfe6eafcfb669d5f550105695be1d145238c2e4527340bc9ce7e609410822a684a36573d2832a7e5af7aed04f48d110e32e52d5eb4355e888be9ec78ebbf1e406f16df34605af6196cfd53e80d9cedc5ceb2d88e6fff54a34da08713e2903ae896bb7070610f671cd94f7f145f7818880da40f6b699799c444b3cc762b3d870e5fe87b30fd34ec46cc956d596270e6a515c36ba8807e68b10edb938a3caaec8f05829d8eae8e47b78cbd92bcf11998932a26455f91a2382a0a68d94e4e46b0695d8a728db5ea835cfbc9a4d80584646ebbaa148386e7024a9e4d5500f665aadc6f1f6fdee5602b1f2e5b8e1079ccb7aa271dd818c97a456171ba3b635c"
+    },
+    {
+        "event_id": "7d0d5d1d-7ce3-4bd8-aa08-0b31866df07a",
+        "timestamp_utc": "2026-04-03T17:59:11.240532+00:00",
+        "action": "demo_run",
+        "status": "success",
+        "details": {
+            "phase": "complete",
+            "alice_ipv6": "93f4:a67c:17c1:424b:825c:6cdf:3f81:2ae6",
+            "bob_ipv6": "e82b:c493:7f62:4e44:9712:82b4:aebd:8191"
+        },
+        "prev_hash": "2153db133eb2fc32c4f2b5cf56e2f234463b56a2d2f586074e7adc64759e1470",
+        "event_hash": "ef98e1cad389bb9226c2381a35542317c36a36e25be41ba0de830c6e3382a294",
+        "signature": "457eef49b03e31d59210685dcff213c478a91dd4b160a770d84efb6f940e0aa3e20c6d5e1bc4f25c90b09aa74f735b16fc11b6dbc636083bcade248e5d915bbd42477097f097731a3ec80e49a1df0cd6a02959f408ce94c126de1edd4c70b828b274535c95b8423fc20ea8e519a6bf7a5aa408a9591913120e8e58f3304985033da9dc88b545e322124c9ebb975d27ee7835df4b2f98dbd2e8aa9f787a9bf399363bb1306cc83844e6fafc917482f776642e267f198171f255f7c41fe154fe3177a39e634c8c8822b4d9520b2a721ce973ef1654fe0b06ec9b92ffb45d039403853c33adfa4a61e4f376b20968b8f2995de69ada00253e6a15845c4a1c964d8e"
+    },
+    {
+        "event_id": "36e6f0f1-b494-4b35-a425-1fa31e7c41de",
+        "timestamp_utc": "2026-04-03T18:00:06.100046+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "00ff30b1-7d96-4b8e-83b4-742753a78b03"
+        },
+        "prev_hash": "ef98e1cad389bb9226c2381a35542317c36a36e25be41ba0de830c6e3382a294",
+        "event_hash": "89e30fbd0e26d4034df6c20b682ddd843aa56abad46932800df9332921a770b6",
+        "signature": "c1ddf77bba5862ba23bd78224369f745c74d00d39ffe62c2fc7218d275d95a7766a2bd358fed61ccf16c7c19630578aaba24f49d9c8900a140c6b615aa708456cbbc2a208deb5c5fc3835e66cc6a1ad2cb38c0117cebe373a9e1ee5d10c65f5e9bb23dd4f0e6e67f405ceadd6d0ff62636b4238e52d89a79a2c300a526e35fee38cb431be54b5455d41484dd31b079dbf3c97938581e2c4d12400323c222798c5d2e58dc056283ac39ba3128a94d5fa3030cd12e4c25167f280c8326163ddb185952ffd0cba121b3bf592d6ef729d6e0e2447c56c0ca74eb547bfbb589c0e4a17e4bd083019ec963a161afd7afbda46a1a4f8f01e34cfed6b3a47f6ac6236f3f"
+    },
+    {
+        "event_id": "be6e72b9-c730-4a8a-8b51-d8f56a7f7077",
+        "timestamp_utc": "2026-04-03T18:00:07.799222+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "e02efaac-74a2-4da7-8075-dcec81a631d1"
+        },
+        "prev_hash": "89e30fbd0e26d4034df6c20b682ddd843aa56abad46932800df9332921a770b6",
+        "event_hash": "78366358a05805990612660c73428fe132b87b8f28c1502d7160e8a309389267",
+        "signature": "a358583b6f8b08d4f0fd8c82a387ddd91ff2adbfac6047f239f2e853c69c52ad000ca0f2ea580a8a7a3b475c419e5270c97cc96af2244435702ad4edddce3d1e848391c890a781065b84498321dd4738e2cf6242dd15e7e047ab091bf2bf1ddc6baf723a1c0222ec7731f8b8dfee29713047292f0833e74c99ba042c3a3e0602f3cee6853002d6084a7f55d95d4bf295dfc5bc7e4ce0f4fb9560e8f301fca5a31d68d61d7953df7cf78625b9b0fc510187957a7de654cc49a063e9d77e6e33236110c91ddf00a65b9648dbad860ea6135b7d7d0fc3c777c312c2be2ee5c6be7c238ed4629b1895692ae29f7e51ba3193fc7e30ba5e65ac924426310c36dbb187"
+    },
+    {
+        "event_id": "d920608c-9a69-4ec7-9b2e-e78b32558971",
+        "timestamp_utc": "2026-04-03T18:00:08.927694+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "75ba2a0c-6d46-4618-a583-b0ef3324f046"
+        },
+        "prev_hash": "78366358a05805990612660c73428fe132b87b8f28c1502d7160e8a309389267",
+        "event_hash": "d9846617c3c9492c05b6b3116daa58c7371bb8e8bd40429b52d11713604389cb",
+        "signature": "902147bfb053a281507514ab57026083b147a94e7fc9dab104b3b5b86556a0bf2d0838bacb8a258b35f81c67d84b436ca9087f952a0190bf49599aef5799f1f6ae9a6b3ec732384cace7410948c869f42a2597ca55df8b986dc913abed72e0f4482cccf1454254c95c96bb53c231e4fc03dc9b38ffbc99b6be690ded606cb4249436269107bf5eb7d32f78049117d9d94a683bf0872e58a60cdedfe19b948f73a5358305cc00d11faa5918b4cd693bc40599595d0a877b44e1125228306e92765d0eaae4df44fd7a494e4767f7dff477cbf2051cbf82936a6297ddb1646026e003c1e7e2389c17eaee562f6181b779c37b791fe70b3ca48bbbb95df761bd5d7a"
+    },
+    {
+        "event_id": "a3f4718b-9fe7-48de-8d7c-e3a40de8b3b3",
+        "timestamp_utc": "2026-04-03T18:00:09.802538+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "ipv6": "381f:a51b:f6ae:4e9b:839f:49ed:c4ff:6785",
+            "domain": "alice.whitenet.local"
+        },
+        "prev_hash": "d9846617c3c9492c05b6b3116daa58c7371bb8e8bd40429b52d11713604389cb",
+        "event_hash": "06e901554599ce1e550da22e100994fc62e06e3b4dd2ff442ac4988225583020",
+        "signature": "4f6413144610e9b8cd79bbf6c707fd739a50c4197030625f38a380c4e3e0cfd730383e7a72cffff6d84448344ec3cc457bd7ee4365edd62baf5a4abee09e8cc03dcfcfc1b9ebcd5cf85942a87daefc47d295838b759f0c163d13c1484c8d36ee492fbee697c178cd31135425a602a542f9c799dffc0c54156290828ce81b8245063c0940bad6234a630f0539b95a1204a048d7e5dc67ac325eecc949bd982b160b9ff2f2d7fd3489920c9ddf59846a442afc9ef5d39427954977fad530ce427b09c2b995a5dc3ea52abd03ba3d5e4e9e2fbb143646493099f30d5a8f0046efb016cb7e12ababee82caba428038ce45f5dc5dc8051f15895576f5a8a376fa6e0a"
+    },
+    {
+        "event_id": "9b03e519-0d5e-450e-aaac-8692a2e45e7c",
+        "timestamp_utc": "2026-04-03T18:00:11.678225+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "910170be-2819-481d-b3e7-a67f7ae355be"
+        },
+        "prev_hash": "06e901554599ce1e550da22e100994fc62e06e3b4dd2ff442ac4988225583020",
+        "event_hash": "2f98aa5043f160f8e285bfb7f9c3aa0e0e50e48e457de3c0ba8e5f55665fd032",
+        "signature": "b3ee4fa64e4c98129ef57755ca55502722e18086820e54eaf7b26b14518fc51fdf37997a1e2455d37bdd28896e4698fa370d05dadf09470a518a5abfa3ca02e08b865a4af1e2178f84f71195ef779a85bb1f2e2771f82fd553b45fe5be2b81b96fe7ed66ec871baa5aa8e724155193ed04a063aaa6d69afe00819e9e4cfe9decaa0062b4dabb68c1398b254e97b2b21db4b2fc3829aec3e07cbc8e9d4746aa171328e25c9dd6c40de67f30d7efa576ea14a2f0948e7c98a0d2af5dc0be83cb8fdc44a965e53a0b5b1a3206f3c9fed385ef9dab98a1844476a2da4138eb961c7c1d54c6f1d3d58031cf46b83cc398b251a844779a47ad40e135587c38fa08d2cb"
+    },
+    {
+        "event_id": "d0565921-ad60-450c-9fd8-67bcf50711b4",
+        "timestamp_utc": "2026-04-03T18:00:12.757087+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "34094e31-8882-4183-a9e5-ecfce5ac323c"
+        },
+        "prev_hash": "2f98aa5043f160f8e285bfb7f9c3aa0e0e50e48e457de3c0ba8e5f55665fd032",
+        "event_hash": "0e051f3657f17796d862f09d2631e5ef65cbf1ef234032d05578abe8d19bde63",
+        "signature": "c866b93561a5974393f73b9d5f5eb6656d2edf519754c5691dc956b49c2066878f3f15ba0177e7b6d2dc66e0cff3bc00734165c94637947a3c803cb2f1f23a40292a738cc7485e3e5f747b779441ec7aa50a9062d2f3ec861e18901b888a80fc34f91dc3a8baa7c3710cfe5c691a349ba84e6d418c580ad103f84fea5e1eb481161ed27d5717040f1f2747557605f8a794a54bd3ad5f2004f7d1a391ba35a1806125b31d1809a2b7bb0e8395f3d841d1e9fe9a50f425875ae77515c5416001ed53216dd820c50e3a6d87d7085b76c32279dde6e1ec859fe7a1acf2cdeeaf4467c64748566ef226da2b545283394d1ca1e3cc902095dcaf36da6c5a3e48289fa0"
+    },
+    {
+        "event_id": "b97c29ad-84b4-40a3-9098-9aa1028ef612",
+        "timestamp_utc": "2026-04-03T18:00:13.881065+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "beb77bd4-b161-45dc-9313-f38f207b2518"
+        },
+        "prev_hash": "0e051f3657f17796d862f09d2631e5ef65cbf1ef234032d05578abe8d19bde63",
+        "event_hash": "5777523ff3b5e29cce0d67cb4a92d3794b1bfadd0b13dcec96cbfbfe636b1d59",
+        "signature": "19c8e75a221e54fbc66837fce8e4856ecf12840ea3aec1414862c10940c834bba9fa72d8786e81023c77399bd73195efefe74fc5ed28c5f68e774b2a32c9f94ee9def41723760c908445bc6d92fffc5d67dc5e0bfcc1abab3da859c0cbe4ad4885204f23d4a88817bc8aa9794476543bb9ad5121bf952dc16b1512a4d199f59297b0947b7daf3053368498ed54916c08e76b73ad445d25b358f7b97079b5f7805e9604fa6b787c59267c97aa66c5cdb46862970e1caaf226a9f729df09cc6c9c7b2174c4da1ef2beae81559d4eacf41f5d7a23707a3172bf1f40da81baf1754856d1f505ddfbfff2ecc49ea4375978e049fe67e0b651b1df0a2165ae55d6c061"
+    },
+    {
+        "event_id": "65c79fdf-dec0-44dc-a69e-090242f1d70c",
+        "timestamp_utc": "2026-04-03T18:00:15.049166+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "ipv6": "2304:33c1:6673:4566:8d63:fcd6:b540:4da6",
+            "domain": "alice.whitenet.local"
+        },
+        "prev_hash": "5777523ff3b5e29cce0d67cb4a92d3794b1bfadd0b13dcec96cbfbfe636b1d59",
+        "event_hash": "41af8ee06d64d0535bb657e108eaddd4ff03b977efdf99352317bdc92e67a1a1",
+        "signature": "b07d5e3950e9c871dffe1857ef7df7c2766361dd61517c21d49f83007b54af59429b3008d7c58a83b570b4b92928d1aa53c2129fb28f409316bf63219941d4445407f8aa594c8bf50712b3cbe445222e9ac8c9f0159fe318989af927b0e8d85ce5d05488b609920d01fd90456d103fbf3e49c95f4aaf4c20bb548fdcdee475b922642d00013a52e9313ae34781d4948ce5c8232ec5b17da3d4a469d071308500e5be65918727f6fde49f6b1ee54594eb8b84af269f91f876ca73026b01369f27809c503579263460c89e913fff116913d0756a8eab70d99a1dfeec3708ce09ab67a2361cacaf2a162931003454213d30c5997a58c0ac2f7f33e33d057459a087"
+    },
+    {
+        "event_id": "eef263b9-8201-483d-a19a-3cdaa5f06d50",
+        "timestamp_utc": "2026-04-03T18:00:16.165143+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "ipv6": "503b:dd15:20aa:459c:9e30:637d:9a19:8a7d",
+            "domain": "alice.whitenet.local"
+        },
+        "prev_hash": "41af8ee06d64d0535bb657e108eaddd4ff03b977efdf99352317bdc92e67a1a1",
+        "event_hash": "788dbdc3bc71990649d2b97359c327ee1d556234efbdc4af25d7b7be59c5057c",
+        "signature": "610b286a81cbe4ff396b2905a581f0b5d6893ee5774525be9436375b0af0864afead25b573baf58f0057ebc24b68f37a6db4490ead9147c537224e91136ff1cc151a1875f5b5020fc8a1a7fe9049d62c3b93e345f9862de36b55878e8fbdcb9605b645716802a7076c3b9dad24a919ccf508c3b66dffc1b0e3e5ed2740f01b3f55abba41fa2c1788cadbabf38a26be7595f1efb324301f89a22cdb3cc431f3a5ce88c0b8cccf3b5cbe8d3a5bfdea579281d493e2a65f099cd16269a0e870c44261c92c428e865d2e46c6deafc47ee2af4f090ce07de93efc7b5fc6c9dd0a6c679f1527c32c1ef419778e62552a58c1ef191e6deeba5a39800ba93601fe2b2e8f"
+    },
+    {
+        "event_id": "afc89847-2fe3-4e6c-afea-b2ff0f9caa3d",
+        "timestamp_utc": "2026-04-03T18:02:13.785207+00:00",
+        "action": "demo_run",
+        "status": "success",
+        "details": {
+            "phase": "start"
+        },
+        "prev_hash": "788dbdc3bc71990649d2b97359c327ee1d556234efbdc4af25d7b7be59c5057c",
+        "event_hash": "460cf71b332471cc53f4de27f975b7fa18a468090468e0ee6931d9a29dfb02cd",
+        "signature": "8042a91f7cfaa5d6f371052647dd69febddacf0849d082f187d92a6d7cd450237c41c8edd6efbffe68093ec5bdfd29e1eb33d28165ef35b776b2d4156c5444d752b9961c25f3e939d497bdac9653f74da2c89ce0a76f8e3bb8dc487a91c0d64645c764fab546ccb5d33dfc14d5a658fb060af8b335051a69411b5bf64787e4bfe975ebf64fe8d9d196d89f7229f5c43ce8f9a5b9739e6c7f4df05b4a5c1c3d0b7cfe4f0f39ea4b2b9ecb902ca434caaf82f7239caf4485f039ffc55a264d908d87fd5357dc17e5ce6a314cefec1cf1b2564b2ee2770dcb5145a4483027a02b4bbebe4bcfaa80a717bf44e051fba6b0f4b35e1a51dbad3b8dfcd27fcb8bbc68db"
+    },
+    {
+        "event_id": "21de9319-5cff-4d9d-8ef0-b5412c6f8a88",
+        "timestamp_utc": "2026-04-03T18:02:14.129008+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "cert_id": "086ab888-150b-43ab-9580-896398b3819d"
+        },
+        "prev_hash": "460cf71b332471cc53f4de27f975b7fa18a468090468e0ee6931d9a29dfb02cd",
+        "event_hash": "7a1de3dc59cc5064d2c5bc92fb204df9d8accd91a8e29d5ba18f6e96ee82138f",
+        "signature": "6f761c46eaf57616763e65a06c97b4bbb86c6970a243993c57879545d70d1c6a477c388cd8f61001529f05855bb3cc5ed053902ce237baee8240ba453f8632cdc62b056d431b80531d9a73709f9319f9ecc63fa9bf4b665edbcd4c4554b1340d4e6a66f6a55ffae3c8dc3aa2f3ceb53abd5f0b3f18409e5e024195dfec17970a137918df236c20a33a4458880308cd93b5480074188f2c4857cc87975791c8cb50890e161e4d40ca0774c3ffe72f9d6e0802ba998b657ac03923c8f72677a64f6bd3e334c77f3f2ad7813df56bbdddc8c5637334c85758885783c9c54a164509cd5fae7f5d16003ec1d59a1712d18064b4c0fc566a4f0c7e739d98418b150da5"
+    },
+    {
+        "event_id": "bdd44948-44df-4bb4-afc1-2d2c7506e649",
+        "timestamp_utc": "2026-04-03T18:02:14.344780+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "alice",
+            "ipv6": "b92c:6086:438c:4c55:aa44:27f1:b6c9:20e1",
+            "domain": "alice.whitenet.local"
+        },
+        "prev_hash": "7a1de3dc59cc5064d2c5bc92fb204df9d8accd91a8e29d5ba18f6e96ee82138f",
+        "event_hash": "e289a84c246d9e6fca980b3458141d2fc9356fe65d08b558a5bda4985bf8e5f0",
+        "signature": "447a21d1d78545572d5a67f953abb7a72df6a09161479b46ab228b5289040c30d069b932affcd608cb96257b7f0aafaadde44dd529b45446df28544743ead5bd4a121470d15f3c87dcb346929498d169bc3e7e5425723ebd665022b2b63fc8cd863572c73f0316578a4d1a4796d077edcf837b6a13235109a1d6b0e2c8c0b543e916a54729678f4ecd55c04ed4c42ced7c7e07b90f8c27ff4cd1cf3423d174b4ea6ec5d081cb1d94a493b8952fc5a2594696094bde6f8a4e37e603fa703b6d76c51ad7ebe6c0ea3013d6730267ee0106ea861c9567ad2bed62e4768688b629aef7c54d0e725de4d8acbea5cc29097d54e1a8c4e5e090ac5b9acbe50e09b589cb"
+    },
+    {
+        "event_id": "3674239a-d26f-45ab-85a7-e67f6423593d",
+        "timestamp_utc": "2026-04-03T18:02:14.983323+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "bob",
+            "cert_id": "515b0158-d29b-4b08-9bcf-10f0eed562e9"
+        },
+        "prev_hash": "e289a84c246d9e6fca980b3458141d2fc9356fe65d08b558a5bda4985bf8e5f0",
+        "event_hash": "d6c933840f7afcc569849536b4ef2de53f3df5ae1efaee6458bf1ee6086d7eab",
+        "signature": "3c657e81a13562168939860801df476733a78cbee05f61061941a9b1d24640800ed8996393bbc372cdeb7648fee95d27865c52ca8ab7589c9976ee976f9ef403c01576a03e00c17f79aa2a4f0278eba74a4e659a57e66e07a8c5a304184a9afdd45a6f8a53961e80ee8349ac8d89def702d010a2a203891f9a7a5da762d774f7d9837a589cf6565d36efe97d1aaca13d3bda4df10d5eea7a775e16053f3434e599f95efddfa276bab5a9863756ff2d6c60007cc7e05daba3fe8c804c4842a5262e32bf52f7fbde6e309ea3b18581e778c80bd14f061183222cf807b5e6c76b4db66c0ed04f228da0345577e3dd3d39d21b5e746e97b26c3999678509084cf667"
+    },
+    {
+        "event_id": "1d574cfb-588e-4984-9329-9b97bfdd6a36",
+        "timestamp_utc": "2026-04-03T18:02:15.225835+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "bob",
+            "ipv6": "f9a3:ae2:fade:4751:aa2d:50d5:41d7:1daf",
+            "domain": "bob.whitenet.local"
+        },
+        "prev_hash": "d6c933840f7afcc569849536b4ef2de53f3df5ae1efaee6458bf1ee6086d7eab",
+        "event_hash": "6ed651a7019ab0f3ef52df08f2df773528acb40d119df8e9998d1b91e2315faa",
+        "signature": "3f4516b5f91cff44b9c88324aab59c455edd9baf653755f7fc58119317ad651c7e32a1d9ff645a5a563ba9fb498f14bf98255db262ba93a31846a43eebf49fee0766e615abe78e72c5b8663284e396d2f04c3105fd5e9ed312d47526a2a2bdb631d16adf1dacc310d0c5c711a3e0e93b744da681f221454aa5a597c89b3e22eaa244c72d55975c3f8d09abefe06bf4578ea7e6cdb1ac4aeb302dc74d84fa826752f4037a0490de3d529be83fdefa0e737196f65ec68c0a350aa213e75d56ef2bffc948e46ee71aa01548420f33c10d0f1e25b688eaa8e6305a66f1f818f1655a01197669e18bd852464f2229e95a1769906d40a6ae75181f6db6a86bb37ce2b5"
+    },
+    {
+        "event_id": "de26fd7f-4ead-4b56-ad40-9d59b0f93dd5",
+        "timestamp_utc": "2026-04-03T18:02:15.466125+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "b92c:6086:438c:4c55:aa44:27f1:b6c9:20e1"
+        },
+        "prev_hash": "6ed651a7019ab0f3ef52df08f2df773528acb40d119df8e9998d1b91e2315faa",
+        "event_hash": "0e6cf23d276dcdfe256a8d58d422c4ca4083424a57e6128fbc5f1082a9a0ff91",
+        "signature": "680704e307382f57e55088b688e7262e6506a72dd38f48826962c40799fcc179551777d0d9c2d485d280789950d9beec01c87833239f84e6b886b8e26996562830e56f536eb2736ffeca8f1a8fea94257b42b8558760f240eff14aee609a1a97d738281021bfb8a74255e57addaaa0c67ef8ef0804c3dc07eeb801cadca47af89b2fe827c201c65801d10c3ca26bb971c8c843112fa88cc57e98a287079427b262b65eebcf8d55f7e4f38189420bd72e1445952ac9687191b6d3cf18e8d83aa43e0bbd4c5307222fcecaa29cf05d1fb0b6d75c5d61631584307ee6c6a9ca367c64953d125506143e441910e73f53dcfc7faa453a38f18f732879db3f773fb558"
+    },
+    {
+        "event_id": "5d9a0430-19ea-4247-b0b7-2bf67fad60d9",
+        "timestamp_utc": "2026-04-03T18:02:15.694234+00:00",
+        "action": "handshake",
+        "status": "allowed",
+        "details": {
+            "ipv6": "b92c:6086:438c:4c55:aa44:27f1:b6c9:20e1",
+            "challenge": "2926e4fb556a4569"
+        },
+        "prev_hash": "0e6cf23d276dcdfe256a8d58d422c4ca4083424a57e6128fbc5f1082a9a0ff91",
+        "event_hash": "29eb4919ace8e3888a05ea27c24a5c6c554c28c2f34fb0f097637d3cc1d2c854",
+        "signature": "cdc9fd1ea9ad9c8c04dc58867a79825ad51d9a2fae2b5a51d2e11b4c7ecd8b5f932885fc79c2af45c10199ac92521d3eb433f9f917e6a670469b8a8057287c551139cac50afad7158109f534fad38947988a74daa736fd75696b84cab78846688583352e649ab30c1cedbccb95d58f00af432e90e142befd7cc99782f614933b7356b30a50ecc1894de0cd94fb7a237807239d2ab7c5fd09dd165eb06f8df8c5dcd80daf38da2d6f01a254d9d9a6f3a0f7d07886aaf74fd274e3e200ad470c94318f7f6a9113efe030f0c84f3b4af5b1db78ccbe0dda9864ccd39b3bbf315c6784336f1c1db0f895ce5509139947afc7e55ab594fcc97cd7dc7ee971dcdade89"
+    },
+    {
+        "event_id": "acd77fca-4607-442f-91d9-e957ea30c707",
+        "timestamp_utc": "2026-04-03T18:02:15.885997+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "b92c:6086:438c:4c55:aa44:27f1:b6c9:20e1"
+        },
+        "prev_hash": "29eb4919ace8e3888a05ea27c24a5c6c554c28c2f34fb0f097637d3cc1d2c854",
+        "event_hash": "d610e1c4960891ae928c1c33ad630b328309354fd1088ed2b4a7a146fa5fb9ea",
+        "signature": "3708d91831f1c94bcf5bca29842e3b5423169cf397dbf8243986319b9a0da3e81106f816d01c48d4abb3ca4e63b7b2fafcca35018440050758541842a0bfb1ada70e31afab07cea068e7102b64f7ae3e77b9bc34985bc4dc6736fa5cd74e2260e59fc631adaa20e504670de6fc5f38257d616086903abc4ed50cd31f0011670bba3a1c6fcc2175b33d8aea98620002776b95a4babeb4d8b366c4cb4c7882ff02d4db958906f812d2e5ccfc484aac01508794160f316345ac353721f66713ee834176ffd8d95a64d87c612224f58dfcb72d43e37a59a182277f0d92a7d9d0cf7c1cf861732601112ae1279d6ec3a99c82e3457da2ea077a4af2e268345f919b03"
+    },
+    {
+        "event_id": "9f59bcc4-0f72-47ab-9afc-f5dec23b16f8",
+        "timestamp_utc": "2026-04-03T18:02:16.088764+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "f9a3:ae2:fade:4751:aa2d:50d5:41d7:1daf"
+        },
+        "prev_hash": "d610e1c4960891ae928c1c33ad630b328309354fd1088ed2b4a7a146fa5fb9ea",
+        "event_hash": "63ce13176a30ac2e136254dc3ed14b6210b54b1c8c11aaa62e33101f7f15cc2f",
+        "signature": "08fd9bf8ce0919afe024ce852ee6e66f95dc9e7a9ec84aa895eb624f57052affdcdcb0fe432941649c2fc2dd002da8477f7df235245cc715949f3a39a8c2d380e7ea33da2d924583341bde0d9a148838ef23355f496b9c289215f40ba9d99726c14629a411abfd591fd890bc51bbb9179dd0fe5f52f88e7aabb497c77e48e3452240ae5d958dd5eed050e13734d4d18428c5e16a1a313adf9021382e2a681c0c959d638e7ebfc91aa4512939c753cbf70776919cfaaf5185a0443daadcea82b6f1d0d908385ca678d70aaef6da560e5044fb4286a17c14f6a9b370ef7aa6067839dc32db1d6ec837fd6582335e44df31f0ef1d6ea8b075c817e8b2ea3e9945d1"
+    },
+    {
+        "event_id": "db47b997-deca-4317-a8f6-e7257a288a66",
+        "timestamp_utc": "2026-04-03T18:02:16.278637+00:00",
+        "action": "send_secure",
+        "status": "allowed",
+        "details": {
+            "source_ipv6": "b92c:6086:438c:4c55:aa44:27f1:b6c9:20e1",
+            "dest_ipv6": "f9a3:ae2:fade:4751:aa2d:50d5:41d7:1daf"
+        },
+        "prev_hash": "63ce13176a30ac2e136254dc3ed14b6210b54b1c8c11aaa62e33101f7f15cc2f",
+        "event_hash": "f4f84638189e51dd756b3552ae341d17eebadc973ca0e1b1eb28df4de7e50164",
+        "signature": "a58b05723269e621b95a868eb8971d49f61e097c4e87a963e8df2cdc5a4573475c4d16d23f43bfe96ef5b9da23e59c295a4ceaaf08992557f3894f1580d6784f189e4aeab16f164008e094188750d279058181851d5ad3cf33f4699cc2012e1131cae59a84c1241b165e1d759635d0be6f3a471a8ed4c3909a58306e5ad88e7fdfe7929c472c523f73f4a382406f75d019cc55afbf53249b0406f299fe029ece1e1296e6059bd9a12ed1e4633961bb1baf6858bc907942789fc55104a813b0d34c8385cc4dd05fc15313e14f03308b7ba28474e870731d1716b625a5e3be2f08e8ad2d0b95f3c0b0a2290f57a1cd000d0eeb9cbdfe5d2db7928ba06e9c85b7ed"
+    },
+    {
+        "event_id": "cad02ba1-c030-46b7-99af-a38fd96c59d6",
+        "timestamp_utc": "2026-04-03T18:02:16.467599+00:00",
+        "action": "resolve_domain",
+        "status": "allowed",
+        "details": {
+            "domain": "alice.whitenet.local",
+            "ipv6": "b92c:6086:438c:4c55:aa44:27f1:b6c9:20e1"
+        },
+        "prev_hash": "f4f84638189e51dd756b3552ae341d17eebadc973ca0e1b1eb28df4de7e50164",
+        "event_hash": "7279106deaf0ebc8f5f1f4f129e209762d4fe1f2730a3748c668bd70207c70d8",
+        "signature": "4fe6c39f804c4329e498fb32a16d5f78b782031ab7c1b802f210222241ec9a1f76c7fd2b4a47caaee3a74e3495650f6e913c5ed1df1cd489ffb538b5f1b9b91f1814cbb45bc54a082e7e5d7b10eb1c573081643572726a021018a53b0ac0e937c16a68256dfdcde28d783d01b9898378021f338bd5688913b878c0ff88a34c821bc6968c1105bda9a63bb221054bb48d50472ef86634bc4b57b30b331d5c32427afda8479abd7639c6b4dcae621bc2e80a28c37635bf63c25ba11a2be7a4b47156b9523c5df96a7731230b5979b3dc8fb8f4fbb9b2c5d4d2b836323417a2e7511bb6c1476b1e5e67a8bff0d59068f0b05f59045835b4cf8f2866011d9b5b8a75"
+    },
+    {
+        "event_id": "e29e5865-ba64-4fd6-84c8-9279da835cc8",
+        "timestamp_utc": "2026-04-03T18:02:16.656693+00:00",
+        "action": "verify_node",
+        "status": "allowed",
+        "details": {
+            "ipv6": "b92c:6086:438c:4c55:aa44:27f1:b6c9:20e1"
+        },
+        "prev_hash": "7279106deaf0ebc8f5f1f4f129e209762d4fe1f2730a3748c668bd70207c70d8",
+        "event_hash": "ce1ccdc1c3912219e7e1f07102a6b526f9d6fda1094dc5cdacc8b5b43466adab",
+        "signature": "dbaa68da414bc85214b5c14e5ded442786b9fd920b12db13f412fe8f9de87f58dc68e321a4435ad00080fde67ecc7fd9fb0ad2bcdbc448172075f9b390880b31c0b5cc96b72bba3387439bf601e4e710baeb12bd46d009691571164928502d728160f0922a676e1c339ccf37b4a85d79173c92a1ce1a7653eddb3fb5bc258f28876b94952c9b4abd91c3adc18679155370330596f533301c380aae49fae6ccbbe45b453261ea23fb4bd94fc7673fe0bf25a01dc4edaf375c280aefe5eedde6a2d8a2fa2e3aa12887df7b2ef7d14828fc9de6014dad066d8c86b68018e598b726e80b48910de673e005cd470299a8740e67b0b37f708a2c02e737e4006928cbab"
+    },
+    {
+        "event_id": "e595b0f8-03ed-46a7-8780-4c9b2c1c9e8a",
+        "timestamp_utc": "2026-04-03T18:02:16.885296+00:00",
+        "action": "assess_posture",
+        "status": "allowed",
+        "details": {
+            "ipv6": "b92c:6086:438c:4c55:aa44:27f1:b6c9:20e1",
+            "verdict": "TRUSTED",
+            "score": 100
+        },
+        "prev_hash": "ce1ccdc1c3912219e7e1f07102a6b526f9d6fda1094dc5cdacc8b5b43466adab",
+        "event_hash": "79b5dbec2f96071a330c42c3c16f18a24de390e376dc5dd7072421bce410c02f",
+        "signature": "b4c9b9392126f68551847d9c68902dbb23497e8c5716643765a358ce7a3a9e320b50e6d64baa63017d38bedb3a19af4de1b90ca2a43b902871129c49dbfdb045fdbe2150e711ce14870189ed8539b961fb7a1f6dc3efcc2fe30180defafc5cc920f90c6caa96f8cb878eaddbaf0d373c9de0478a05e7bb8e38c09021e97c2af295b0cc9853b89a646829fefb3d11419a1d592222ff2d01aea230c276954dfaeb8fb8531655e7d523b86df90d0c0c59df89172fc2ea84403b6f0aee5445f0d4e77f34f38359e6826989c35c5697835e2ca7ac6b5a0ed294f5faf292073b6b8236974cc02ccd66657d5bda9608d3e3a214d1227b6f754b9c9616a1e100e1de7628"
+    },
+    {
+        "event_id": "ada9a980-0640-4620-b1a6-57b7dac86c0f",
+        "timestamp_utc": "2026-04-03T18:02:17.085101+00:00",
+        "action": "assess_posture",
+        "status": "allowed",
+        "details": {
+            "ipv6": "f9a3:ae2:fade:4751:aa2d:50d5:41d7:1daf",
+            "verdict": "TRUSTED",
+            "score": 100
+        },
+        "prev_hash": "79b5dbec2f96071a330c42c3c16f18a24de390e376dc5dd7072421bce410c02f",
+        "event_hash": "bef6e8924bd65cce1489ebd7ff6b9a4ff0d2721750eb1faf7f201c5a2bd90e51",
+        "signature": "9c451c62bcf73ff70b5d0b09b57c29397870d2b66bfc1a1bcf28491d68280bf652ad6d780074dd8ef417fefa764ec9bfb242fcdca6ee34d3b86790372469d5d96f74924265dad380e993ad4ec74fb2f62096ad43819d0f5a00d4443e30d797e695f03433fadaa7bb696a1c546bb82ca768d4d13810887537b68c92d6f92789ca424d33411ee102224aa4f73ab7ee9878c744001c8af70e717ce5f1cdc7b27452332d4537ee0796edfdd91621421e8f26e1892dc12e975c4f487c1ca00a4e160c696e58f10f752b345c95c738efa4607ab85a0a346c5ef6e90c9ddec0482bc41adac7fb198a1da4ed26c1588124025392c6581d483586e12cc766b4c355223346"
+    },
+    {
+        "event_id": "965ff42d-237b-44b7-afbd-cc660abdbd73",
+        "timestamp_utc": "2026-04-03T18:02:17.276386+00:00",
+        "action": "demo_run",
+        "status": "success",
+        "details": {
+            "phase": "complete",
+            "alice_ipv6": "b92c:6086:438c:4c55:aa44:27f1:b6c9:20e1",
+            "bob_ipv6": "f9a3:ae2:fade:4751:aa2d:50d5:41d7:1daf"
+        },
+        "prev_hash": "bef6e8924bd65cce1489ebd7ff6b9a4ff0d2721750eb1faf7f201c5a2bd90e51",
+        "event_hash": "cb0d6cfcf7bb058fe8f9b7e5a1a4b916d2e2b24846b51e10f2de8db0f9bef72c",
+        "signature": "c86657142658780c1e837414dc0cb9dbda6b4322acc0f92e1f8e0ce151488ea1580647ce43743ea1c6ee81466d31ea32f5463a992c4fb58dddb1aecccb0108d247128bd244e8d1d911f128b121320fe38731a42488f0d9d2be885d26413b562fbcbe1f72c2fb01131f667d88de8ccbe09e32776f6c8661a9e4e4f5d93e89601b6203852cef1c76b6d4a0f1bfc1efdbbdb6da7ba9246b0faf83d31a886c1ea3d5f0170c45fc432f26e96fb62d54a3bea6a932a283dbd8e89e3796080349f25ca483b568f2fb43342fd2548de1c16ddd28513ea795a91af75e2887698514db490de8f4f77c549a785a16c30766b3a1d361a94e5efa51b2f00ffa0f25ea93bddedb"
+    },
+    {
+        "event_id": "5259308b-a2db-4120-8d9a-dfa6df15a1de",
+        "timestamp_utc": "2026-04-03T18:02:24.467450+00:00",
+        "action": "spoof_test_tamper",
+        "status": "success",
+        "details": {
+            "victim_ipv6": "e41b:a504:d265:445d:aea1:9e0a:818e:f8b9"
+        },
+        "prev_hash": "cb0d6cfcf7bb058fe8f9b7e5a1a4b916d2e2b24846b51e10f2de8db0f9bef72c",
+        "event_hash": "9e5eb6834c7c1687afc6edaf9adcee75a60696cc6535521ab45e5219729ad112",
+        "signature": "982a41949a07c3f57fc4d9c470e227ddfa21e60f1049b531c186a13d0fb6c4647b2d506e94b8870c673a5e0cef7a4f2fa3410a6d6f0702db69498faa95daab427c8e1d8affb2e1edd5b225d6ce567d3c6f897cf015719b0940d6c56ae05a124078f253487806133e6fbb9c264092e1ae80c73c97ceff5b90a37a91e1dd46622429427c2060808ac69fe0c600ccae41da6097c14e6bcf1e8f5d8ffdcdffb1bf22660c7255d0cae3f19ac519d3c6743517c2520d4d37255b04fc2724061c408de3b359fc507846f7be0373840413519f9b084dcbfc4e1dd9ce7e1d7e5930da8e3545e93d333d74a08952faa0ed9eb42d19cdb88a5979b1581c95d1f82b1e912ebd"
+    },
+    {
+        "event_id": "367cfbf0-1ee2-47d1-bf1d-5160bf0f9e05",
+        "timestamp_utc": "2026-04-03T18:02:24.692596+00:00",
+        "action": "verify_node",
+        "status": "blocked",
+        "details": {
+            "ipv6": "e41b:a504:d265:445d:aea1:9e0a:818e:f8b9",
+            "reason": "tampered_or_fake"
+        },
+        "prev_hash": "9e5eb6834c7c1687afc6edaf9adcee75a60696cc6535521ab45e5219729ad112",
+        "event_hash": "208f6672feb34ffc2115ad9ec7af169c451d7b3da878a9eaf94433e919fa2559",
+        "signature": "ac3c385544f8aecf16084582c6f309b4653e747b9eb63a2a2135e30a2458aa6b42ee7f38a49abb6ef75598f6006f02077334353670cbfdebdb8f5d88d64adb9a82da2880c3b86a30b67023704e0b7c8c72e57f58e585a869ec9da73635e859c0727dad417edef5470c2c2ff77cc0767dad13c96a96aa29622fa45bfddcfa2a6ed536a8fbac91b5394461e7c341740faefe4883a62ffca64c094164008d77f7702b7c99f182bc51f4b984ac9575945ed4095a97d507e16287577407ce83846072b2784310cff440bd3cbabf4a0789595d8b039912eea37f7fc63d61db10f3052f5513fe6d039c8341af17eb69c3b986465347ade191b9a7d710b85918e4b18334"
+    }
+]

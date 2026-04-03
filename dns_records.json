@@ -1,9 +1,4 @@
 {
-    "ved.whitenet.local": "2298:10db:ce6e:463e:85ae:11c3:1539:d2fc",
-    "harshil.whitenet.local": "ae68:d3e1:b0bb:49db:8cb0:5405:ec8:c203",
-    "samaltman.whitenet.local": "6c12:7eee:c489:4efa:aa43:6d04:84a4:5f90",
-    "user1.whitenet.local": "f289:c711:5d30:4e54:a5a3:bb1d:d1c5:4f89",
-    "user2.whitenet.local": "19f6:633:2ef:47e7:ab7a:5921:7f79:3ae7",
-    "alice.whitenet.local": "d95f:cfe:7307:4b83:9696:6652:2312:b362",
-    "bob.whitenet.local": "39b2:9bc5:85dd:4afb:b2bb:3428:5781:ff15"
+    "alice.whitenet.local": "b92c:6086:438c:4c55:aa44:27f1:b6c9:20e1",
+    "bob.whitenet.local": "f9a3:ae2:fade:4751:aa2d:50d5:41d7:1daf"
 }
