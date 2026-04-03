@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WhiteNet Governance</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Inter, sans-serif;
+    background: #0d1117;
+    color: #c9d1d9;
+}
+
+.header {
+    padding: 20px;
+    font-size: 24px;
+    border-bottom: 1px solid #30363d;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+.section-title {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.user-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge {
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.verified {
+    background: #238636;
+    color: white;
+}
+
+.pending {
+    background: #da3633;
+    color: white;
+}
+
+button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.yes {
+    background: #238636;
+    color: white;
+}
+
+.no {
+    background: #da3633;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">🌐 WhiteNet Governance Dashboard</div>
+
+<div class="container">
+
+    <!-- USERS -->
+    <div class="section-title">👥 Network Nodes</div>
+    <div id="users"></div>
+
+    <!-- PROPOSALS -->
+    <div class="section-title">🗳️ Proposals</div>
+    <div id="proposals"></div>
+
+</div>
+
+<script>
+
+// ================= USERS =================
+
+let users = [
+    {
+        name: "Node A",
+        ipv6: "2001:abcd:1111",
+        status: "verified",
+        role: "voter"
+    },
+    {
+        name: "Node B",
+        ipv6: "2001:abcd:2222",
+        status: "verified",
+        role: "voter"
+    },
+    {
+        name: "Node C",
+        ipv6: "2001:abcd:3333",
+        status: "pending",
+        role: "observer"
+    }
+];
+
+function renderUsers() {
+    const container = document.getElementById("users");
+    container.innerHTML = "";
+
+    users.forEach(u => {
+        const div = document.createElement("div");
+        div.className = "card user-card";
+
+        div.innerHTML = `
+            <div>
+                <strong>${u.name}</strong><br>
+                <small>${u.ipv6}</small>
+            </div>
+
+            <div>
+                <span class="badge ${u.status === "verified" ? "verified" : "pending"}">
+                    ${u.status}
+                </span>
+                <span class="badge">${u.role}</span>
+            </div>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+// ================= PROPOSALS =================
+
+let proposals = [
+    {id: 1, title: "Block spoofed nodes", status: "pending", yes: 0, no: 0},
+    {id: 2, title: "Add new CA authority", status: "pending", yes: 0, no: 0}
+];
+
+function renderProposals() {
+    const container = document.getElementById("proposals");
+    container.innerHTML = "";
+
+    proposals.forEach(p => {
+        const div = document.createElement("div");
+        div.className = "card";
+
+        div.innerHTML = `
+            <div><strong>#${p.id} ${p.title}</strong></div>
+            <div>Status: ${p.status}</div>
+            <div>✔ Yes: ${p.yes} | ✖ No: ${p.no}</div>
+
+            <button class="yes" onclick="vote(${p.id}, 'yes')">Yes</button>
+            <button class="no" onclick="vote(${p.id}, 'no')">No</button>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+function vote(id, type) {
+    let p = proposals.find(x => x.id === id);
+
+    if (type === "yes") p.yes++;
+    else p.no++;
+
+    if (p.yes > p.no && p.yes >= 2) {
+        p.status = "approved";
+    }
+
+    renderProposals();
+}
+
+// ================= INIT =================
+
+renderUsers();
+renderProposals();
+
+</script>
+
+</body>
+</html>
