@@ -4,6 +4,8 @@ import uuid
 import ipaddress
 import os
 import time
+import base64
+import os
 
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
@@ -237,7 +239,94 @@ def spoof_test():
 
     verify_node(ipv6)
 
+def handshake(ipv6):
+    print(Colors.CYAN + "\n[ TLS Handshake Simulation ]" + Colors.RESET)
+    loading("Initiating handshake")
 
+    reg = load_registry()
+
+    if ipv6 not in reg:
+        print(Colors.RED + "✖ Node not found" + Colors.RESET)
+        return
+
+    cert = reg[ipv6]
+
+    # Step 1: Verify Certificate
+    print(Colors.YELLOW + "[1] Verifying Certificate..." + Colors.RESET)
+    cert_copy = cert.copy()
+    signature = bytes.fromhex(cert_copy.pop("signature"))
+
+    public_ca = load_ca_public()
+
+    try:
+        public_ca.verify(
+            signature,
+            json.dumps(cert_copy).encode(),
+            padding.PKCS1v15(),
+            hashes.SHA256()
+        )
+        print(Colors.GREEN + "✔ Certificate Valid" + Colors.RESET)
+    except:
+        print(Colors.RED + "✖ Certificate Invalid" + Colors.RESET)
+        return
+
+    # Step 2: Challenge-Response
+    print(Colors.YELLOW + "[2] Performing Challenge-Response..." + Colors.RESET)
+
+    challenge = os.urandom(32)
+
+    # ⚠️ Simulation: we don’t store user private key
+    # So we simulate correct behavior
+
+    print(Colors.GREEN + "✔ Challenge Verified (Simulated Ownership)" + Colors.RESET)
+
+    print(Colors.CYAN + "🔐 Secure Channel Established\n" + Colors.RESET)
+
+def verify_internal(ipv6):
+    reg = load_registry()
+
+    if ipv6 not in reg:
+        return False
+
+    cert = reg[ipv6].copy()
+    signature = bytes.fromhex(cert.pop("signature"))
+
+    public_key = load_ca_public()
+
+    try:
+        public_key.verify(
+            signature,
+            json.dumps(cert).encode(),
+            padding.PKCS1v15(),
+            hashes.SHA256()
+        )
+        return True
+    except:
+        return False
+def secure_send(sender, receiver):
+    print(Colors.CYAN + "\n[ Secure Communication ]" + Colors.RESET)
+
+    reg = load_registry()
+
+    if sender not in reg:
+        print(Colors.RED + f"✖ Sender {sender} not found" + Colors.RESET)
+        return
+
+    if receiver not in reg:
+        print(Colors.RED + f"✖ Receiver {receiver} not found" + Colors.RESET)
+        return
+
+    print(Colors.YELLOW + "[*] Verifying sender..." + Colors.RESET)
+    valid_sender = verify_internal(sender)
+
+    print(Colors.YELLOW + "[*] Verifying receiver..." + Colors.RESET)
+    valid_receiver = verify_internal(receiver)
+
+    if valid_sender and valid_receiver:
+        print(Colors.GREEN + "✔ Secure Packet Sent Successfully" + Colors.RESET)
+        print(Colors.CYAN + f"📡 {sender} → {receiver}" + Colors.RESET)
+    else:
+        print(Colors.RED + "🚫 Communication Blocked (Zero Trust Enforcement)" + Colors.RESET)
 # =========================
 # CLI
 # =========================
@@ -259,6 +348,12 @@ def main():
     verify.add_argument("--ipv6", required=True)
 
     sub.add_parser("spoof-test")
+    handshake_cmd = sub.add_parser("handshake")
+    handshake_cmd.add_argument("--ipv6", required=True)
+
+    send_cmd = sub.add_parser("send")
+    send_cmd.add_argument("--from", dest="sender", required=True)
+    send_cmd.add_argument("--to", dest="receiver", required=True)
 
     args = parser.parse_args()
 
@@ -282,3 +377,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    
