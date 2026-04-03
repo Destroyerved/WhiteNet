@@ -8,7 +8,7 @@
   <img src="assets/logo.png" alt="WhiteNet Logo" width="120">
 </p>
 
-<h1 align="center">🌐 WhiteNet</h1>
+<h1 align="center">WhiteNet</h1>
 
 <p align="center">
   <b>A Decentralized Identity-First Network Layer</b><br>
