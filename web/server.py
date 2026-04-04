@@ -27,6 +27,9 @@ import cli  # noqa: E402
 app = Flask(__name__, static_folder=DIST_DIR, static_url_path="")
 CORS(app)
 
+# Ensure CA keys exist when loaded by gunicorn (not just __main__)
+cli.generate_ca_keys()
+
 
 def _capture(fn, *args, **kwargs):
     buf = io.StringIO()
@@ -410,8 +413,14 @@ def topology():
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def spa(path):
+    # Explicit page routes
+    if path == "about" or path == "about.html":
+        return send_from_directory(PROJECT_ROOT, "about.html")
+    if path == "use-cases" or path == "use_cases.html":
+        return send_from_directory(PROJECT_ROOT, "use_cases.html")
     if path.startswith("api"):
         return jsonify({"error": "not found"}), 404
+    # Serve React dashboard from dist
     if app.static_folder and os.path.exists(app.static_folder):
         target = os.path.join(app.static_folder, path)
         if path and os.path.isfile(target):
@@ -419,13 +428,26 @@ def spa(path):
         index = os.path.join(app.static_folder, "index.html")
         if os.path.isfile(index):
             return send_from_directory(app.static_folder, "index.html")
+    # Fallback landing — links to all 3 pages
     return (
-        "<html><body style='font-family:system-ui;padding:2rem;background:#0a0a0f;color:#e2e8f0'>"
-        "<h1>WhiteNet Web</h1><p>Build the React app first:</p>"
-        "<pre style='background:#111;padding:1rem;border-radius:8px'>cd web/client && npm install && npm run build</pre>"
-        "<p>Then run: <code>python web/server.py</code></p>"
-        "<p>API is live — try <a href='/api/meta' style='color:#38bdf8'>/api/meta</a></p>"
-        "</body></html>",
+        "<html><head><title>WhiteNet</title>"
+        "<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui;background:#030508;color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center}"
+        ".wrap{text-align:center;max-width:600px;padding:2rem}"
+        "h1{font-size:2.5rem;margin-bottom:.5rem;background:linear-gradient(135deg,#0ff,#00a8ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}"
+        "p{color:#7a9ab8;margin-bottom:2rem;font-size:1.1rem}"
+        ".cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}"
+        "a{display:block;padding:24px 16px;background:rgba(0,255,255,.04);border:1px solid rgba(0,255,255,.15);border-radius:12px;color:#0ff;text-decoration:none;transition:all .3s;font-weight:600}"
+        "a:hover{background:rgba(0,255,255,.1);border-color:rgba(0,255,255,.4);box-shadow:0 0 20px rgba(0,255,255,.1)}"
+        "a span{display:block;font-size:.75rem;color:#5a7a94;margin-top:6px;font-weight:400}"
+        "</style></head><body>"
+        "<div class='wrap'>"
+        "<h1>WhiteNet</h1>"
+        "<p>Identity-First Zero Trust Network — v3.0.0</p>"
+        "<div class='cards'>"
+        "<a href='/about'>📄 About<span>Project overview</span></a>"
+        "<a href='/use-cases'>🏦 Use Cases<span>Banking, healthcare & more</span></a>"
+        "<a href='/api/meta'>⚡ API<span>Live API endpoint</span></a>"
+        "</div></div></body></html>",
         200,
         {"Content-Type": "text/html; charset=utf-8"},
     )
@@ -433,5 +455,7 @@ def spa(path):
 
 if __name__ == "__main__":
     cli.generate_ca_keys()
-    print(f"WhiteNet web — http://127.0.0.1:5050  (project root: {PROJECT_ROOT})")
-    app.run(host="127.0.0.1", port=5050, debug=False)
+    port = int(os.environ.get("PORT", 5050))
+    host = os.environ.get("HOST", "127.0.0.1")
+    print(f"WhiteNet web — http://{host}:{port}  (project root: {PROJECT_ROOT})")
+    app.run(host=host, port=port, debug=False)
