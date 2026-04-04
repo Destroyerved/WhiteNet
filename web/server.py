@@ -50,6 +50,93 @@ def about_page():
     return send_from_directory(PROJECT_ROOT, "about.html")
 
 
+@app.route("/use-cases")
+def use_cases_page():
+    return send_from_directory(PROJECT_ROOT, "use_cases.html")
+
+
+@app.route("/api/banking-demo", methods=["POST"])
+def banking_demo():
+    """Full banking KYC scenario: reset → issue/bind customer → assess trust."""
+    cli.demo_reset_data_files(regen_ca=True)
+    cli.generate_ca_keys()
+    results = {"steps": []}
+    # Issue + bind customer
+    _capture(cli.issue_certificate, "customer_ankit")
+    _capture(cli.bind_identity, cli.CERT_FILE)
+    dns = cli.load_dns_records()
+    cust_ip = dns.get("customer_ankit.whitenet.local")
+    results["steps"].append({"action": "onboard_customer", "user": "customer_ankit", "ipv6": cust_ip, "ok": bool(cust_ip)})
+    # Issue + bind bank server
+    _capture(cli.issue_certificate, "securebank_server")
+    _capture(cli.bind_identity, cli.CERT_FILE)
+    bank_ip = dns.get("securebank_server.whitenet.local") or cli.load_dns_records().get("securebank_server.whitenet.local")
+    results["steps"].append({"action": "onboard_bank", "user": "securebank_server", "ipv6": bank_ip, "ok": bool(bank_ip)})
+    # Assess customer trust
+    posture = cli.compute_assess_posture(domain="customer_ankit.whitenet.local")
+    results["steps"].append({"action": "assess_customer", "posture": posture})
+    # TLS handshake
+    if cust_ip and bank_ip:
+        _capture(cli.tls_handshake, cust_ip, bank_ip)
+        results["steps"].append({"action": "tls_session", "ok": True})
+    results["ok"] = True
+    return jsonify(results)
+
+
+@app.route("/api/scammer-demo", methods=["POST"])
+def scammer_demo():
+    """Simulate a scammer: tamper registry → re-verify → show BLOCKED."""
+    reg = cli.load_registry()
+    if not reg:
+        return jsonify({"ok": False, "error": "No nodes. Run banking-demo first."}), 400
+    victim_ip = list(reg.keys())[0]
+    victim_user = reg[victim_ip].get("user_id", "unknown")
+    # Verify before tamper
+    before = cli.compute_assess_posture(ipv6=victim_ip)
+    # Tamper
+    reg[victim_ip]["user_id"] = "scammer_fake_id"
+    cli.save_registry(reg)
+    # Verify after tamper
+    after = cli.compute_assess_posture(ipv6=victim_ip)
+    # Restore
+    reg = cli.load_registry()
+    reg[victim_ip]["user_id"] = victim_user
+    cli.save_registry(reg)
+    return jsonify({"ok": True, "victim": victim_user, "ipv6": victim_ip,
+                     "before": before, "after": after})
+
+
+@app.route("/api/agent-verify-demo", methods=["POST"])
+def agent_verify_demo():
+    """Register two bank agents, verify both, then simulate impersonator on one."""
+    cli.demo_reset_data_files(regen_ca=True)
+    cli.generate_ca_keys()
+    agents = ["agent_raj", "agent_priya"]
+    results = {"agents": [], "impersonator": {}}
+    for a in agents:
+        _capture(cli.issue_certificate, a)
+        _capture(cli.bind_identity, cli.CERT_FILE)
+    dns = cli.load_dns_records()
+    for a in agents:
+        ip = dns.get(f"{a}.whitenet.local")
+        posture = cli.compute_assess_posture(domain=f"{a}.whitenet.local")
+        results["agents"].append({"user": a, "ipv6": ip, "posture": posture})
+    # Impersonator attack on agent_raj
+    raj_ip = dns.get("agent_raj.whitenet.local")
+    if raj_ip:
+        reg = cli.load_registry()
+        reg[raj_ip]["user_id"] = "impersonator_xyz"
+        cli.save_registry(reg)
+        blocked = cli.compute_assess_posture(ipv6=raj_ip)
+        results["impersonator"] = {"target": "agent_raj", "ipv6": raj_ip, "posture": blocked}
+        # Restore
+        reg = cli.load_registry()
+        reg[raj_ip]["user_id"] = "agent_raj"
+        cli.save_registry(reg)
+    results["ok"] = True
+    return jsonify(results)
+
+
 @app.route("/api/health")
 def health():
     return jsonify({"status": "ok", "version": cli.WHITENET_VERSION})

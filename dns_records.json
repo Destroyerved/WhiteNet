@@ -1,7 +1,4 @@
 {
-    "alice.whitenet.local": "84dc:3053:ab2e:4d57:b27a:fc48:cd32:ffa3",
-    "bob.whitenet.local": "5e91:6c61:af1d:4bd5:9cfb:9693:99f5:64ff",
-    "charlie.whitenet.local": "89e6:b835:5172:4978:b198:540b:47ec:976a",
-    "Veda.whitenet.local": "a049:66d1:74b1:4c3e:973d:1493:f899:64fe",
-    "Vedi.whitenet.local": "46e7:a60b:842f:4621:b07d:ff1c:fc96:689e"
+    "customer_ankit.whitenet.local": "fb42:7625:be90:495d:af16:3d0:b06a:de27",
+    "securebank_server.whitenet.local": "f783:e09d:4e94:4fc2:83ea:b358:259d:8a8"
 }

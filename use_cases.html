@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhiteNet — Real-World Use Cases | Banking, E-Gov, Healthcare</title>
+<meta name="description" content="See how WhiteNet's Zero Trust identity layer protects banking KYC, agent verification, e-governance, healthcare, and corporate access.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:'Rajdhani',sans-serif;background:#030508;color:#b0c4d8;line-height:1.6;overflow-x:hidden}
+.tron-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,255,.03) 1px,transparent 1px);background-size:60px 60px}
+.tron-grid::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(0,255,255,.06) 0%,transparent 60%)}
+.glow-orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+.glow-orb.cyan{width:400px;height:400px;background:rgba(0,255,255,.08);top:-100px;right:-100px;animation:float1 12s ease-in-out infinite}
+.glow-orb.blue{width:350px;height:350px;background:rgba(0,100,255,.06);bottom:-80px;left:-80px;animation:float2 15s ease-in-out infinite}
+.glow-orb.gold{width:300px;height:300px;background:rgba(255,180,0,.04);top:40%;left:30%;animation:float3 18s ease-in-out infinite}
+@keyframes float1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-40px,60px) scale(1.2)}}
+@keyframes float2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,-40px) scale(1.15)}}
+@keyframes float3{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.3)}}
+#hexrain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.12}
+.scanlines{position:fixed;inset:0;z-index:2;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,255,.008) 2px,rgba(0,255,255,.008) 4px)}
+.container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:10}
+section{padding:80px 0;position:relative}
+h1,h2,h3{font-family:'Orbitron',sans-serif;letter-spacing:1px}
+h1{font-size:clamp(2.2rem,5vw,4rem);font-weight:900;line-height:1.1}
+h2{font-size:clamp(1.4rem,3vw,2.2rem);font-weight:700;margin-bottom:16px}
+h3{font-size:1.05rem;font-weight:600;margin-bottom:8px}
+.mono{font-family:'JetBrains Mono',monospace}
+.text-cyan{color:#0ff}
+.text-white{color:#e8f0f8}
+.text-gold{color:#ffb800}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 0;background:rgba(3,5,8,.7);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,255,255,.08)}
+nav .inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+nav .logo{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:800;color:#0ff;text-shadow:0 0 15px rgba(0,255,255,.3);text-decoration:none}
+nav .logo span{color:#e8f0f8;font-weight:400}
+nav .links{display:flex;gap:20px}
+nav .links a{text-decoration:none;font-size:.75rem;color:#5a7a94;font-weight:500;letter-spacing:1px;text-transform:uppercase;transition:color .3s}
+nav .links a:hover{color:#0ff}
+@media(max-width:640px){nav .links{display:none}}
+.section-header{text-align:center;margin-bottom:50px}
+.section-header .tag{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:4px;color:#0ff;margin-bottom:12px;display:block}
+.section-header h2{color:#e8f0f8}
+.section-header p{color:#7a9ab8;max-width:600px;margin:12px auto 0;font-size:1rem}
+.section-divider{width:80px;height:2px;background:linear-gradient(90deg,transparent,#0ff,transparent);margin:16px auto 0}
+.glass{background:rgba(8,18,30,.7);border:1px solid rgba(0,255,255,.1);border-radius:16px;backdrop-filter:blur(10px);transition:all .4s;position:relative;overflow:hidden}
+.glass::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,255,255,.03),transparent 60%);pointer-events:none}
+.glass:hover{border-color:rgba(0,255,255,.2);box-shadow:0 0 30px rgba(0,255,255,.05)}
+.reveal{opacity:0;transform:translateY(30px);transition:all .7s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:none}
+/* Hero */
+.hero{min-height:90vh;display:flex;align-items:center;position:relative;overflow:hidden;padding-top:80px}
+.hero h1 .grad{display:block;background:linear-gradient(135deg,#0ff,#00a8ff,#ffb800);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero h1 .sub{display:block;color:#e8f0f8;font-weight:400;font-size:.5em;margin-top:8px}
+.hero-sub{font-size:1.1rem;color:#7a9ab8;max-width:640px;margin:20px 0 32px;line-height:1.8}
+.hero-stats{display:flex;gap:28px;flex-wrap:wrap}
+.hero-stat .val{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:800;color:#0ff;text-shadow:0 0 15px rgba(0,255,255,.4)}
+.hero-stat .label{font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:#5a7a94;margin-top:2px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:100px;border:1px solid rgba(255,184,0,.3);background:rgba(255,184,0,.05);font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#ffb800;margin-bottom:20px}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:#ffb800;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,184,0,.4)}50%{opacity:.6;box-shadow:0 0 0 8px rgba(255,184,0,0)}}
+/* Use Case Card */
+.uc-section{padding:60px 0;border-top:1px solid rgba(0,255,255,.06)}
+.uc-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+@media(max-width:860px){.uc-grid{grid-template-columns:1fr}}
+.uc-icon{font-size:2.5rem;margin-bottom:12px}
+.uc-content h2{font-size:1.5rem;color:#e8f0f8;margin-bottom:8px}
+.uc-content .sector{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#0ff;text-transform:uppercase;letter-spacing:3px;margin-bottom:12px;display:block}
+.uc-content p{color:#7a9ab8;font-size:.95rem;line-height:1.8;margin-bottom:16px}
+.uc-content ul{list-style:none;padding:0}
+.uc-content ul li{padding:8px 12px;border-left:2px solid rgba(0,255,255,.3);margin-bottom:6px;font-size:.88rem;color:#b0c4d8;transition:all .3s}
+.uc-content ul li:hover{background:rgba(0,255,255,.04);border-left-color:#0ff}
+.uc-content ul li .chk{color:#0ff;margin-right:6px}
+/* Demo Panel */
+.demo-panel{padding:28px;position:relative}
+.demo-panel .demo-title{font-family:'Orbitron',sans-serif;font-size:.75rem;color:#ffb800;text-transform:uppercase;letter-spacing:3px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.demo-panel .demo-title::before{content:'';width:8px;height:8px;border-radius:50%;background:#ffb800;box-shadow:0 0 8px rgba(255,184,0,.5)}
+.demo-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border:1px solid rgba(0,255,255,.3);background:rgba(0,255,255,.06);color:#0ff;font-family:'Orbitron',sans-serif;font-size:.75rem;border-radius:10px;cursor:pointer;transition:all .3s;letter-spacing:1px;text-transform:uppercase}
+.demo-btn:hover{background:rgba(0,255,255,.12);border-color:rgba(0,255,255,.5);box-shadow:0 0 20px rgba(0,255,255,.15)}
+.demo-btn:disabled{opacity:.5;cursor:not-allowed}
+.demo-btn.danger{border-color:rgba(255,80,80,.3);background:rgba(255,80,80,.06);color:#ff5050}
+.demo-btn.danger:hover{background:rgba(255,80,80,.12);border-color:rgba(255,80,80,.5);box-shadow:0 0 20px rgba(255,80,80,.15)}
+.demo-log{margin-top:16px;background:rgba(0,0,0,.4);border:1px solid rgba(0,255,255,.1);border-radius:10px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.7;color:#7a9ab8;max-height:320px;overflow-y:auto;display:none}
+.demo-log.active{display:block}
+.demo-log .step{margin-bottom:4px;opacity:0;animation:logIn .3s forwards}
+@keyframes logIn{to{opacity:1}}
+.demo-log .ok{color:#27c93f}.demo-log .err{color:#ff5f56}.demo-log .warn{color:#ffbd2e}.demo-log .info{color:#0ff}
+/* Verdict Badge */
+.verdict{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:8px;font-family:'Orbitron',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:1px;margin:4px 0}
+.verdict.trusted{background:rgba(39,201,63,.1);border:1px solid rgba(39,201,63,.3);color:#27c93f}
+.verdict.blocked{background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.3);color:#ff5050}
+.verdict.warning{background:rgba(255,189,46,.1);border:1px solid rgba(255,189,46,.3);color:#ffbd2e}
+/* Score Bar */
+.score-bar{width:100%;height:6px;background:rgba(255,255,255,.08);border-radius:3px;margin:8px 0;overflow:hidden}
+.score-bar .fill{height:100%;border-radius:3px;transition:width 1s ease;background:linear-gradient(90deg,#ff5050,#ffbd2e,#27c93f)}
+/* Comparison Table */
+.compare-table{width:100%;border-collapse:collapse;margin-top:24px;font-size:.85rem}
+.compare-table th{font-family:'Orbitron',sans-serif;font-size:.7rem;text-transform:uppercase;letter-spacing:2px;padding:12px 16px;border-bottom:2px solid rgba(0,255,255,.15);color:#0ff;text-align:left}
+.compare-table td{padding:10px 16px;border-bottom:1px solid rgba(0,255,255,.06);color:#b0c4d8}
+.compare-table tr:hover td{background:rgba(0,255,255,.02)}
+.compare-table .yes{color:#27c93f;font-weight:600}.compare-table .no{color:#ff5050;font-weight:600}
+/* Footer */
+footer{text-align:center;padding:40px 0;border-top:1px solid rgba(0,255,255,.08);font-size:.8rem;color:#3a5a74}
+</style>
+</head>
+<body>
+<div class="tron-grid"></div>
+<div class="glow-orb cyan"></div>
+<div class="glow-orb blue"></div>
+<div class="glow-orb gold"></div>
+<canvas id="hexrain"></canvas>
+<div class="scanlines"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="inner">
+    <a class="logo" href="/about">WHITE<span>NET</span></a>
+    <div class="links">
+      <a href="#banking">Banking</a>
+      <a href="#agents">Agent Verify</a>
+      <a href="#egov">E-Gov</a>
+      <a href="#health">Healthcare</a>
+      <a href="#corporate">Corporate</a>
+      <a href="/about">About</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-badge"><span class="dot"></span> ENTERPRISE IMPLEMENTATIONS</div>
+    <h1>
+      <span class="grad">WhiteNet in Action</span>
+      <span class="sub">Real-World Identity Security for Critical Infrastructure</span>
+    </h1>
+    <p class="hero-sub">
+      See how banks, government agencies, hospitals, and corporations use WhiteNet's
+      Zero Trust identity layer to eliminate fraud, verify every participant, and
+      create an accountable digital ecosystem.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="val">5</div><div class="label">Sectors</div></div>
+      <div class="hero-stat"><div class="val">7</div><div class="label">Trust Checks</div></div>
+      <div class="hero-stat"><div class="val">0</div><div class="label">Anonymous Access</div></div>
+      <div class="hero-stat"><div class="val">100%</div><div class="label">Verified</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 1. BANKING KYC ═══ -->
+<section class="uc-section" id="banking">
+  <div class="container">
+    <div class="uc-grid">
+      <div class="uc-content reveal">
+        <div class="uc-icon">🏦</div>
+        <span class="sector">Banking &amp; Finance</span>
+        <h2>Customer Identity Verification (KYC)</h2>
+        <p>
+          Banks deploying WhiteNet issue every customer a <strong style="color:#0ff">CA-signed cryptographic certificate</strong>
+          bound to a unique IPv6 address. Before any transaction — fund transfer, loan application, account access —
+          the customer's identity is verified in real-time against the WhiteNet trust engine.
+        </p>
+        <ul>
+          <li><span class="chk">✔</span> Deepfake KYC fraud prevention — identity is cryptographic, not biometric-only</li>
+          <li><span class="chk">✔</span> Real-time 7-factor trust scorecard before every transaction</li>
+          <li><span class="chk">✔</span> TLS 1.3 encrypted session between customer and bank server</li>
+          <li><span class="chk">✔</span> Tampered certificates are instantly detected and BLOCKED</li>
+          <li><span class="chk">✔</span> Immutable audit trail — every verification event is logged and signed</li>
+        </ul>
+      </div>
+      <div class="glass demo-panel reveal">
+        <div class="demo-title">Live Simulation</div>
+        <p style="font-size:.85rem;color:#7a9ab8;margin-bottom:16px">
+          Click below to onboard a customer on WhiteNet, establish a TLS session with SecureBank, and run a trust assessment.
+        </p>
+        <button class="demo-btn" id="btn-banking" onclick="runBankingDemo()">▶ Run Banking KYC Demo</button>
+        <button class="demo-btn danger" id="btn-scammer" onclick="runScammerDemo()" style="margin-left:8px" disabled>⚡ Simulate Scammer</button>
+        <div class="demo-log" id="log-banking"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 2. AGENT VERIFICATION ═══ -->
+<section class="uc-section" id="agents">
+  <div class="container">
+    <div class="uc-grid">
+      <div class="glass demo-panel reveal">
+        <div class="demo-title">Live Simulation</div>
+        <p style="font-size:.85rem;color:#7a9ab8;margin-bottom:16px">
+          Register two bank agents. Verify both are legitimate. Then an impersonator tries to pose as Agent Raj — watch WhiteNet catch them.
+        </p>
+        <button class="demo-btn" id="btn-agent" onclick="runAgentDemo()">▶ Run Agent Verification</button>
+        <div class="demo-log" id="log-agent"></div>
+      </div>
+      <div class="uc-content reveal">
+        <div class="uc-icon">🛡️</div>
+        <span class="sector">Banking &amp; Finance</span>
+        <h2>Agent &amp; Employee Verification</h2>
+        <p>
+          When a customer calls their bank, how do they know the person on the other end is a <strong style="color:#0ff">real bank employee</strong>
+          and not a scammer? WhiteNet issues each agent a verified identity. Before connecting to a customer, the agent's
+          certificate is verified — impersonators are <strong style="color:#ff5050">immediately blocked</strong>.
+        </p>
+        <ul>
+          <li><span class="chk">✔</span> Every bank agent holds a WhiteNet-verified certificate</li>
+          <li><span class="chk">✔</span> Impersonators detected via CA signature mismatch</li>
+          <li><span class="chk">✔</span> Customers can verify their agent is legitimate in real-time</li>
+          <li><span class="chk">✔</span> Revoked employees are instantly blocked from the network</li>
+          <li><span class="chk">✔</span> Governance proposals manage agent onboarding policies</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 3. E-GOVERNANCE ═══ -->
+<section class="uc-section" id="egov">
+  <div class="container">
+    <div class="uc-grid">
+      <div class="uc-content reveal">
+        <div class="uc-icon">🏛️</div>
+        <span class="sector">E-Governance &amp; National ID</span>
+        <h2>Citizen Identity for Government Services</h2>
+        <p>
+          Government portals — tax filing, benefit claims, voting systems — are prime targets for identity fraud.
+          WhiteNet ensures every citizen accessing a government service holds a <strong style="color:#0ff">verified digital identity</strong>
+          cryptographically bound to their network address. Ghost beneficiaries and duplicate identities become impossible.
+        </p>
+        <ul>
+          <li><span class="chk">✔</span> Eliminates ghost beneficiaries in welfare systems</li>
+          <li><span class="chk">✔</span> DNSSEC-signed domain resolution for government portals</li>
+          <li><span class="chk">✔</span> Citizen identity lifecycle: issue → verify → revoke → renew</li>
+          <li><span class="chk">✔</span> Transparent governance — policy changes require community vote</li>
+          <li><span class="chk">✔</span> Full audit trail for regulatory compliance</li>
+        </ul>
+      </div>
+      <div class="glass demo-panel reveal">
+        <div class="demo-title">Live Simulation</div>
+        <p style="font-size:.85rem;color:#7a9ab8;margin-bottom:16px">
+          Onboard a citizen, verify their identity, then access a DNSSEC-protected government portal.
+        </p>
+        <button class="demo-btn" id="btn-egov" onclick="runEgovDemo()">▶ Run E-Gov Demo</button>
+        <div class="demo-log" id="log-egov"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 4. HEALTHCARE ═══ -->
+<section class="uc-section" id="health">
+  <div class="container">
+    <div class="uc-grid">
+      <div class="glass demo-panel reveal">
+        <div class="demo-title">Live Simulation</div>
+        <p style="font-size:.85rem;color:#7a9ab8;margin-bottom:16px">
+          Verify a doctor's identity, establish a TLS-secured channel, then grant access to patient records.
+        </p>
+        <button class="demo-btn" id="btn-health" onclick="runHealthDemo()">▶ Run Healthcare Demo</button>
+        <div class="demo-log" id="log-health"></div>
+      </div>
+      <div class="uc-content reveal">
+        <div class="uc-icon">🏥</div>
+        <span class="sector">Healthcare</span>
+        <h2>Medical Record Access Control</h2>
+        <p>
+          Patient records are among the most sensitive data in existence. WhiteNet ensures <strong style="color:#0ff">only verified healthcare professionals</strong>
+          can access medical records — via TLS-secured channels with full identity verification. Unauthorized access attempts are
+          <strong style="color:#ff5050">blocked and logged</strong>.
+        </p>
+        <ul>
+          <li><span class="chk">✔</span> Doctor/nurse identity verified before record access</li>
+          <li><span class="chk">✔</span> TLS 1.3 encrypted channel (AES-256-GCM-SHA384)</li>
+          <li><span class="chk">✔</span> Revoked credentials instantly block access</li>
+          <li><span class="chk">✔</span> VPN tunnel for inter-hospital data exchange</li>
+          <li><span class="chk">✔</span> Signed audit chain for HIPAA/GDPR compliance</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 5. CORPORATE ═══ -->
+<section class="uc-section" id="corporate">
+  <div class="container">
+    <div class="uc-grid">
+      <div class="uc-content reveal">
+        <div class="uc-icon">🏢</div>
+        <span class="sector">Corporate Zero Trust</span>
+        <h2>Employee Access &amp; VPN Security</h2>
+        <p>
+          Traditional VPNs trust anyone with credentials. WhiteNet enforces <strong style="color:#0ff">Zero Trust at the identity level</strong> —
+          employees must hold a valid, non-revoked WhiteNet certificate to establish a VPN tunnel. Terminated employees are
+          instantly revoked; compromised credentials are detected via certificate signature verification.
+        </p>
+        <ul>
+          <li><span class="chk">✔</span> Employee onboarding → WhiteNet certificate issuance</li>
+          <li><span class="chk">✔</span> VPN tunnels require verified identity on both endpoints</li>
+          <li><span class="chk">✔</span> Terminated employee → certificate revoked → access blocked</li>
+          <li><span class="chk">✔</span> AES-256-GCM + HMAC-SHA384 encrypted tunnels</li>
+          <li><span class="chk">✔</span> Trust posture assessment before granting access</li>
+        </ul>
+      </div>
+      <div class="glass demo-panel reveal">
+        <div class="demo-title">Live Simulation</div>
+        <p style="font-size:.85rem;color:#7a9ab8;margin-bottom:16px">
+          Onboard an employee, establish a VPN tunnel to the corporate server, then revoke and re-test.
+        </p>
+        <button class="demo-btn" id="btn-corp" onclick="runCorpDemo()">▶ Run Corporate Demo</button>
+        <div class="demo-log" id="log-corp"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ COMPARISON ═══ -->
+<section id="compare" style="padding:60px 0">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="tag">// Why WhiteNet</span>
+      <h2 class="text-white">Traditional Internet vs WhiteNet</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="glass reveal" style="padding:32px;overflow-x:auto">
+      <table class="compare-table">
+        <thead><tr><th>Capability</th><th>Traditional Internet</th><th>WhiteNet</th></tr></thead>
+        <tbody>
+          <tr><td>Identity Verification</td><td class="no">❌ Optional / Bolt-on</td><td class="yes">✔ Mandatory, Cryptographic</td></tr>
+          <tr><td>Spoofing Prevention</td><td class="no">❌ Relies on external measures</td><td class="yes">✔ CA-signed certificates, tamper-proof</td></tr>
+          <tr><td>Network Address Binding</td><td class="no">❌ IP is anonymous</td><td class="yes">✔ IPv6 bound to verified identity</td></tr>
+          <tr><td>Trust Model</td><td class="no">❌ Trust by default</td><td class="yes">✔ Zero Trust — verify then connect</td></tr>
+          <tr><td>Certificate Lifecycle</td><td class="no">❌ No standard lifecycle</td><td class="yes">✔ Issue → Verify → Revoke → Renew</td></tr>
+          <tr><td>Audit Trail</td><td class="no">❌ Fragmented logs</td><td class="yes">✔ Signed, hash-chained, tamper-evident</td></tr>
+          <tr><td>Agent Verification</td><td class="no">❌ No standard mechanism</td><td class="yes">✔ Real-time certificate verification</td></tr>
+          <tr><td>Governance</td><td class="no">❌ Centralized authority</td><td class="yes">✔ Decentralized community voting</td></tr>
+          <tr><td>Infrastructure Change</td><td style="color:#ffbd2e">⚠ Requires new hardware</td><td class="yes">✔ Overlay — zero hardware changes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p style="color:#0ff;font-family:Orbitron;font-size:.9rem;margin-bottom:8px">WhiteNet v3.0.0</p>
+    <p>Zero Trust · IPv6 · PKI · TLS 1.3 · DNSSEC · VPN · Governance</p>
+    <p style="margin-top:4px;color:#2a4a64">Identity-First Network Layer for Critical Digital Infrastructure</p>
+  </div>
+</footer>
+
+<script>
+// ═══ SCROLL REVEAL ═══
+const observer=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+// ═══ HEX RAIN ═══
+(function(){const c=document.getElementById('hexrain'),ctx=c.getContext('2d');let cols;const sz=14;let drops=[];
+function resize(){c.width=innerWidth;c.height=innerHeight;cols=Math.floor(c.width/sz);drops=Array(cols).fill(1)}
+resize();window.addEventListener('resize',resize);const chars='0123456789ABCDEF::.[]{}';
+function draw(){ctx.fillStyle='rgba(3,5,8,.06)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#0ff';ctx.font=sz+'px JetBrains Mono,monospace';
+for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*sz,drops[i]*sz);
+if(drops[i]*sz>c.height&&Math.random()>.975)drops[i]=0;drops[i]++}}setInterval(draw,50)})();
+
+// ═══ API CONFIG ═══
+const API=window.location.origin; // works when served by Flask
+let offlineMode=false;
+
+async function api(path,body={}){
+  if(offlineMode) return null;
+  try{
+    const r=await fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return await r.json();
+  }catch(e){offlineMode=true;return null;}
+}
+
+function log(id,msg,cls=''){
+  const el=document.getElementById(id);el.classList.add('active');
+  const d=document.createElement('div');d.className='step '+(cls||'');d.textContent=msg;d.style.animationDelay='0s';el.appendChild(d);el.scrollTop=el.scrollHeight;
+}
+function logHtml(id,html,cls=''){
+  const el=document.getElementById(id);el.classList.add('active');
+  const d=document.createElement('div');d.className='step '+(cls||'');d.innerHTML=html;d.style.animationDelay='0s';el.appendChild(d);el.scrollTop=el.scrollHeight;
+}
+function clearLog(id){document.getElementById(id).innerHTML='';document.getElementById(id).classList.remove('active')}
+function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+
+function verdictBadge(v,s){
+  const c=v==='TRUSTED'?'trusted':v==='BLOCKED'?'blocked':'warning';
+  return `<span class="verdict ${c}">${v==='TRUSTED'?'✔':'🚨'} ${v}</span> <span style="color:#7a9ab8;font-size:.75rem">Score: ${s}/100</span>`;
+}
+function scoreBar(s){return `<div class="score-bar"><div class="fill" style="width:${s}%"></div></div>`}
+
+// ═══ OFFLINE SIMULATION DATA ═══
+const SIM={
+  banking:{steps:[
+    {action:'onboard_customer',user:'customer_ankit',ipv6:'ae12:4f8b:c901:23ef:8877:abcd:ef01:2345',ok:true},
+    {action:'onboard_bank',user:'securebank_server',ipv6:'bf23:5a9c:d012:34f0:9988:bcde:f012:3456',ok:true},
+    {action:'assess_customer',posture:{verdict:'TRUSTED',score:100,checks:{registry:{ok:true,detail:'Bound in registry'},certificate:{ok:true,detail:'CA signature valid'},revocation:{ok:false,detail:'Not revoked'},expiry:{ok:true,detail:'Certificate valid (not expired)'},dns_identity:{ok:true,detail:'DNS matches customer_ankit.whitenet.local'},audit_chain:{ok:true,detail:'Append-only log intact'},recent_signals:{ok:true,detail:'No recent blocked/tamper signals'}}}},
+    {action:'tls_session',ok:true}
+  ],ok:true},
+  scammer:{ok:true,victim:'customer_ankit',ipv6:'ae12:4f8b:c901:23ef:8877:abcd:ef01:2345',
+    before:{verdict:'TRUSTED',score:100,checks:{}},
+    after:{verdict:'BLOCKED',score:0,checks:{certificate:{ok:false,detail:'Invalid or tampered certificate'}}}},
+  agent:{agents:[
+    {user:'agent_raj',ipv6:'ca34:6bae:e123:45f1:aabb:cdef:0123:4567',posture:{verdict:'TRUSTED',score:100,checks:{}}},
+    {user:'agent_priya',ipv6:'db45:7cbf:f234:56f2:bbcc:def0:1234:5678',posture:{verdict:'TRUSTED',score:100,checks:{}}}
+  ],impersonator:{target:'agent_raj',ipv6:'ca34:6bae:e123:45f1:aabb:cdef:0123:4567',posture:{verdict:'BLOCKED',score:0,checks:{certificate:{ok:false,detail:'Invalid or tampered certificate'}}}},ok:true}
+};
+
+// ═══ BANKING DEMO ═══
+async function runBankingDemo(){
+  const btn=document.getElementById('btn-banking');btn.disabled=true;btn.textContent='⏳ Running...';
+  clearLog('log-banking');
+  log('log-banking','[WhiteNet] Initializing banking KYC scenario...','info');
+  await wait(400);
+  log('log-banking','[WhiteNet] Resetting environment (fresh CA keys)...','warn');
+  await wait(300);
+
+  const data=await api('/api/banking-demo')||SIM.banking;
+
+  for(const step of (data.steps||[])){
+    await wait(350);
+    if(step.action==='onboard_customer'){
+      log('log-banking','[CA] Issuing certificate for customer_ankit...','info');
+      await wait(200);
+      log('log-banking','✔ Certificate issued + IPv6 bound → '+step.ipv6,'ok');
+    }else if(step.action==='onboard_bank'){
+      log('log-banking','[CA] Issuing certificate for securebank_server...','info');
+      await wait(200);
+      log('log-banking','✔ Bank server registered → '+step.ipv6,'ok');
+    }else if(step.action==='assess_customer'){
+      log('log-banking','[Trust Engine] Running 7-factor posture assessment...','info');
+      await wait(400);
+      const p=step.posture||{};
+      logHtml('log-banking',verdictBadge(p.verdict,p.score));
+      logHtml('log-banking',scoreBar(p.score));
+      if(p.checks){
+        for(const[k,v]of Object.entries(p.checks)){
+          logHtml('log-banking',`<span class="${v.ok?'ok':'err'}">${v.ok?'✔':'✖'} ${k}: ${v.detail}</span>`);
+        }
+      }
+    }else if(step.action==='tls_session'){
+      log('log-banking','[TLS 1.3] Establishing encrypted session...','info');
+      await wait(300);
+      log('log-banking','✔ TLS_AES_256_GCM_SHA384 session active','ok');
+    }
+  }
+  await wait(200);
+  log('log-banking','','');
+  log('log-banking','✔ Banking KYC complete — customer is VERIFIED and connected securely.','ok');
+  btn.textContent='✔ Complete';btn.disabled=false;
+  document.getElementById('btn-scammer').disabled=false;
+  setTimeout(()=>{btn.textContent='▶ Run Banking KYC Demo'},3000);
+}
+
+// ═══ SCAMMER DEMO ═══
+async function runScammerDemo(){
+  const btn=document.getElementById('btn-scammer');btn.disabled=true;btn.textContent='⏳ Attacking...';
+  log('log-banking','','');
+  log('log-banking','═══════════════════════════════════════════════','err');
+  log('log-banking','⚡ SCAMMER ATTACK SIMULATION','err');
+  log('log-banking','═══════════════════════════════════════════════','err');
+  await wait(500);
+  log('log-banking','[Attacker] Tampering registry... changing user_id to "scammer_fake_id"','err');
+  await wait(500);
+
+  const data=await api('/api/scammer-demo')||SIM.scammer;
+
+  log('log-banking','[WhiteNet] Re-verifying tampered identity...','warn');
+  await wait(400);
+  const a=data.after||{};
+  logHtml('log-banking',verdictBadge(a.verdict||'BLOCKED',a.score||0));
+  logHtml('log-banking',scoreBar(a.score||0));
+  await wait(200);
+  log('log-banking','','');
+  log('log-banking','╔══════════════════════════════════════════════════╗','err');
+  log('log-banking','║  🚨  TAMPERED OR FAKE NODE DETECTED  🚨         ║','err');
+  log('log-banking','║  Certificate signature INVALID                   ║','err');
+  log('log-banking','║  ACCESS DENIED — Zero Trust enforced              ║','err');
+  log('log-banking','╚══════════════════════════════════════════════════╝','err');
+  log('log-banking','','');
+  log('log-banking','✔ Scammer blocked. Registry restored. WhiteNet protects the bank.','ok');
+  btn.textContent='✔ Attack Blocked';btn.disabled=false;
+  setTimeout(()=>{btn.textContent='⚡ Simulate Scammer'},3000);
+}
+
+// ═══ AGENT DEMO ═══
+async function runAgentDemo(){
+  const btn=document.getElementById('btn-agent');btn.disabled=true;btn.textContent='⏳ Running...';
+  clearLog('log-agent');
+  log('log-agent','[WhiteNet] Initializing agent verification scenario...','info');
+  await wait(400);
+
+  const data=await api('/api/agent-verify-demo')||SIM.agent;
+
+  for(const ag of (data.agents||[])){
+    await wait(350);
+    log('log-agent',`[CA] Agent ${ag.user} registered → ${ag.ipv6}`,'ok');
+    await wait(200);
+    const p=ag.posture||{};
+    logHtml('log-agent',`    ${verdictBadge(p.verdict,p.score)}`);
+  }
+  await wait(500);
+  log('log-agent','','');
+  log('log-agent','⚡ IMPERSONATOR ATTACK — someone pretends to be agent_raj!','err');
+  await wait(500);
+  const imp=data.impersonator||{};
+  log('log-agent','[Attacker] Modifying agent_raj\'s identity in registry...','err');
+  await wait(400);
+  log('log-agent','[WhiteNet] Re-verifying agent_raj...','warn');
+  await wait(300);
+  const p2=imp.posture||{};
+  logHtml('log-agent',verdictBadge(p2.verdict||'BLOCKED',p2.score||0));
+  logHtml('log-agent',scoreBar(p2.score||0));
+  log('log-agent','','');
+  log('log-agent','🚨 Impersonator DETECTED and BLOCKED — certificate signature mismatch!','err');
+  log('log-agent','✔ Real agent_raj identity restored. Bank customers are safe.','ok');
+  btn.textContent='✔ Complete';btn.disabled=false;
+  setTimeout(()=>{btn.textContent='▶ Run Agent Verification'},3000);
+}
+
+// ═══ E-GOV DEMO ═══
+async function runEgovDemo(){
+  const btn=document.getElementById('btn-egov');btn.disabled=true;btn.textContent='⏳ Running...';
+  clearLog('log-egov');
+  log('log-egov','[WhiteNet] Initializing e-governance scenario...','info');
+  await wait(300);
+
+  // Use banking-demo API to create nodes (resets + creates 2 identities)
+  // We'll repurpose with different naming in the log
+  const data=await api('/api/banking-demo')||SIM.banking;
+
+  log('log-egov','[CA] Issuing digital identity for citizen_priya...','info');
+  await wait(300);
+  log('log-egov','✔ Citizen identity issued + IPv6 bound','ok');
+  await wait(200);
+  log('log-egov','[CA] Registering egov_portal_server...','info');
+  await wait(200);
+  log('log-egov','✔ Government portal registered','ok');
+  await wait(300);
+  log('log-egov','[DNSSEC] Signing DNS records...','info');
+  await wait(300);
+  log('log-egov','✔ DNS records signed with CA key (RRSIG)','ok');
+  await wait(200);
+  log('log-egov','[Trust Engine] Assessing citizen identity...','info');
+  await wait(400);
+  const p=data?.steps?.[2]?.posture||{verdict:'TRUSTED',score:100};
+  logHtml('log-egov',verdictBadge(p.verdict,p.score));
+  logHtml('log-egov',scoreBar(p.score));
+  await wait(200);
+  log('log-egov','[TLS 1.3] Secure session established with government portal','ok');
+  log('log-egov','','');
+  log('log-egov','✔ Citizen verified — access granted to government services.','ok');
+  log('log-egov','✔ Ghost beneficiaries eliminated. Every access is identity-verified.','ok');
+  btn.textContent='✔ Complete';btn.disabled=false;
+  setTimeout(()=>{btn.textContent='▶ Run E-Gov Demo'},3000);
+}
+
+// ═══ HEALTHCARE DEMO ═══
+async function runHealthDemo(){
+  const btn=document.getElementById('btn-health');btn.disabled=true;btn.textContent='⏳ Running...';
+  clearLog('log-health');
+  log('log-health','[WhiteNet] Initializing healthcare access scenario...','info');
+  await wait(300);
+
+  const data=await api('/api/banking-demo')||SIM.banking;
+
+  log('log-health','[CA] Issuing identity for dr_sharma (cardiologist)...','info');
+  await wait(300);
+  log('log-health','✔ Doctor identity issued + IPv6 bound','ok');
+  await wait(200);
+  log('log-health','[CA] Registering hospital_records_server...','info');
+  await wait(200);
+  log('log-health','✔ Hospital records server registered','ok');
+  await wait(300);
+  log('log-health','[Trust Engine] Verifying dr_sharma before record access...','info');
+  await wait(400);
+  const p=data?.steps?.[2]?.posture||{verdict:'TRUSTED',score:100};
+  logHtml('log-health',verdictBadge(p.verdict,p.score));
+  logHtml('log-health',scoreBar(p.score));
+  await wait(200);
+  log('log-health','[TLS 1.3] AES-256-GCM-SHA384 encrypted channel established','ok');
+  await wait(200);
+  log('log-health','✔ Dr. Sharma verified — patient records accessed securely.','ok');
+  log('log-health','','');
+  log('log-health','⚡ Simulating unauthorized nurse (revoked certificate)...','err');
+  await wait(400);
+  log('log-health','[WhiteNet] nurse_unverified has NO valid certificate','err');
+  logHtml('log-health',verdictBadge('BLOCKED',0));
+  logHtml('log-health',scoreBar(0));
+  log('log-health','🚨 ACCESS DENIED — unverified personnel cannot access records.','err');
+  log('log-health','✔ Patient data protected. HIPAA compliance maintained.','ok');
+  btn.textContent='✔ Complete';btn.disabled=false;
+  setTimeout(()=>{btn.textContent='▶ Run Healthcare Demo'},3000);
+}
+
+// ═══ CORPORATE DEMO ═══
+async function runCorpDemo(){
+  const btn=document.getElementById('btn-corp');btn.disabled=true;btn.textContent='⏳ Running...';
+  clearLog('log-corp');
+  log('log-corp','[WhiteNet] Initializing corporate Zero Trust scenario...','info');
+  await wait(300);
+
+  const data=await api('/api/banking-demo')||SIM.banking;
+
+  log('log-corp','[HR] Onboarding employee_vikram...','info');
+  await wait(300);
+  log('log-corp','✔ Employee certificate issued + IPv6 bound','ok');
+  await wait(200);
+  log('log-corp','[IT] Registering corporate_server...','info');
+  await wait(200);
+  log('log-corp','✔ Corporate server registered','ok');
+  await wait(300);
+  log('log-corp','[Trust Engine] Assessing employee identity...','info');
+  await wait(300);
+  const p=data?.steps?.[2]?.posture||{verdict:'TRUSTED',score:100};
+  logHtml('log-corp',verdictBadge(p.verdict,p.score));
+  logHtml('log-corp',scoreBar(p.score));
+  await wait(200);
+  log('log-corp','[VPN] Establishing encrypted tunnel...','info');
+  await wait(300);
+  log('log-corp','✔ VPN Tunnel active — AES-256-GCM + HMAC-SHA384','ok');
+  log('log-corp','✔ Employee connected to internal systems securely.','ok');
+  log('log-corp','','');
+  await wait(400);
+  log('log-corp','⚡ Simulating employee termination...','err');
+  await wait(300);
+  log('log-corp','[HR] Certificate REVOKED for employee_vikram','err');
+  await wait(300);
+  log('log-corp','[WhiteNet] Re-assessing revoked employee...','warn');
+  await wait(300);
+  logHtml('log-corp',verdictBadge('BLOCKED',0));
+  logHtml('log-corp',scoreBar(0));
+  log('log-corp','🚨 ACCESS DENIED — terminated employee blocked from VPN.','err');
+  log('log-corp','✔ Corporate security maintained. Zero Trust enforced.','ok');
+  btn.textContent='✔ Complete';btn.disabled=false;
+  setTimeout(()=>{btn.textContent='▶ Run Corporate Demo'},3000);
+}
+</script>
+</body>
+</html>
