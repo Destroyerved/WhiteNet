@@ -139,11 +139,71 @@ python cli.py
 
 ---
 
-# 📸 Preview
+## 📸 Preview
 
 > CLI with Claude-style UI + Creeper Identity
 
+<p align="center">
+  <img src="assets/CLI.jpeg" width="800"/>
+</p>
+
 ---
+
+## 🧪 Demo
+
+A quick look at the system in action.
+
+<p align="center">
+  <img src="assets/Demo.jpeg" width="800"/>
+</p>
+
+---
+
+## 🖥️ Interface
+
+### CLI
+
+<p align="center">
+  <img src="assets/CLI.jpeg" width="700"/>
+</p>
+
+### GUI
+
+<p align="center">
+  <img src="assets/GUI.jpeg" width="700"/>
+</p>
+
+---
+
+## 🌐 Landing Page
+
+<p align="center">
+  <img src="assets/Landing-Page.jpeg" width="800"/>
+</p>
+
+---
+
+## 🏗️ System Design
+
+### Architecture
+
+<p align="center">
+  <img src="assets/System-Architect.jpeg" width="800"/>
+</p>
+
+### Layers
+
+<p align="center">
+  <img src="assets/Layers.jpeg" width="800"/>
+</p>
+
+---
+
+## ⚡ Problem & Solution
+
+<p align="center">
+  <img src="assets/Problem-Solution.jpeg" width="800"/>
+</p>
 
 ## 👨‍💻 Contributors
 
