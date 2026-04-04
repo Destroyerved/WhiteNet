@@ -548,5 +548,145 @@
         "prev_hash": "ee3cb12f879045c26c81d2b130464ecc07235229c233cf64efe0b6db0fb70e20",
         "event_hash": "007c6eaf57a60b5027d6daba5f732799df27e7f889b1acbdd62283ed745389ad",
         "signature": "39b588df472bf0a0f87449e15192a5b10e7a8aa7cf33696b0eb38d0e21c4a680926fad46e91a6f7a4ea245d37aa0d91d994f608a256563c96888294cbfdeb7908fc3f2406197f2592d634af09889a49ba50d2bbaaa2992589d999c7491f677e8576a794ae8f86b998d521059c0f6f6125f277e2258b91b08d870eb2ea44aea922ebd6805e310b231b5be107de0fc9ac95ce14539b1a8fdd266ac09ea605dc770766b4afbc2b294d398d1337797081f2ec85b31dc67bb7c4cc5825cbf276d53209ef27517ed9475f8bd2ddf141722874053cbe50fe11973edd01b9ff51b4e707ffb47c1e77e8e35e999b6aa987c06e7ea6693b3948182bbda02471d4076187f83"
+    },
+    {
+        "event_id": "5ea4efb9-40f2-4eae-973f-91999e991a37",
+        "timestamp_utc": "2026-04-04T11:23:29.957017+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "Veda",
+            "cert_id": "20fa9884-87de-4316-9634-dcf938da7487",
+            "valid_until": "2026-04-05T11:23:29.954702+00:00"
+        },
+        "prev_hash": "007c6eaf57a60b5027d6daba5f732799df27e7f889b1acbdd62283ed745389ad",
+        "event_hash": "0d65859d222a3ee0a8dae559710067763d8328fc4836f5a4d19b2615dfd79dd7",
+        "signature": "3b21ea3a81a03317656540421109358c01bf1f58bead22f71d4ef121129c741f29a907d93714655fb0921685106a354e60e18697124e00180eff10b2d244dac62e35c7ac2a6e26214b14826d5a97832a8bdbc9ac24410cc85dd30efd645ff6cdc1dccded179febb20d6def51b83a50f83df779d7c719eaf89bf872348688159129c91c76e4471bc06b84d52855ba656cb4bbeffe9891d3511bdeac3d66be659f5d6c65e031c3ba3f0de4d5c5ec9cdb9dd05bd4e0b131b460d123d34764f7ba1a65409e539774a23dd52cf3563a0123f8c5b22787f57e97c27c2f998bb218e4d38e68e47a5108c7d759076d0d349c9f1a7e168e7990163810b2cfd9ab233e11b6"
+    },
+    {
+        "event_id": "5b80de5b-ea9d-436a-aa57-b87f8052c15c",
+        "timestamp_utc": "2026-04-04T11:23:31.675297+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "Veda",
+            "ipv6": "665e:d6ef:35e5:4c1e:a7b8:636a:c0c0:6e7e",
+            "domain": "Veda.whitenet.local"
+        },
+        "prev_hash": "0d65859d222a3ee0a8dae559710067763d8328fc4836f5a4d19b2615dfd79dd7",
+        "event_hash": "764d4f2263c11c13770585f2be6a20516f4070a51099125811d84e4c4a3de5da",
+        "signature": "9ce563443f81d62c023b22db06dde42d14f85ce7b359f0c2429110ef06a2adc15e0fea59c48e406930774b040c30779d507437bf9b4a7b4f31b53a3b1fbffbd41273ae1753563f2bf5cfe0822948c74bf07733b0819b7fc97eafeedcc4662344c7bfb5e1c3b0339f60443c8cbce3bdffffa332437409122def7565b0699056b09720ac86fc092bbb45928ac375b2eca3fef598bdfbd8a937eed1ec52e85738b77c803de5da371388060a5428891647a56aae763722cce6e44d5f513d5be4639ba09bdf3d6df866c8f050fc4b779f56f39334a695f1ab863ddfcef54feb088a1ccb98220de04502a8ae1d5014c2e12a25fd4f799ba3b1424f258034f3bb9677ef"
+    },
+    {
+        "event_id": "6fafaa76-e8c4-4689-945b-579e58958d61",
+        "timestamp_utc": "2026-04-04T11:26:51.132156+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "Veda",
+            "cert_id": "dc01fbb3-d310-4c11-b884-ac234ca4daae",
+            "valid_until": "2026-04-05T11:26:51.124542+00:00"
+        },
+        "prev_hash": "764d4f2263c11c13770585f2be6a20516f4070a51099125811d84e4c4a3de5da",
+        "event_hash": "f3db14b499708b88407d61b774397713d8f19b9983b2a346dc7b475bd5dd6b13",
+        "signature": "28a45cd60ae8634c409a2314207e575259d78dc3d218bdd23900f7d824836395c4fa85edc5a2d17a373d456c28f3b3572dcbcb36954851a4ca1fc1fa760295e15ada069393fef499a7cae0214d0c07ea990e499926b387729b66e77256543d13584f0b40e6fe9d58c94a6c17880ac7183de521e48e950ddf29908c5048d1b1818014193cfa4a8997ab48518b59ad45b79c0845da9b6088ed43b8d55bc49f22ded8bd87242ed9d16d839ea8aa279cec00558ac2293f39b5ec954fc252a7e094ea987b3efe63c4b8422f570c2d10d18c4007a19313f65b4c7b9cfddd1d6f6d4155383ac6c0ad8d2c29cf0f13a880fb94a42d43dc7d2a7dc6da347f3759d96e5d0e"
+    },
+    {
+        "event_id": "3151aa0d-8b6a-4de7-8ee8-a7720eae8536",
+        "timestamp_utc": "2026-04-04T11:26:52.862979+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "Veda",
+            "ipv6": "fe7e:f464:8077:45f7:8da4:ce9b:4f2c:e12",
+            "domain": "Veda.whitenet.local"
+        },
+        "prev_hash": "f3db14b499708b88407d61b774397713d8f19b9983b2a346dc7b475bd5dd6b13",
+        "event_hash": "e65593d6aa13c6c8c518cbef42ca54301d05bc064eebaed347a68029f7caec5e",
+        "signature": "13ca60077c8ea56bbebcdded6bac7c5e12d4caaf9aed340a18dbfcf409064613dcfd4877a6f55a5232981ff5c7c33c2e81b27f1069b578208d3721cea78836967060159a22dae499e2770aaad8f5df77329a2ff0b2fb57d9ddc44c5ef68459a2e10b774d99b406453eabbefe26e6ed449604b1576ff036371b19cd8437a5501d8ad30b778332cc625279676e5ba78eb42b101275117b174e5fb648ae443e020150921f8d9879abc13f7c8fb77084c378037902494b4cf00709cfecd02d02d43f3f587f7ccfc079f80ae3610d3ea79d61b0227805d69719ce0b4159e7fba773cf6e021e4ff9983728f22623ed35f248b4a27e9a57e7f79c827521c0fd225d7c49"
+    },
+    {
+        "event_id": "15dac47d-6b85-4309-af9e-8ab194cb8575",
+        "timestamp_utc": "2026-04-04T11:30:28.007663+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "Veda",
+            "cert_id": "bd281f72-2952-422d-ac6d-edd3f0af775f",
+            "valid_until": "2026-04-05T11:30:27.996903+00:00"
+        },
+        "prev_hash": "e65593d6aa13c6c8c518cbef42ca54301d05bc064eebaed347a68029f7caec5e",
+        "event_hash": "cf9b480b156a5f9f9e2c7dbb903ae57dca584a0a25a82e10a990287a42ba0871",
+        "signature": "30558ea5d9103f872ae0985d8d4a594e5c6df9696b4b8bbb75e92a6fbdb5654b1cd1a7938a3bdda7ca3aa5055c3d28ea5ef2b4ddf426fcd7561b934b594add1b2f8f14f3aeda5266a0f04f88f0062e43dc8b3e026db8d7da0576866d0b1f79350a72797611829c230dcd6b17ad5e9c246572abed2292d2966fde5ff0e133aae33563a6b082c8205ca940790987b414b2adf9b7c57199d56124331302886a39fb719b723b6ab0fa971161014f848088d3ec8127f1e186385e33e5a2a9309b0f8e9d28397763cb5aac8c7521d6d7b0032fe3d2b3c902da43c045581de6ab81b1c88040bfa325b4f15289225552626369576e9e6dae9930829bd8840bddaa4c3b97"
+    },
+    {
+        "event_id": "4a9cbdf8-3ed3-4226-8028-412b049bbf10",
+        "timestamp_utc": "2026-04-04T11:30:29.837807+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "Veda",
+            "ipv6": "31db:5b6b:6e2e:4a8c:9420:e526:2c1:3c52",
+            "domain": "Veda.whitenet.local"
+        },
+        "prev_hash": "cf9b480b156a5f9f9e2c7dbb903ae57dca584a0a25a82e10a990287a42ba0871",
+        "event_hash": "6ed37b7d33341bd70871741a3a4deffacc841044462a5c29d72e24943aeab4b5",
+        "signature": "885180ac87592fcee10a654349e090db0b81ae61bcf96d40a7fc814c66c79c11ac3b66546bc0f9f22f000c709e7783213e12660a70cf63ae86d636e08b84e2ab24b4e47c1c41cad8a5f4998fbc879b818c28e43b60430996ff88c7d7215eee9fe477148c88a7e4dae4226e3e9d869a530036fc9312b87cfd2147a68e5526900b300b2aeb4d90a412da3252f3bb5cb458c8601ba83656dfee7b97f956035c4aab1087ee6d02267c2c61d751bfc6356fca1eb8e781506b1b950d380e0099ce8de20b1991c4879e8415de012da20a2c010a3a06b4f1f2a5bebfe141fce4bb6c5c57469a8951778d1c53059af99277a1ee6e18b8ea23465c58ceafdfe428ca58be67"
+    },
+    {
+        "event_id": "b566d7b7-2448-4721-a643-0fd32183298b",
+        "timestamp_utc": "2026-04-04T11:31:22.275569+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "Veda",
+            "cert_id": "3bbb142a-c529-42d8-94e6-10546d89ad13",
+            "valid_until": "2026-04-05T11:31:22.261496+00:00"
+        },
+        "prev_hash": "6ed37b7d33341bd70871741a3a4deffacc841044462a5c29d72e24943aeab4b5",
+        "event_hash": "476a5d533d92b08b361016eb0686f48642add111f5d58d58b86cfadaad48f3c4",
+        "signature": "31ca194204e1ee785d7b5331404f4a8fe716b70fbcf39f1d9b14c52120d566d222b3db957d3bdceb1c750852ec3a69b4921c96d79d1215246d73dd7d419bbbc1d29f88091822d92109a1c4c167c32d70b8e269fde906ad3888c33bd4a4fbcbbd91cc073fcb4aa6845ac639b0632ff77a9edc7ba9e124ae36d76de6d7afd8c7f2bf2666259d7c1a72d6cd6dbaa321620934557a827a611fb64436e529a5c4134586a4152254d607951aa11d4ca6b1bc18c6ef0394de521e61f6b7bd43a320653f5aca9e358a78dc15574f01ecc914b6a4d0e9054cbe694f6913b7de46eac1b7b8b47da483f1e063f7bbe42e382c89688c34788c7eeecf29997b082fa5941d9bee"
+    },
+    {
+        "event_id": "8941690d-00ff-455d-8a52-cfbd9fd4bee4",
+        "timestamp_utc": "2026-04-04T11:31:25.060082+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "Veda",
+            "ipv6": "a049:66d1:74b1:4c3e:973d:1493:f899:64fe",
+            "domain": "Veda.whitenet.local"
+        },
+        "prev_hash": "476a5d533d92b08b361016eb0686f48642add111f5d58d58b86cfadaad48f3c4",
+        "event_hash": "6870b9e96d88f004863faaba332754681da481c7ebb70cd18939f9f274a9ff72",
+        "signature": "12fe94b815eb70c3ac1390a873e01d688f772414020a34ee95bdcb999c6739e5ac451a478d931e9fafa56f70350bb496c5429311ea55e44b1202669eead8c25465931257c0ba5246776c773ee26990ee1981693f1f3d7938ad6ae361f90a6d701747972b90c7eda39d65bd9fd4cb8d3d19f5541d42594a196e16df7b758f60769776d3d35d9deb805590cedd53314847247526fa63ccebcbdee19c73660b1bc0ae1c9887a236bf6c1916f3d42a58f53088696558704b17f0202fe5ef15c3fd009c5e5eedb967191e4e058bbd05699ba4c878d2b5773835b785b3dc73c1e17c6714109c6bd0ce6f128340e7af1503ff77818092c96a9405a9431dad2e1ad509f4"
+    },
+    {
+        "event_id": "cf745bd1-e07c-406c-ae4b-967374f8534c",
+        "timestamp_utc": "2026-04-04T11:33:07.458094+00:00",
+        "action": "issue_certificate",
+        "status": "success",
+        "details": {
+            "user_id": "Vedi",
+            "cert_id": "f6b2895f-d381-4cbb-812a-8d9fac439a20",
+            "valid_until": "2026-04-05T11:33:07.447127+00:00"
+        },
+        "prev_hash": "6870b9e96d88f004863faaba332754681da481c7ebb70cd18939f9f274a9ff72",
+        "event_hash": "cdbb94540749102df575000110f431e63c310f70a14890f630283b7c1056ecc1",
+        "signature": "44a1a1cc7c30aa2739fca812af17e00a402529c3064ccdc2e468c4016891de29f90ddac75919dbdc031d6421c3adab3bba211c92cde33d81902f29da19f1d68742b068c56e3f630de057ad8109c8e096fba57d0865f35d5eada7dde9a90b5fae0edb4e449f85dc57f5f440bf01a9e61967f9597ac9822ea13ee225da990583935a72a8a1914353c38b41318cf713546b1470d25c2198701803ef53c49e9dab4e83577acb9c03bf87d324d653f128b27f266974c6b1f207cf88220a062ab478eda2c675324c4e09f845aa4b6a96c6bf738f00d9d5b1ce1c45a81c1ee0aa4dbba2448fc43351e6bce9db827753b19ff3db0f4db3745e0fc26f3bb49b51773e13da"
+    },
+    {
+        "event_id": "fd4b5cf7-d968-4cb7-ac7a-cb2408542510",
+        "timestamp_utc": "2026-04-04T11:33:10.419062+00:00",
+        "action": "bind_identity",
+        "status": "success",
+        "details": {
+            "user_id": "Vedi",
+            "ipv6": "46e7:a60b:842f:4621:b07d:ff1c:fc96:689e",
+            "domain": "Vedi.whitenet.local"
+        },
+        "prev_hash": "cdbb94540749102df575000110f431e63c310f70a14890f630283b7c1056ecc1",
+        "event_hash": "88b318e8ae79de167315a2cb339d435e709aa203bcd5bdb1c0f0c13c2b8cd08f",
+        "signature": "91330b791d3187e9559a87862edba8631f35419d06a161bde184e6fbeae97d259edca8035b983cb64657a123820f8907f69e0768d84ceddc30225ff074a22f862579ec951b4d8ff79eed203a139c375524a5c5223652a656f93c2c0eaafdd123fdfdaabea5bab89fb17da5f601db16e0dfbe99d73715c2e199eb6ce9c7e84a63b188642348b3d1e13b65ef34c26ae3cead70942bcdfb51fffc17aaa1424e15085b5417662aecb8992cef283febfc14506e912d22230eba0b406e0beda51023f7b01a75ddebde33bc24275d1e5950a409101ce1a9770150d1634ce6aa2a0a3e30a36bc5305fc76aeb3a55b749c467beea5d977e65d9f2c2b76f4e31b25634c9bd"
     }
 ]

@@ -7,6 +7,8 @@ import time
 import sys
 import hashlib
 from datetime import datetime, timezone
+import firebase_admin
+from firebase_admin import credentials, db
 
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
@@ -16,7 +18,22 @@ try:
     sys.stdout.reconfigure(encoding="utf-8")
 except Exception:
     pass
+# Firebase Initialization
+FIREBASE_INITIALIZED = False
 
+def init_firebase():
+    global FIREBASE_INITIALIZED
+
+    if FIREBASE_INITIALIZED:
+        return
+
+    cred = credentials.Certificate("serviceAccountKey.json")
+
+    firebase_admin.initialize_app(cred, {
+        "databaseURL": "https://white-net-2aa08-default-rtdb.firebaseio.com/"
+    })
+
+    FIREBASE_INITIALIZED = True
 
 # =========================
 # ASCII BANNER
@@ -202,8 +219,18 @@ def load_registry():
 
 
 def save_registry(reg):
+    # Save locally
     with open(REGISTRY_FILE, "w") as f:
         json.dump(reg, f, indent=4)
+
+    # 🔥 Sync to Firebase
+    try:
+        init_firebase()
+        ref = db.reference("registry")
+        ref.set(reg)
+        print("[Firebase] Registry synced successfully")
+    except Exception as e:
+        print(f"[Firebase ERROR] {e}")
 
 
 def load_dns_records():
