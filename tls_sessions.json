@@ -1,20 +1,11 @@
 {
-    "a69dfa1a8984d85d097fa39803b2d34b": {
-        "session_id": "a69dfa1a8984d85d097fa39803b2d34b",
-        "client_ipv6": "84dc:3053:ab2e:4d57:b27a:fc48:cd32:ffa3",
-        "server_ipv6": "5e91:6c61:af1d:4bd5:9cfb:9693:99f5:64ff",
+    "b442cb8ac9d49265ba5bbe51e213664f": {
+        "session_id": "b442cb8ac9d49265ba5bbe51e213664f",
+        "client_ipv6": "fb42:7625:be90:495d:af16:3d0:b06a:de27",
+        "server_ipv6": "f783:e09d:4e94:4fc2:83ea:b358:259d:8a8",
         "cipher_suite": "TLS_AES_256_GCM_SHA384",
-        "master_secret_hash": "28fafdf9fc62071f1e367746aa9b2d0ff66affd06f45d164cf4583b5d0e6909e",
-        "established_at": "2026-04-04T08:44:43.776979+00:00",
-        "status": "active"
-    },
-    "dd5a6621f85986d24fb2370d4c7d6f0a": {
-        "session_id": "dd5a6621f85986d24fb2370d4c7d6f0a",
-        "client_ipv6": "5e91:6c61:af1d:4bd5:9cfb:9693:99f5:64ff",
-        "server_ipv6": "89e6:b835:5172:4978:b198:540b:47ec:976a",
-        "cipher_suite": "TLS_AES_256_GCM_SHA384",
-        "master_secret_hash": "1590e0456c8b72488e7e0fc72bb1bf4c1f8eb800735c653b2ead24ad37eb49da",
-        "established_at": "2026-04-04T08:44:43.855321+00:00",
+        "master_secret_hash": "e3141b9c60710442c260b5a88b4a125dc69d9e755a44d67a7daeae678940c96b",
+        "established_at": "2026-04-04T12:10:01.567609+00:00",
         "status": "active"
     }
 }
