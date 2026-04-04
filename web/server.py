@@ -45,6 +45,11 @@ def _capture(fn, *args, **kwargs):
             os.environ["WHITENET_QUIET"] = prev
 
 
+@app.route("/about")
+def about_page():
+    return send_from_directory(PROJECT_ROOT, "about.html")
+
+
 @app.route("/api/health")
 def health():
     return jsonify({"status": "ok", "version": cli.WHITENET_VERSION})

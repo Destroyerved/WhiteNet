@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhiteNet — Identity-First Zero Trust Network</title>
+<meta name="description" content="WhiteNet v3.0.0 — A Zero Trust, identity-first network layer using IPv6 and PKI to ensure accountability in critical digital services.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══ RESET ═══ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:'Rajdhani',sans-serif;background:#030508;color:#b0c4d8;line-height:1.6;overflow-x:hidden}
+
+/* ═══ TRON GRID ═══ */
+.tron-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,255,255,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,255,.03) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+.tron-grid::after{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(0,255,255,.06) 0%,transparent 60%)}
+
+/* ═══ GLOW EFFECTS ═══ */
+.glow-line{position:absolute;height:1px;background:linear-gradient(90deg,transparent,#0ff,transparent);opacity:.3;animation:scanline 8s linear infinite}
+@keyframes scanline{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+.glow-orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+.glow-orb.cyan{width:400px;height:400px;background:rgba(0,255,255,.08);top:-100px;right:-100px;animation:float1 12s ease-in-out infinite}
+.glow-orb.blue{width:350px;height:350px;background:rgba(0,100,255,.06);bottom:-80px;left:-80px;animation:float2 15s ease-in-out infinite}
+.glow-orb.purple{width:300px;height:300px;background:rgba(120,0,255,.05);top:50%;left:50%;animation:float3 18s ease-in-out infinite}
+@keyframes float1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-40px,60px) scale(1.2)}}
+@keyframes float2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,-40px) scale(1.15)}}
+@keyframes float3{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.3)}}
+
+/* ═══ LAYOUT ═══ */
+.container{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:10}
+section{padding:100px 0;position:relative}
+
+/* ═══ TYPOGRAPHY ═══ */
+h1,h2,h3{font-family:'Orbitron',sans-serif;letter-spacing:1px}
+h1{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;line-height:1.1}
+h2{font-size:clamp(1.5rem,3.5vw,2.5rem);font-weight:700;margin-bottom:16px}
+h3{font-size:1.1rem;font-weight:600;margin-bottom:8px}
+.mono{font-family:'JetBrains Mono',monospace}
+.text-cyan{color:#0ff}
+.text-white{color:#e8f0f8}
+.text-dim{color:#5a7a94}
+.text-glow{text-shadow:0 0 20px rgba(0,255,255,.4),0 0 60px rgba(0,255,255,.1)}
+
+/* ═══ HERO ═══ */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden}
+.hero-content{position:relative;z-index:10}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;
+  border:1px solid rgba(0,255,255,.3);background:rgba(0,255,255,.05);font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#0ff;margin-bottom:24px}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:#0ff;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,255,.4)}50%{opacity:.6;box-shadow:0 0 0 8px rgba(0,255,255,0)}}
+.hero h1 .line1{display:block;background:linear-gradient(135deg,#0ff,#00a8ff,#7b4eff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero h1 .line2{display:block;color:#e8f0f8;font-weight:400;font-size:.55em;margin-top:8px}
+.hero-sub{font-size:1.15rem;color:#7a9ab8;max-width:640px;margin:24px 0 40px;line-height:1.8;font-weight:400}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap}
+.hero-stat{text-align:center;min-width:80px}
+.hero-stat .val{font-family:'Orbitron',sans-serif;font-size:1.8rem;font-weight:800;color:#0ff;text-shadow:0 0 15px rgba(0,255,255,.4)}
+.hero-stat .label{font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:#5a7a94;margin-top:4px}
+
+/* hero circuit lines */
+.circuit-svg{position:absolute;right:-40px;top:50%;transform:translateY(-50%);width:500px;height:500px;opacity:.15;z-index:1}
+@media(max-width:768px){.circuit-svg{display:none}}
+
+/* ═══ SECTION HEADER ═══ */
+.section-header{text-align:center;margin-bottom:60px}
+.section-header .tag{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:4px;color:#0ff;margin-bottom:12px;display:block}
+.section-header h2{color:#e8f0f8}
+.section-header p{color:#7a9ab8;max-width:600px;margin:12px auto 0;font-size:1rem}
+.section-divider{width:80px;height:2px;background:linear-gradient(90deg,transparent,#0ff,transparent);margin:20px auto 0}
+
+/* ═══ GLASS CARD ═══ */
+.glass{background:rgba(8,18,30,.7);border:1px solid rgba(0,255,255,.1);border-radius:16px;backdrop-filter:blur(10px);
+  transition:all .4s ease;position:relative;overflow:hidden}
+.glass::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,255,255,.03),transparent 60%);pointer-events:none}
+.glass:hover{border-color:rgba(0,255,255,.25);box-shadow:0 0 30px rgba(0,255,255,.06),inset 0 0 30px rgba(0,255,255,.02);transform:translateY(-2px)}
+
+/* ═══ PROBLEM STATEMENT ═══ */
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
+@media(max-width:768px){.problem-grid{grid-template-columns:1fr}}
+.problem-text h3{color:#ff6b6b;font-size:1rem;margin-bottom:16px}
+.problem-text p{font-size:.95rem;line-height:1.8;margin-bottom:16px}
+.problem-text .highlight{color:#0ff;font-weight:600}
+.threat-list{list-style:none;padding:0}
+.threat-list li{padding:12px 16px;border-left:2px solid #ff6b6b;margin-bottom:8px;background:rgba(255,107,107,.04);border-radius:0 8px 8px 0;font-size:.9rem;transition:all .3s}
+.threat-list li:hover{background:rgba(255,107,107,.08);border-left-color:#0ff}
+.threat-list li .icon{margin-right:8px}
+
+/* ═══ ARCHITECTURE ═══ */
+.arch-diagram{background:rgba(8,18,30,.9);border:1px solid rgba(0,255,255,.15);border-radius:20px;padding:40px;position:relative;overflow:hidden}
+.arch-diagram svg{width:100%;height:auto;display:block}
+.arch-layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-top:32px}
+.arch-layer{padding:20px;border-radius:12px;border:1px solid rgba(0,255,255,.1);background:rgba(0,255,255,.02);text-align:center}
+.arch-layer .layer-num{font-family:'Orbitron',sans-serif;font-size:.65rem;color:#0ff;text-transform:uppercase;letter-spacing:3px;margin-bottom:8px}
+.arch-layer h3{color:#e8f0f8;font-size:.95rem;margin-bottom:6px}
+.arch-layer p{font-size:.8rem;color:#7a9ab8}
+
+/* ═══ FLOW ═══ */
+.flow-steps{position:relative}
+.flow-steps::before{content:'';position:absolute;left:24px;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,transparent,#0ff 10%,#0ff 90%,transparent);opacity:.3}
+.flow-step{display:flex;gap:24px;margin-bottom:32px;position:relative}
+.flow-step .num{width:50px;height:50px;border-radius:50%;border:2px solid rgba(0,255,255,.4);
+  display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:.85rem;color:#0ff;
+  background:rgba(0,255,255,.05);flex-shrink:0;position:relative;z-index:2;
+  box-shadow:0 0 15px rgba(0,255,255,.1)}
+.flow-step .content{flex:1}
+.flow-step .content h3{color:#e8f0f8;margin-bottom:4px}
+.flow-step .content p{font-size:.88rem;color:#7a9ab8}
+.flow-step .content code{background:rgba(0,255,255,.08);color:#0ff;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8rem}
+
+/* ═══ FEATURES ═══ */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.feat-card{padding:28px;transition:all .4s}
+.feat-card .icon-box{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;
+  background:linear-gradient(135deg,rgba(0,255,255,.1),rgba(0,100,255,.1));border:1px solid rgba(0,255,255,.15);margin-bottom:16px}
+.feat-card h3{color:#e8f0f8;font-size:1rem;margin-bottom:8px}
+.feat-card p{font-size:.85rem;color:#7a9ab8;line-height:1.7}
+.feat-card:hover .icon-box{box-shadow:0 0 20px rgba(0,255,255,.2);border-color:rgba(0,255,255,.4)}
+
+/* ═══ TECH STACK ═══ */
+.tech-bar{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:40px}
+.tech-pill{padding:8px 20px;border-radius:100px;border:1px solid rgba(0,255,255,.2);background:rgba(0,255,255,.04);
+  font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#0ff;transition:all .3s}
+.tech-pill:hover{background:rgba(0,255,255,.1);border-color:rgba(0,255,255,.4);box-shadow:0 0 15px rgba(0,255,255,.1)}
+
+/* ═══ CTA ═══ */
+.cta-section{text-align:center;padding:80px 0}
+.cta-box{display:inline-block;padding:40px 60px;border:1px solid rgba(0,255,255,.2);border-radius:20px;
+  background:linear-gradient(135deg,rgba(0,255,255,.03),rgba(0,50,100,.05));position:relative}
+.cta-box::before{content:'';position:absolute;inset:-1px;border-radius:20px;padding:1px;
+  background:linear-gradient(135deg,rgba(0,255,255,.3),transparent,rgba(0,100,255,.3));mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask-composite:exclude;-webkit-mask-composite:xor;pointer-events:none}
+.cta-cmd{font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:#0ff;background:rgba(0,0,0,.4);padding:12px 24px;border-radius:10px;display:inline-block;margin-top:20px;
+  border:1px solid rgba(0,255,255,.15);cursor:pointer;transition:all .3s}
+.cta-cmd:hover{background:rgba(0,255,255,.08);box-shadow:0 0 20px rgba(0,255,255,.1)}
+
+/* ═══ FOOTER ═══ */
+footer{text-align:center;padding:40px 0;border-top:1px solid rgba(0,255,255,.08);font-size:.8rem;color:#3a5a74}
+
+/* ═══ ANIMATIONS ═══ */
+.reveal{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:none}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-4{transition-delay:.4s}
+
+/* ═══ NAV ═══ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;transition:all .4s;
+  background:rgba(3,5,8,.6);backdrop-filter:blur(20px);border-bottom:1px solid transparent}
+nav.scrolled{background:rgba(3,5,8,.9);border-bottom-color:rgba(0,255,255,.1)}
+nav .inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+nav .logo{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:800;color:#0ff;text-shadow:0 0 15px rgba(0,255,255,.3)}
+nav .logo span{color:#e8f0f8;font-weight:400}
+nav .links{display:flex;gap:24px}
+nav .links a{text-decoration:none;font-size:.8rem;color:#5a7a94;font-weight:500;letter-spacing:1px;text-transform:uppercase;transition:color .3s}
+nav .links a:hover{color:#0ff}
+@media(max-width:640px){nav .links{display:none}}
+
+/* ═══ TYPEWRITER ═══ */
+.typewriter{display:inline}
+.typewriter::after{content:'▊';color:#0ff;animation:blink-caret .8s step-end infinite;font-weight:400}
+.typewriter.done::after{content:none}
+@keyframes blink-caret{from,to{opacity:1}50%{opacity:0}}
+
+/* ═══ LIVE TERMINAL ═══ */
+.terminal-window{background:#080c14;border:1px solid rgba(0,255,255,.2);border-radius:14px;overflow:hidden;position:relative;box-shadow:0 0 40px rgba(0,255,255,.06),0 20px 60px rgba(0,0,0,.5)}
+.terminal-bar{background:rgba(0,255,255,.06);padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(0,255,255,.1)}
+.terminal-bar .dot{width:10px;height:10px;border-radius:50%}
+.terminal-bar .dot.r{background:#ff5f56}
+.terminal-bar .dot.y{background:#ffbd2e}
+.terminal-bar .dot.g{background:#27c93f}
+.terminal-bar .title{margin-left:12px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#5a7a94;letter-spacing:1px}
+.terminal-body{padding:20px;font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.8;color:#7a9ab8;height:340px;overflow:hidden;position:relative}
+.terminal-body::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(transparent,#080c14);pointer-events:none}
+.term-prompt{color:#0ff}
+.term-cmd{color:#e8f0f8}
+.term-ok{color:#27c93f}
+.term-err{color:#ff5f56}
+.term-warn{color:#ffbd2e}
+.term-dim{color:#3a5570}
+.term-line{opacity:0;animation:termFadeIn .3s forwards}
+@keyframes termFadeIn{to{opacity:1}}
+.term-cursor{display:inline-block;width:7px;height:14px;background:#0ff;animation:blink-caret .8s step-end infinite;vertical-align:middle;margin-left:2px}
+
+/* ═══ HEX RAIN ═══ */
+#hexrain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.15}
+
+/* ═══ SCANLINES ═══ */
+.scanlines{position:fixed;inset:0;z-index:2;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,255,.008) 2px,rgba(0,255,255,.008) 4px)}
+
+/* ═══ DATA STREAM BADGE ═══ */
+.data-stream{overflow:hidden;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:rgba(0,255,255,.3);padding:8px 0;border-top:1px solid rgba(0,255,255,.05);border-bottom:1px solid rgba(0,255,255,.05)}
+.data-stream .track{display:inline-block;animation:scroll-left 30s linear infinite}
+@keyframes scroll-left{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+</style>
+</head>
+<body>
+
+<!-- BG EFFECTS -->
+<div class="tron-grid"></div>
+<div class="glow-orb cyan"></div>
+<div class="glow-orb blue"></div>
+<div class="glow-orb purple"></div>
+<canvas id="hexrain"></canvas>
+<div class="scanlines"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="inner">
+    <div class="logo">WHITE<span>NET</span></div>
+    <div class="links">
+      <a href="#problem">Problem</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#flow">Flow</a>
+      <a href="#features">Features</a>
+      <a href="#tech">Stack</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge"><span class="dot"></span> VERSION 3.0.0 — LIVE</div>
+      <h1>
+        <span class="line1">WhiteNet</span>
+        <span class="line2">Identity-First Zero Trust Network</span>
+      </h1>
+      <p class="hero-sub">
+        <span id="hero-typewriter" class="typewriter"></span>
+      </p>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="val">7</div><div class="label">Trust Checks</div></div>
+        <div class="hero-stat"><div class="val">12</div><div class="label">Demo Phases</div></div>
+        <div class="hero-stat"><div class="val">6</div><div class="label">Protocols</div></div>
+        <div class="hero-stat"><div class="val">3</div><div class="label">Interfaces</div></div>
+      </div>
+    </div>
+    <!-- Circuit decoration -->
+    <svg class="circuit-svg" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="250" cy="250" r="200" stroke="cyan" stroke-width="0.5" opacity=".3"/>
+      <circle cx="250" cy="250" r="150" stroke="cyan" stroke-width="0.3" opacity=".2" stroke-dasharray="8 8">
+        <animateTransform attributeName="transform" type="rotate" from="0 250 250" to="360 250 250" dur="40s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="250" cy="250" r="100" stroke="cyan" stroke-width="0.5" opacity=".25"/>
+      <circle cx="250" cy="50" r="6" fill="cyan" opacity=".6"><animate attributeName="opacity" values=".6;1;.6" dur="2s" repeatCount="indefinite"/></circle>
+      <circle cx="450" cy="250" r="6" fill="cyan" opacity=".6"><animate attributeName="opacity" values=".6;1;.6" dur="2s" begin="0.5s" repeatCount="indefinite"/></circle>
+      <circle cx="250" cy="450" r="6" fill="cyan" opacity=".6"><animate attributeName="opacity" values=".6;1;.6" dur="2s" begin="1s" repeatCount="indefinite"/></circle>
+      <circle cx="50" cy="250" r="6" fill="cyan" opacity=".6"><animate attributeName="opacity" values=".6;1;.6" dur="2s" begin="1.5s" repeatCount="indefinite"/></circle>
+      <line x1="250" y1="50" x2="250" y2="150" stroke="cyan" stroke-width="0.5" opacity=".3"/>
+      <line x1="450" y1="250" x2="350" y2="250" stroke="cyan" stroke-width="0.5" opacity=".3"/>
+      <line x1="250" y1="450" x2="250" y2="350" stroke="cyan" stroke-width="0.5" opacity=".3"/>
+      <line x1="50" y1="250" x2="150" y2="250" stroke="cyan" stroke-width="0.5" opacity=".3"/>
+      <!-- inner node connections -->
+      <line x1="180" y1="180" x2="320" y2="320" stroke="cyan" stroke-width="0.3" opacity=".2"/>
+      <line x1="320" y1="180" x2="180" y2="320" stroke="cyan" stroke-width="0.3" opacity=".2"/>
+      <circle cx="250" cy="250" r="8" fill="none" stroke="cyan" stroke-width="1.5" opacity=".5">
+        <animate attributeName="r" values="8;12;8" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values=".5;.8;.5" dur="3s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+  </div>
+  <div class="glow-line" style="top:30%;width:100%"></div>
+  <div class="glow-line" style="top:70%;width:100%;animation-delay:4s;animation-direction:reverse"></div>
+</section>
+
+<!-- ═══ DATA STREAM ═══ -->
+<div class="data-stream"><div class="track" id="datatrack"></div></div>
+
+<!-- ═══════════ LIVE TERMINAL ═══════════ -->
+<section id="terminal" style="padding:60px 0">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="tag">// Live Demo</span>
+      <h2 class="text-white">WhiteNet in Action</h2>
+      <p>Watch the CLI execute a full security lifecycle in real-time</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="terminal-window reveal" style="max-width:800px;margin:0 auto">
+      <div class="terminal-bar">
+        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        <span class="title">whitenet@zero-trust ~ powershell</span>
+      </div>
+      <div class="terminal-body" id="term-body"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PROBLEM ═══════════ -->
+<section id="problem">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="tag">// The Problem</span>
+      <h2 class="text-white">Why WhiteNet Exists</h2>
+      <p>Critical digital infrastructure lacks identity-level accountability. WhiteNet changes that.</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-text reveal">
+        <h3 style="font-family:Orbitron;color:#ff6b6b">🔴 THE PROBLEM</h3>
+        <p>
+          Today's internet was built for <span class="highlight">connectivity</span>, not <span class="highlight">accountability</span>.
+          Anyone can connect, send packets, and operate services — often with little or no verified identity.
+          This design flaw enables:
+        </p>
+        <ul class="threat-list">
+          <li><span class="icon">🎭</span> <strong>Identity Spoofing</strong> — Actors impersonate legitimate services</li>
+          <li><span class="icon">🕵️</span> <strong>Untraceable Attacks</strong> — No binding between identity and network address</li>
+          <li><span class="icon">⚡</span> <strong>DNS Poisoning</strong> — Name resolution can be hijacked without verification</li>
+          <li><span class="icon">🔓</span> <strong>Trust Assumptions</strong> — Systems trust connections by default, violating Zero Trust</li>
+          <li><span class="icon">📡</span> <strong>Certificate Fraud</strong> — No lifecycle management for identity credentials</li>
+        </ul>
+      </div>
+      <div class="reveal reveal-delay-2" style="padding:20px">
+        <div class="glass" style="padding:32px">
+          <h3 style="font-family:Orbitron;color:#0ff;font-size:.9rem;margin-bottom:20px">✅ THE WHITENET SOLUTION</h3>
+          <p style="font-size:.9rem;line-height:2;color:#b0c4d8">
+            WhiteNet creates an <strong style="color:#0ff">identity-first network layer</strong> where every participant must hold a
+            <strong style="color:#0ff">CA-signed cryptographic certificate</strong> bound to a unique
+            <strong style="color:#0ff">IPv6 address</strong> before any communication is allowed.
+          </p>
+          <div style="margin-top:24px;padding:16px;background:rgba(0,255,255,.04);border-radius:10px;border:1px solid rgba(0,255,255,.1)">
+            <p style="font-family:'JetBrains Mono';font-size:.75rem;color:#0ff;margin-bottom:8px">CORE PRINCIPLE</p>
+            <p style="font-size:1.1rem;color:#e8f0f8;font-weight:600;font-family:Orbitron;line-height:1.6">
+              "No identity → No access.<br>Tampered identity → Blocked."
+            </p>
+          </div>
+          <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="text-align:center;padding:12px;background:rgba(0,255,255,.03);border-radius:8px">
+              <div style="font-family:Orbitron;font-size:1.3rem;color:#0ff;font-weight:700">100%</div>
+              <div style="font-size:.7rem;color:#5a7a94;text-transform:uppercase;letter-spacing:1px">Identity Verified</div>
+            </div>
+            <div style="text-align:center;padding:12px;background:rgba(0,255,255,.03);border-radius:8px">
+              <div style="font-family:Orbitron;font-size:1.3rem;color:#0ff;font-weight:700">0</div>
+              <div style="font-size:.7rem;color:#5a7a94;text-transform:uppercase;letter-spacing:1px">Anonymous Access</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ARCHITECTURE ═══════════ -->
+<section id="architecture" style="background:rgba(0,255,255,.01)">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="tag">// Architecture</span>
+      <h2 class="text-white">System Architecture</h2>
+      <p>Four-layer Zero Trust stack — from cryptographic root to user interface</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="arch-diagram reveal">
+      <svg viewBox="0 0 900 420" fill="none" xmlns="http://www.w3.org/2000/svg" style="font-family:Rajdhani,sans-serif">
+        <!-- Layer backgrounds -->
+        <rect x="50" y="10" width="800" height="80" rx="12" fill="rgba(0,255,255,.06)" stroke="cyan" stroke-width=".8" opacity=".6"/>
+        <rect x="50" y="110" width="800" height="80" rx="12" fill="rgba(0,100,255,.05)" stroke="#4488ff" stroke-width=".8" opacity=".5"/>
+        <rect x="50" y="210" width="800" height="80" rx="12" fill="rgba(120,0,255,.04)" stroke="#7b4eff" stroke-width=".8" opacity=".4"/>
+        <rect x="50" y="310" width="800" height="80" rx="12" fill="rgba(0,200,100,.04)" stroke="#00cc66" stroke-width=".8" opacity=".4"/>
+
+        <!-- Layer labels -->
+        <text x="80" y="40" fill="cyan" font-size="11" font-weight="700" font-family="Orbitron" letter-spacing="2">INTERFACE LAYER</text>
+        <text x="80" y="60" fill="#7a9ab8" font-size="13">CLI  ·  Desktop GUI (tkinter)  ·  Web Dashboard (React + Vite + Framer Motion)</text>
+        <text x="80" y="78" fill="#5a7a94" font-size="11">5-tab console: Dashboard · Topology · Actions · Governance · Audit</text>
+
+        <text x="80" y="140" fill="#4488ff" font-size="11" font-weight="700" font-family="Orbitron" letter-spacing="2">API LAYER</text>
+        <text x="80" y="160" fill="#7a9ab8" font-size="13">Flask REST API  ·  /api/issue  ·  /api/bind  ·  /api/verify  ·  /api/assess  ·  /api/topology</text>
+        <text x="80" y="178" fill="#5a7a94" font-size="11">/api/tls-handshake · /api/dnssec-sign · /api/vpn-tunnel · /api/governance/* · /api/revoke · /api/renew</text>
+
+        <text x="80" y="240" fill="#7b4eff" font-size="11" font-weight="700" font-family="Orbitron" letter-spacing="2">ENGINE LAYER</text>
+        <text x="80" y="260" fill="#7a9ab8" font-size="13">cli.py — PKI · IPv6 Binding · Verify · Assess · TLS 1.3 · DNSSEC · VPN · Governance · Audit Chain</text>
+        <text x="80" y="278" fill="#5a7a94" font-size="11">Certificate lifecycle: Issue → Bind → Verify → Revoke → Renew  |  7-factor trust scorecard</text>
+
+        <text x="80" y="340" fill="#00cc66" font-size="11" font-weight="700" font-family="Orbitron" letter-spacing="2">DATA LAYER</text>
+        <text x="80" y="360" fill="#7a9ab8" font-size="13">registry.json · dns_records.json · audit_log.json · cert.json · revoked_nodes.json</text>
+        <text x="80" y="378" fill="#5a7a94" font-size="11">proposals.json · tls_sessions.json · vpn_tunnels.json · dnssec_signed.json · CA keypair (PEM)</text>
+
+        <!-- Connecting arrows -->
+        <line x1="450" y1="90" x2="450" y2="110" stroke="cyan" stroke-width="1.5" opacity=".4" stroke-dasharray="4 4"/>
+        <line x1="450" y1="190" x2="450" y2="210" stroke="#4488ff" stroke-width="1.5" opacity=".4" stroke-dasharray="4 4"/>
+        <line x1="450" y1="290" x2="450" y2="310" stroke="#7b4eff" stroke-width="1.5" opacity=".4" stroke-dasharray="4 4"/>
+
+        <!-- Arrow tips -->
+        <polygon points="446,110 454,110 450,116" fill="cyan" opacity=".5"/>
+        <polygon points="446,210 454,210 450,216" fill="#4488ff" opacity=".5"/>
+        <polygon points="446,310 454,310 450,316" fill="#7b4eff" opacity=".5"/>
+      </svg>
+    </div>
+    <div class="arch-layers reveal reveal-delay-2">
+      <div class="arch-layer">
+        <div class="layer-num">Layer 1</div>
+        <h3 class="text-cyan">Certificate Authority</h3>
+        <p>RSA-2048 CA keypair generates and signs all identity certificates</p>
+      </div>
+      <div class="arch-layer">
+        <div class="layer-num">Layer 2</div>
+        <h3 class="text-cyan">Identity Registry</h3>
+        <p>Maps signed certificates to unique IPv6 addresses with DNS bindings</p>
+      </div>
+      <div class="arch-layer">
+        <div class="layer-num">Layer 3</div>
+        <h3 class="text-cyan">Trust Engine</h3>
+        <p>7-factor posture assessment: registry · cert · revocation · expiry · DNS · audit · signals</p>
+      </div>
+      <div class="arch-layer">
+        <div class="layer-num">Layer 4</div>
+        <h3 class="text-cyan">Protocol Stack</h3>
+        <p>TLS 1.3 sessions · DNSSEC verification · VPN encrypted tunnels · Governance voting</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TRUST FLOW ═══════════ -->
+<section id="flow">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="tag">// Trust Flow</span>
+      <h2 class="text-white">Identity Lifecycle & Trust Decision</h2>
+      <p>From certificate issuance to real-time trust assessment — every step is cryptographically verifiable</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="flow-steps reveal">
+      <div class="flow-step">
+        <div class="num">01</div>
+        <div class="content">
+          <h3 class="text-white">CA Key Generation</h3>
+          <p>RSA-2048 CA keypair is generated. The private key signs all certificates; the public key verifies them. <code>ca_private.pem</code> + <code>ca_public.pem</code></p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="num">02</div>
+        <div class="content">
+          <h3 class="text-white">Certificate Issuance</h3>
+          <p>User identity gets a unique <code>cert_id</code>, RSA-2048 key pair, and CA signature. Certificate includes <code>valid_until</code> expiry timestamp (24h by default).</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="num">03</div>
+        <div class="content">
+          <h3 class="text-white">IPv6 Binding</h3>
+          <p>Certificate is bound to a unique, randomly-generated IPv6 address. DNS record <code>{user_id}.whitenet.local → IPv6</code> is created automatically.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="num">04</div>
+        <div class="content">
+          <h3 class="text-white">Trust Verification</h3>
+          <p>Before any communication, the node's certificate signature is re-verified against the CA public key. Tampered certificates are <strong style="color:#ff6b6b">immediately detected and blocked</strong>.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="num">05</div>
+        <div class="content">
+          <h3 class="text-white">Posture Assessment</h3>
+          <p>7-factor trust scorecard produces a <code>TRUSTED</code> / <code>WARNING</code> / <code>BLOCKED</code> verdict with a 0–100 score. Checks: registry, certificate, revocation, expiry, DNS identity, audit chain, recent signals.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="num">06</div>
+        <div class="content">
+          <h3 class="text-white">Secure Communication</h3>
+          <p>TLS 1.3 handshake → cipher negotiation → VPN tunnel establishment. Only verified, non-revoked nodes can participate. All actions logged to the signed audit chain.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="num">07</div>
+        <div class="content">
+          <h3 class="text-white">Lifecycle Management</h3>
+          <p>Certificates can be <strong style="color:#ff6b6b">revoked</strong> (blocked from network) or <strong style="color:#0ff">renewed</strong> (fresh certificate, same IPv6 binding). Governance proposals manage policy changes through community voting.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FEATURES ═══════════ -->
+<section id="features" style="background:rgba(0,255,255,.01)">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="tag">// Features</span>
+      <h2 class="text-white">v3.0.0 Feature Set</h2>
+      <p>Every feature enforces the identity-first, Zero Trust principle</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="feat-grid">
+      <div class="glass feat-card reveal"><div class="icon-box">🔐</div><h3>PKI Certificate Authority</h3><p>RSA-2048 CA issues signed identity certificates with unique cert_id, expiry timestamps, and revocation support.</p></div>
+      <div class="glass feat-card reveal reveal-delay-1"><div class="icon-box">🌐</div><h3>IPv6 Identity Binding</h3><p>Each certificate is cryptographically bound to a unique IPv6 address with automatic DNS record creation.</p></div>
+      <div class="glass feat-card reveal reveal-delay-2"><div class="icon-box">🛡️</div><h3>7-Factor Trust Assessment</h3><p>TRUSTED / WARNING / BLOCKED verdicts with 0-100 scoring across registry, cert, revocation, expiry, DNS, audit chain, and risk signals.</p></div>
+      <div class="glass feat-card reveal reveal-delay-3"><div class="icon-box">🔒</div><h3>TLS 1.3 Simulation</h3><p>Full handshake workflow with client/server random, pre-master secret derivation, cipher suite negotiation (AES-256-GCM-SHA384).</p></div>
+      <div class="glass feat-card reveal"><div class="icon-box">📡</div><h3>DNSSEC Signing</h3><p>CA-signed DNS records with RRSIG-style signatures. Independent verification detects tampered domain-to-IP mappings.</p></div>
+      <div class="glass feat-card reveal reveal-delay-1"><div class="icon-box">🔗</div><h3>VPN Tunnel Simulation</h3><p>Encrypted peer tunnels with AES-256-GCM + HMAC-SHA384. Only verified, non-revoked nodes can establish tunnels.</p></div>
+      <div class="glass feat-card reveal reveal-delay-2"><div class="icon-box">🗳️</div><h3>Governance Voting</h3><p>Decentralised proposal system with community voting. Proposals auto-resolve after 3 votes (simple majority). Full audit trail.</p></div>
+      <div class="glass feat-card reveal reveal-delay-3"><div class="icon-box">🚫</div><h3>Revocation & Renewal</h3><p>Compromised certificates are revoked (BLOCKED verdict). Renewed certificates preserve IPv6 binding with fresh validity.</p></div>
+      <div class="glass feat-card reveal"><div class="icon-box">📋</div><h3>Signed Audit Chain</h3><p>Append-only event log with prev_hash linkage, per-event SHA-256 hashing, and RSA signature. Tamper-evident.</p></div>
+      <div class="glass feat-card reveal reveal-delay-1"><div class="icon-box">🚨</div><h3>Spoof Detection</h3><p>Registry tampering is caught by CA signature verification. Attackers cannot forge trust without the CA private key.</p></div>
+      <div class="glass feat-card reveal reveal-delay-2"><div class="icon-box">🖥️</div><h3>Triple Interface</h3><p>CLI (full automation), Desktop GUI (tkinter), and Web Dashboard (React + Vite). All share the same engine.</p></div>
+      <div class="glass feat-card reveal reveal-delay-3"><div class="icon-box">🗺️</div><h3>Network Topology</h3><p>Live SVG force-directed graph showing nodes colored by trust posture with VPN/TLS connection edges.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TECH STACK ═══════════ -->
+<section id="tech">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="tag">// Tech Stack</span>
+      <h2 class="text-white">Built With</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="tech-bar reveal">
+      <div class="tech-pill">Python 3</div>
+      <div class="tech-pill">cryptography (RSA)</div>
+      <div class="tech-pill">Flask</div>
+      <div class="tech-pill">React 18</div>
+      <div class="tech-pill">Vite</div>
+      <div class="tech-pill">Framer Motion</div>
+      <div class="tech-pill">Tailwind CSS</div>
+      <div class="tech-pill">tkinter</div>
+      <div class="tech-pill">SHA-256</div>
+      <div class="tech-pill">RSA-2048</div>
+      <div class="tech-pill">PKCS1v15</div>
+      <div class="tech-pill">IPv6</div>
+      <div class="tech-pill">JSON</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CTA ═══════════ -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-box reveal">
+      <h2 class="text-white" style="font-size:1.5rem">Run the Full Showcase</h2>
+      <p style="color:#7a9ab8;margin-top:8px">One command demonstrates all 12 features</p>
+      <div class="cta-cmd" onclick="navigator.clipboard.writeText('python cli.py showcase');this.textContent='✔ Copied!';setTimeout(()=>this.textContent='python cli.py showcase',2000)">python cli.py showcase</div>
+      <p style="color:#5a7a94;font-size:.75rem;margin-top:16px;font-family:'JetBrains Mono'">Then: python web/server.py → http://127.0.0.1:5050</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>WhiteNet v3.0.0 — Zero Trust · IPv6 · PKI · TLS 1.3 · DNSSEC · VPN · Governance</p>
+    <p style="margin-top:4px;color:#2a4a64">Identity-First Network Layer for Critical Digital Infrastructure</p>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ═══ HEX RAIN ═══
+(function(){
+  const c=document.getElementById('hexrain'),ctx=c.getContext('2d');
+  let cols;const sz=14;let drops=[];
+  function resize(){c.width=innerWidth;c.height=innerHeight;cols=Math.floor(c.width/sz);drops=Array(cols).fill(1);}
+  resize();window.addEventListener('resize',resize);
+  const chars='0123456789ABCDEF::.[]{}';
+  function draw(){
+    ctx.fillStyle='rgba(3,5,8,.06)';ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle='#0ff';ctx.font=sz+'px JetBrains Mono,monospace';
+    for(let i=0;i<drops.length;i++){
+      const t=chars[Math.floor(Math.random()*chars.length)];
+      ctx.fillText(t,i*sz,drops[i]*sz);
+      if(drops[i]*sz>c.height&&Math.random()>.975)drops[i]=0;
+      drops[i]++;
+    }
+  }
+  setInterval(draw,50);
+})();
+
+// ═══ DATA STREAM ═══
+(function(){
+  const hex=()=>[...Array(8)].map(()=>Math.floor(Math.random()*16).toString(16)).join('');
+  const ip=()=>[...Array(8)].map(()=>Math.floor(Math.random()*65536).toString(16)).join(':');
+  let s='';for(let i=0;i<60;i++)s+=` \u2502 ${hex()} \u2502 CERT_${hex().slice(0,4)} \u2502 ${ip()} \u2502 TRUSTED `;
+  const el=document.getElementById('datatrack');el.textContent=s+s;
+})();
+
+// ═══ TYPEWRITER ═══
+(function(){
+  const el=document.getElementById('hero-typewriter');
+  const text='A next-generation network overlay that binds every participant to a cryptographic identity before granting access. Built on IPv6, PKI, TLS 1.3, DNSSEC, and VPN \u2014 enforcing accountability in critical digital services.';
+  let i=0;
+  function type(){if(i<text.length){el.textContent+=text[i];i++;setTimeout(type,18);}else{el.classList.add('done');}}
+  setTimeout(type,800);
+})();
+
+// ═══ TERMINAL SIMULATOR ═══
+(function(){
+  const body=document.getElementById('term-body');
+  const lines=[
+    {t:'prompt',d:'$'},
+    {t:'cmd',d:' python cli.py showcase',typing:true},
+    {t:'',d:''},
+    {t:'ok',d:'\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550'},
+    {t:'warn',d:'  PHASE 1 \u2502 IDENTITY ISSUANCE + IPv6 BINDING'},
+    {t:'ok',d:'\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550'},
+    {t:'',d:'  Creating identities for alice, bob, charlie...'},
+    {t:'ok',d:'  \u2714 Certificate issued \u2192 cert.json'},
+    {t:'dim',d:'    Expires: 2026-04-05T14:24:00+00:00'},
+    {t:'ok',d:'  \u2714 IPv6 Assigned \u2192 9e69:37d3:e2c9:49a2:b222:9691:bf2f:c8cd'},
+    {t:'ok',d:'  \u2714 DNS Record Added \u2192 alice.whitenet.local'},
+    {t:'ok',d:'  \u2714 Certificate issued \u2192 cert.json'},
+    {t:'ok',d:'  \u2714 IPv6 Assigned \u2192 bdba:3928:53a1:476e:a795:adbb:ce02:f682'},
+    {t:'ok',d:'  \u2714 DNS Record Added \u2192 bob.whitenet.local'},
+    {t:'',d:''},
+    {t:'ok',d:'\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550'},
+    {t:'warn',d:'  PHASE 5 \u2502 TLS 1.3 HANDSHAKE SIMULATION'},
+    {t:'ok',d:'\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550'},
+    {t:'',d:'  Initiating TLS 1.3 key exchange...'},
+    {t:'ok',d:'  \u2714 TLS 1.3 session established'},
+    {t:'dim',d:'    Session ID:   9a8153d98e6d7773...'},
+    {t:'dim',d:'    Cipher Suite: TLS_AES_256_GCM_SHA384'},
+    {t:'',d:''},
+    {t:'ok',d:'\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550'},
+    {t:'warn',d:'  PHASE 7 \u2502 VPN TUNNEL ESTABLISHMENT'},
+    {t:'ok',d:'\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550'},
+    {t:'',d:'  Negotiating encrypted tunnel...'},
+    {t:'ok',d:'  \u2714 VPN Tunnel established'},
+    {t:'dim',d:'    Tunnel ID:  5976307b364f948d'},
+    {t:'dim',d:'    Peers:      alice \u2194 bob'},
+    {t:'dim',d:'    Encryption: AES-256-GCM + HMAC-SHA384'},
+    {t:'',d:''},
+    {t:'ok',d:'\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550'},
+    {t:'err',d:'  PHASE 11 \u2502 SECURITY \u2014 SPOOF / TAMPER DETECTION'},
+    {t:'ok',d:'\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550'},
+    {t:'ok',d:'  \u25b8 STEP 1: Verify legitimate identity (alice)'},
+    {t:'ok',d:'  \u2714 Trusted Node (Identity Verified)'},
+    {t:'err',d:'  \u25b8 STEP 2: \u26a1 ATTACKER INJECTS SPOOFED IDENTITY'},
+    {t:'err',d:'    \u2502  Original:  user_id = \"alice\"'},
+    {t:'err',d:'    \u2502  Tampered:  user_id = \"attacker_node\"'},
+    {t:'warn',d:'  \u25b8 STEP 3: Re-verifying after attack...'},
+    {t:'',d:''},
+    {t:'err',d:'  \u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557'},
+    {t:'err',d:'  \u2551  \ud83d\udea8  TAMPERED OR FAKE NODE DETECTED  \ud83d\udea8         \u2551'},
+    {t:'err',d:'  \u2551  Certificate signature INVALID                   \u2551'},
+    {t:'err',d:'  \u2551  ACCESS DENIED \u2014 Zero Trust enforced              \u2551'},
+    {t:'err',d:'  \u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d'},
+    {t:'',d:''},
+    {t:'ok',d:'  \u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557'},
+    {t:'ok',d:'  \u2551              SHOWCASE COMPLETE \u2714                   \u2551'},
+    {t:'ok',d:'  \u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d'},
+    {t:'ok',d:'  \u2714 Nodes: 3  \u2714 TLS: 2  \u2714 VPN: 2  \u2714 Audit: 42 events'},
+    {t:'',d:''},
+    {t:'prompt',d:'$ '},
+  ];
+  let idx=0;let started=false;
+  function addLine(){
+    if(idx>=lines.length){idx=0;body.innerHTML='';} // loop
+    const l=lines[idx];const div=document.createElement('div');
+    div.className='term-line';
+    if(l.t)div.innerHTML='<span class="term-'+l.t+'">'+l.d+'</span>';
+    else div.innerHTML=l.d||'&nbsp;';
+    div.style.animationDelay='0s';
+    body.appendChild(div);
+    body.scrollTop=body.scrollHeight;
+    idx++;
+    const delay=l.typing?1200:l.d?80:300;
+    if(idx===lines.length-1){setTimeout(addLine,2000);}
+    else{setTimeout(addLine,delay);}
+  }
+  // Start when terminal scrolls into view
+  const tObs=new IntersectionObserver((entries)=>{
+    if(entries[0].isIntersecting&&!started){started=true;setTimeout(addLine,600);}
+  },{threshold:.3});
+  tObs.observe(document.getElementById('term-body'));
+})();
+</script>
+</body>
+</html>

@@ -1,11 +1,5 @@
 {
-    "alice.whitenet.local": "f89a:3eeb:a4fe:44bc:b194:25b1:d293:419b",
-    "bob.whitenet.local": "8dde:a5d3:c609:4b24:b9a8:a31a:fa8e:8e83",
-    "Ved.whitenet.local": "52fd:9062:7029:4938:ab3b:f8c1:892:1ecd",
-    "Ansh.whitenet.local": "6277:6c4e:c808:4627:903f:bc94:4c8b:14b9",
-    "harshil.whitenet.local": "e29b:21b5:c3c6:44a4:a9de:2ffc:3f51:566a",
-    "sukanya.whitenet.local": "dd3c:ccf6:678c:4a8a:9f87:b0a3:1b91:58cc",
-    "sumaxi.whitenet.local": "a989:5537:7161:4b1a:9b13:7fad:9a68:7364",
-    "swara.whitenet.local": "2851:da7e:226f:4362:8f16:d3e8:c249:86e6",
-    "Jahanvi.whitenet.local": "f064:10e:8757:477d:bd99:8ace:e19a:ef55"
+    "alice.whitenet.local": "84dc:3053:ab2e:4d57:b27a:fc48:cd32:ffa3",
+    "bob.whitenet.local": "5e91:6c61:af1d:4bd5:9cfb:9693:99f5:64ff",
+    "charlie.whitenet.local": "89e6:b835:5172:4978:b198:540b:47ec:976a"
 }
