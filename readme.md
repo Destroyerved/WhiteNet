@@ -141,7 +141,23 @@ python cli.py
 
 # 📸 Preview
 
-> CLI with Claude-style UI + Creeper Identity
+<p align="center">
+  <img src="assets/Cli.png" alt="WhiteNet CLI Preview" width="80%">
+</p>
+
+<p align="center">
+  <b>WhiteNet CLI — Identity, Verification & Secure Communication</b>
+</p>
+
+---
+
+<p align="center">
+  <img src="assets/installation.png" alt="WhiteNet Installation Preview" width="80%">
+</p>
+
+<p align="center">
+  <b>Setup & Installation Flow</b>
+</p>
 
 ---
 
@@ -158,6 +174,6 @@ MIT License
 
 ---
 
-<p align="center">
+<!-- <p align="center">
   Built with ⚡ by Bhavesh Kumar
-</p>
+</p> -->
