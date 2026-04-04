@@ -152,34 +152,34 @@ python cli.py
     <tr>
       <td align="center" width="25%">
         <div>
-          <img src="https://avatars.githubusercontent.com/Sam-bot-dev?s=120" width="120px;" height="120px;" alt="Bhavesh"/>
+          <img src="https://avatars.githubusercontent.com/notUbaid?s=120" width="120px;" height="120px;" alt="Bhavesh"/>
         </div>
-        <div><strong>🧩 Head Teammate</strong></div>
-        <div><strong>Bhavesh</strong></div>
-        <a href="https://github.com/Sam-bot-dev">🌐 GitHub</a>
+        <div><strong>Team Leader</strong></div>
+        <div><strong>Ubaid Khan</strong></div>
+        <a href="https://github.com/notUbaid">🌐 GitHub</a>
       </td>
       <td align="center" width="25%">
         <div>
-          <img src="https://avatars.githubusercontent.com/notUbaid?s=120" width="120px;" height="120px;" alt="Ubaid khan"/>
+          <img src="https://avatars.githubusercontent.com/Sam-bot-dev?s=120" width="120px;" height="120px;" alt="Ubaid khan"/>
         </div>
-        <div><strong>⭐ Team Leader</strong></div>
-        <div><strong>Ubaid khan</strong></div>
-        <a href="https://github.com/notUbaid">🌐 GitHub</a>
+        <div><strong>Backend Developer</strong></div>
+        <div><strong>Bhavesh Kumar</strong></div>
+        <a href="https://github.com/Sam-bot-dev">🌐 GitHub</a>
       </td>
       <td align="center" width="25%">
         <div>
           <img src="https://avatars.githubusercontent.com/Destroyerved?s=120" width="120px;" height="120px;" alt="Rohan"/>
         </div>
-        <div><strong>Teammate</strong></div>
-        <div><strong>Ved</strong></div>
+        <div><strong>Fullstack Developer</strong></div>
+        <div><strong>Ved Sharma</strong></div>
         <a href="https://github.com/Destroyerved">🌐 GitHub</a>
       </td>
       <td align="center" width="25%">
         <div>
           <img src="https://avatars.githubusercontent.com/harsheellhu?s=120" width="120px;" height="120px;" alt="Yug"/>
         </div>
-        <div><strong>🗄️ Database Head</strong></div>
-        <div><strong>Harshil</strong></div>
+        <div><strong>Database Engineer</strong></div>
+        <div><strong>Harshil Bhatt</strong></div>
         <a href="https://github.com/harsheellhu">🌐 GitHub</a>
       </td>
     </tr>
@@ -195,5 +195,5 @@ MIT License
 ---
 
 <p align="center">
-  Built with ⚡ by Bhavesh Kumar
+  Built with ❤️ by Team Better Call Coders
 </p>
