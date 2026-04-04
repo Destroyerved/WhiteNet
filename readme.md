@@ -150,7 +150,7 @@ python cli.py
 <p align="center">
   <table>
     <tr>
-      <td align="center" width="40%">
+      <td align="center" width="25%">
         <div>
           <img src="https://avatars.githubusercontent.com/notUbaid?s=120" width="120px;" height="120px;" alt="Bhavesh"/>
         </div>
@@ -158,7 +158,7 @@ python cli.py
         <div><strong>Ubaid Khan</strong></div>
         <a href="https://github.com/notUbaid">🌐 GitHub</a>
       </td>
-      <td align="center" width="40%">
+      <td align="center" width="25%">
         <div>
           <img src="https://avatars.githubusercontent.com/Sam-bot-dev?s=120" width="120px;" height="120px;" alt="Ubaid khan"/>
         </div>
@@ -166,7 +166,7 @@ python cli.py
         <div><strong>Bhavesh Kumar</strong></div>
         <a href="https://github.com/Sam-bot-dev">🌐 GitHub</a>
       </td>
-      <td align="center" width="40%">
+      <td align="center" width="25%">
         <div>
           <img src="https://avatars.githubusercontent.com/Destroyerved?s=120" width="120px;" height="120px;" alt="Rohan"/>
         </div>
@@ -174,7 +174,7 @@ python cli.py
         <div><strong>Ved Sharma</strong></div>
         <a href="https://github.com/Destroyerved">🌐 GitHub</a>
       </td>
-      <td align="center" width="40%">
+      <td align="center" width="25%">
         <div>
           <img src="https://avatars.githubusercontent.com/harsheellhu?s=120" width="120px;" height="120px;" alt="Yug"/>
         </div>
