@@ -34,7 +34,7 @@ BANNER = r"""
    Zero Trust • IPv6 Bound • Cryptographic Identity
 """
 
-WHITENET_VERSION = "2.0.0"
+WHITENET_VERSION = "3.0.0"
 
 
 # =========================
@@ -59,6 +59,12 @@ CA_PUBLIC_FILE = "ca_public.pem"
 DNS_FILE = "dns_records.json"
 AUDIT_FILE = "audit_log.json"
 CERT_FILE = "cert.json"
+REVOKED_FILE = "revoked_nodes.json"
+PROPOSALS_FILE = "proposals.json"
+TLS_SESSIONS_FILE = "tls_sessions.json"
+VPN_TUNNELS_FILE = "vpn_tunnels.json"
+
+CERT_VALIDITY_HOURS = 24  # default certificate lifetime
 
 
 # =========================
@@ -148,10 +154,14 @@ def issue_certificate(user_id):
         serialization.PublicFormat.SubjectPublicKeyInfo
     ).decode()
 
+    from datetime import timedelta
+    now = datetime.now(timezone.utc)
     cert = {
         "cert_id": str(uuid.uuid4()),
         "user_id": user_id,
-        "public_key": public_bytes
+        "public_key": public_bytes,
+        "issued_at": now.isoformat(),
+        "valid_until": (now + timedelta(hours=CERT_VALIDITY_HOURS)).isoformat(),
     }
 
     cert_bytes = json.dumps(cert).encode()
@@ -168,7 +178,8 @@ def issue_certificate(user_id):
         json.dump(cert, f, indent=4)
 
     print(Colors.GREEN + f"✔ Certificate issued → {CERT_FILE}" + Colors.RESET)
-    append_audit_event("issue_certificate", "success", {"user_id": user_id, "cert_id": cert["cert_id"]})
+    print(Colors.YELLOW + f"  Expires: {cert['valid_until']}" + Colors.RESET)
+    append_audit_event("issue_certificate", "success", {"user_id": user_id, "cert_id": cert["cert_id"], "valid_until": cert["valid_until"]})
 
 
 # =========================
@@ -480,6 +491,32 @@ def compute_assess_posture(ipv6=None, domain=None):
     if cert_ok:
         score += 40
 
+    # Revocation check
+    revoked = is_revoked(target_ipv6) if in_registry else False
+    checks["revocation"] = {
+        "ok": not revoked,
+        "detail": "Not revoked" if not revoked else "CERTIFICATE REVOKED"
+    }
+    if revoked:
+        score = max(0, score - 50)
+
+    # Expiry check
+    cert_expired = False
+    if in_registry:
+        vu = reg[target_ipv6].get("valid_until")
+        if vu:
+            try:
+                expiry = datetime.fromisoformat(vu)
+                cert_expired = datetime.now(timezone.utc) > expiry
+            except Exception:
+                cert_expired = False
+    checks["expiry"] = {
+        "ok": not cert_expired,
+        "detail": "Certificate valid (not expired)" if not cert_expired else "Certificate EXPIRED"
+    }
+    if cert_expired:
+        score = max(0, score - 20)
+
     dns_state, dns_detail = _dns_alignment(reg, dns_records, target_ipv6)
     if dns_state == "aligned":
         checks["dns_identity"] = {"ok": True, "detail": dns_detail}
@@ -513,13 +550,14 @@ def compute_assess_posture(ipv6=None, domain=None):
     else:
         score = max(0, score - 10)
 
-    if not in_registry or not cert_ok:
+    if not in_registry or not cert_ok or revoked:
         verdict = "BLOCKED"
     elif (
         not chain_ok
         or dns_state == "mismatch"
         or dns_state == "unbound"
         or suspicious
+        or cert_expired
     ):
         verdict = "WARNING"
     else:
@@ -727,6 +765,306 @@ def spoof_test():
 
 
 # =========================
+# REVOCATION
+# =========================
+
+def load_revoked():
+    if not os.path.exists(REVOKED_FILE):
+        return []
+    with open(REVOKED_FILE) as f:
+        return json.load(f)
+
+def save_revoked(lst):
+    with open(REVOKED_FILE, "w") as f:
+        json.dump(lst, f, indent=4)
+
+def is_revoked(ipv6):
+    return ipv6 in load_revoked()
+
+def revoke_node(ipv6):
+    print(Colors.CYAN + "\n[ Certificate Revocation ]" + Colors.RESET)
+    loading("Revoking certificate")
+    reg = load_registry()
+    if ipv6 not in reg:
+        print(Colors.RED + "✖ Node not found in registry" + Colors.RESET)
+        return
+    revoked = load_revoked()
+    if ipv6 in revoked:
+        print(Colors.YELLOW + "⚠ Node already revoked" + Colors.RESET)
+        return
+    revoked.append(ipv6)
+    save_revoked(revoked)
+    uid = reg[ipv6].get("user_id", "unknown")
+    print(Colors.GREEN + f"✔ Certificate REVOKED for {uid} ({ipv6})" + Colors.RESET)
+    append_audit_event("revoke_certificate", "success", {"ipv6": ipv6, "user_id": uid})
+
+
+# =========================
+# CERTIFICATE RENEWAL
+# =========================
+
+def renew_certificate(user_id):
+    print(Colors.CYAN + "\n[ Certificate Renewal ]" + Colors.RESET)
+    loading("Renewing identity certificate")
+    dns = load_dns_records()
+    domain = f"{user_id}.whitenet.local"
+    ipv6 = dns.get(domain)
+    if not ipv6:
+        print(Colors.RED + f"✖ No DNS record for {domain}" + Colors.RESET)
+        return
+    revoked = load_revoked()
+    if ipv6 in revoked:
+        revoked.remove(ipv6)
+        save_revoked(revoked)
+        print(Colors.YELLOW + "  (Removed from revocation list)" + Colors.RESET)
+    issue_certificate(user_id)
+    reg = load_registry()
+    with open(CERT_FILE) as f:
+        new_cert = json.load(f)
+    reg[ipv6] = new_cert
+    save_registry(reg)
+    print(Colors.GREEN + f"✔ Certificate renewed for {user_id} (bound to {ipv6})" + Colors.RESET)
+    append_audit_event("renew_certificate", "success", {"user_id": user_id, "ipv6": ipv6})
+
+
+# =========================
+# GOVERNANCE
+# =========================
+
+def load_proposals():
+    if not os.path.exists(PROPOSALS_FILE):
+        return []
+    with open(PROPOSALS_FILE) as f:
+        return json.load(f)
+
+def save_proposals(lst):
+    with open(PROPOSALS_FILE, "w") as f:
+        json.dump(lst, f, indent=4)
+
+def create_proposal(title, proposer, category="policy"):
+    print(Colors.CYAN + "\n[ Governance — New Proposal ]" + Colors.RESET)
+    loading("Creating proposal")
+    proposals = load_proposals()
+    prop = {
+        "proposal_id": str(uuid.uuid4())[:8],
+        "title": title,
+        "proposer": proposer,
+        "category": category,
+        "status": "open",
+        "votes_for": 0,
+        "votes_against": 0,
+        "voters": [],
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    proposals.append(prop)
+    save_proposals(proposals)
+    print(Colors.GREEN + f"✔ Proposal created: {prop['proposal_id']} — {title}" + Colors.RESET)
+    append_audit_event("governance_propose", "success", {"proposal_id": prop["proposal_id"], "title": title})
+    return prop
+
+def cast_vote(proposal_id, voter, vote_for=True):
+    print(Colors.CYAN + "\n[ Governance — Vote ]" + Colors.RESET)
+    loading("Casting vote")
+    proposals = load_proposals()
+    prop = None
+    for p in proposals:
+        if p["proposal_id"] == proposal_id:
+            prop = p
+            break
+    if not prop:
+        print(Colors.RED + f"✖ Proposal {proposal_id} not found" + Colors.RESET)
+        return
+    if prop["status"] != "open":
+        print(Colors.YELLOW + f"⚠ Proposal is {prop['status']}, voting closed" + Colors.RESET)
+        return
+    if voter in prop["voters"]:
+        print(Colors.YELLOW + f"⚠ {voter} has already voted" + Colors.RESET)
+        return
+    prop["voters"].append(voter)
+    if vote_for:
+        prop["votes_for"] += 1
+    else:
+        prop["votes_against"] += 1
+    total = prop["votes_for"] + prop["votes_against"]
+    if total >= 3:
+        prop["status"] = "approved" if prop["votes_for"] > prop["votes_against"] else "rejected"
+    save_proposals(proposals)
+    side = "FOR" if vote_for else "AGAINST"
+    print(Colors.GREEN + f"✔ {voter} voted {side} on '{prop['title']}'" + Colors.RESET)
+    if prop["status"] != "open":
+        print(Colors.YELLOW + f"  → Proposal {prop['status'].upper()}" + Colors.RESET)
+    append_audit_event("governance_vote", "success", {"proposal_id": proposal_id, "voter": voter, "vote": side})
+
+def list_proposals_cli():
+    print(Colors.CYAN + "\n[ Governance — Proposals ]" + Colors.RESET)
+    proposals = load_proposals()
+    if not proposals:
+        print(Colors.YELLOW + "⚠ No proposals yet" + Colors.RESET)
+        return
+    for p in proposals:
+        sc = {"open": Colors.CYAN, "approved": Colors.GREEN, "rejected": Colors.RED}.get(p["status"], Colors.YELLOW)
+        print(f"  {sc}[{p['status'].upper()}]{Colors.RESET} {p['proposal_id']} — {p['title']}")
+        print(f"    Proposer: {p['proposer']} | For: {p['votes_for']} | Against: {p['votes_against']}")
+
+
+# =========================
+# TLS 1.3 SIMULATION
+# =========================
+
+def load_tls_sessions():
+    if not os.path.exists(TLS_SESSIONS_FILE):
+        return {}
+    with open(TLS_SESSIONS_FILE) as f:
+        return json.load(f)
+
+def save_tls_sessions(data):
+    with open(TLS_SESSIONS_FILE, "w") as f:
+        json.dump(data, f, indent=4)
+
+def tls_handshake(client_ipv6, server_ipv6):
+    """Simulate a TLS 1.3 handshake between two verified WhiteNet nodes."""
+    print(Colors.CYAN + "\n[ TLS 1.3 Handshake Simulation ]" + Colors.RESET)
+    loading("Initiating TLS 1.3 key exchange")
+    reg = load_registry()
+    if client_ipv6 not in reg or server_ipv6 not in reg:
+        print(Colors.RED + "✖ Both nodes must be registered for TLS" + Colors.RESET)
+        append_audit_event("tls_handshake", "blocked", {"client": client_ipv6, "server": server_ipv6, "reason": "unregistered"})
+        return None
+    if is_revoked(client_ipv6) or is_revoked(server_ipv6):
+        print(Colors.RED + "✖ Revoked node cannot participate in TLS" + Colors.RESET)
+        append_audit_event("tls_handshake", "blocked", {"client": client_ipv6, "server": server_ipv6, "reason": "revoked"})
+        return None
+    import secrets as _secrets
+    session_id = _secrets.token_hex(16)
+    client_random = _secrets.token_hex(32)
+    server_random = _secrets.token_hex(32)
+    pre_master = hashlib.sha256((client_random + server_random).encode()).hexdigest()
+    master_secret = hashlib.sha256((pre_master + session_id).encode()).hexdigest()
+    cipher_suite = "TLS_AES_256_GCM_SHA384"
+    session = {
+        "session_id": session_id,
+        "client_ipv6": client_ipv6,
+        "server_ipv6": server_ipv6,
+        "cipher_suite": cipher_suite,
+        "master_secret_hash": hashlib.sha256(master_secret.encode()).hexdigest(),
+        "established_at": datetime.now(timezone.utc).isoformat(),
+        "status": "active",
+    }
+    sessions = load_tls_sessions()
+    sessions[session_id] = session
+    save_tls_sessions(sessions)
+    print(Colors.GREEN + "✔ TLS 1.3 session established" + Colors.RESET)
+    print(Colors.YELLOW + f"  Session ID:   {session_id[:16]}..." + Colors.RESET)
+    print(Colors.YELLOW + f"  Cipher Suite: {cipher_suite}" + Colors.RESET)
+    append_audit_event("tls_handshake", "success", {"session_id": session_id, "cipher": cipher_suite})
+    return session
+
+
+# =========================
+# DNSSEC SIMULATION
+# =========================
+
+def dnssec_sign_records():
+    """Sign all DNS records with the CA key (DNSSEC-like RRSIG simulation)."""
+    print(Colors.CYAN + "\n[ DNSSEC Record Signing ]" + Colors.RESET)
+    loading("Signing DNS records with CA key")
+    records = load_dns_records()
+    if not records:
+        print(Colors.RED + "✖ No DNS records to sign" + Colors.RESET)
+        return {}
+    private_key = load_ca_private()
+    signed = {}
+    for domain, ipv6 in records.items():
+        record_data = f"{domain}:{ipv6}".encode()
+        sig = private_key.sign(record_data, padding.PKCS1v15(), hashes.SHA256())
+        signed[domain] = {"ipv6": ipv6, "rrsig": sig.hex(), "signed_at": datetime.now(timezone.utc).isoformat()}
+    with open("dnssec_signed.json", "w") as f:
+        json.dump(signed, f, indent=4)
+    print(Colors.GREEN + f"✔ {len(signed)} DNS records signed (DNSSEC)" + Colors.RESET)
+    append_audit_event("dnssec_sign", "success", {"record_count": len(signed)})
+    return signed
+
+def dnssec_verify(domain):
+    """Verify a DNSSEC-signed DNS record."""
+    print(Colors.CYAN + "\n[ DNSSEC Verification ]" + Colors.RESET)
+    loading("Verifying DNSSEC signature")
+    if not os.path.exists("dnssec_signed.json"):
+        print(Colors.RED + "✖ No signed records — run DNSSEC sign first" + Colors.RESET)
+        return False
+    with open("dnssec_signed.json") as f:
+        signed = json.load(f)
+    entry = signed.get(domain)
+    if not entry:
+        print(Colors.RED + f"✖ No DNSSEC record for {domain}" + Colors.RESET)
+        return False
+    public_key = load_ca_public()
+    record_data = f"{domain}:{entry['ipv6']}".encode()
+    try:
+        public_key.verify(bytes.fromhex(entry["rrsig"]), record_data, padding.PKCS1v15(), hashes.SHA256())
+        print(Colors.GREEN + f"✔ DNSSEC VERIFIED: {domain} → {entry['ipv6']}" + Colors.RESET)
+        append_audit_event("dnssec_verify", "success", {"domain": domain})
+        return True
+    except Exception:
+        print(Colors.RED + f"🚨 DNSSEC FAILED: signature mismatch for {domain}" + Colors.RESET)
+        append_audit_event("dnssec_verify", "blocked", {"domain": domain})
+        return False
+
+
+# =========================
+# VPN TUNNEL SIMULATION
+# =========================
+
+def load_vpn_tunnels():
+    if not os.path.exists(VPN_TUNNELS_FILE):
+        return {}
+    with open(VPN_TUNNELS_FILE) as f:
+        return json.load(f)
+
+def save_vpn_tunnels(data):
+    with open(VPN_TUNNELS_FILE, "w") as f:
+        json.dump(data, f, indent=4)
+
+def vpn_establish_tunnel(node_a_ipv6, node_b_ipv6):
+    """Simulate an encrypted VPN tunnel between two verified WhiteNet nodes."""
+    print(Colors.CYAN + "\n[ VPN Tunnel Establishment ]" + Colors.RESET)
+    loading("Negotiating encrypted tunnel")
+    reg = load_registry()
+    for n in (node_a_ipv6, node_b_ipv6):
+        if n not in reg:
+            print(Colors.RED + f"✖ {n} not in registry" + Colors.RESET)
+            append_audit_event("vpn_tunnel", "blocked", {"reason": "unregistered", "node": n})
+            return None
+        if is_revoked(n):
+            print(Colors.RED + f"✖ {n} is revoked" + Colors.RESET)
+            append_audit_event("vpn_tunnel", "blocked", {"reason": "revoked", "node": n})
+            return None
+    import secrets as _secrets
+    tunnel_id = _secrets.token_hex(8)
+    shared_key_hash = hashlib.sha256((_secrets.token_hex(32) + tunnel_id).encode()).hexdigest()
+    tunnel = {
+        "tunnel_id": tunnel_id,
+        "node_a": node_a_ipv6,
+        "node_b": node_b_ipv6,
+        "encryption": "AES-256-GCM",
+        "auth": "HMAC-SHA384",
+        "shared_key_hash": shared_key_hash,
+        "established_at": datetime.now(timezone.utc).isoformat(),
+        "status": "active",
+    }
+    tunnels = load_vpn_tunnels()
+    tunnels[tunnel_id] = tunnel
+    save_vpn_tunnels(tunnels)
+    user_a = reg[node_a_ipv6].get("user_id", "?")
+    user_b = reg[node_b_ipv6].get("user_id", "?")
+    print(Colors.GREEN + "✔ VPN Tunnel established" + Colors.RESET)
+    print(Colors.YELLOW + f"  Tunnel ID:  {tunnel_id}" + Colors.RESET)
+    print(Colors.YELLOW + f"  Peers:      {user_a} ↔ {user_b}" + Colors.RESET)
+    print(Colors.YELLOW + f"  Encryption: AES-256-GCM + HMAC-SHA384" + Colors.RESET)
+    append_audit_event("vpn_tunnel", "success", {"tunnel_id": tunnel_id, "node_a": node_a_ipv6, "node_b": node_b_ipv6})
+    return tunnel
+
+
+# =========================
 # TRUST REPORT + DEMO (+5)
 # =========================
 
@@ -739,7 +1077,9 @@ def _remove_if_exists(path):
 
 
 def demo_reset_data_files(regen_ca=False):
-    for name in (REGISTRY_FILE, DNS_FILE, AUDIT_FILE, CERT_FILE):
+    for name in (REGISTRY_FILE, DNS_FILE, AUDIT_FILE, CERT_FILE,
+                 REVOKED_FILE, PROPOSALS_FILE, TLS_SESSIONS_FILE,
+                 VPN_TUNNELS_FILE, "dnssec_signed.json"):
         _remove_if_exists(name)
     if regen_ca:
         for name in (CA_KEY_FILE, CA_PUBLIC_FILE):
@@ -909,6 +1249,38 @@ def main():
     sub.add_parser("spoof-test")
     sub.add_parser("security-demo")
 
+    # --- v3.0 commands ---
+    rev = sub.add_parser("revoke", help="Revoke a node certificate by IPv6")
+    rev.add_argument("--ipv6", required=True)
+
+    ren = sub.add_parser("renew", help="Renew a node certificate by user_id")
+    ren.add_argument("--user", required=True)
+
+    prop = sub.add_parser("propose", help="Create a governance proposal")
+    prop.add_argument("--title", required=True)
+    prop.add_argument("--proposer", required=True)
+    prop.add_argument("--category", default="policy")
+
+    vt = sub.add_parser("vote", help="Vote on a governance proposal")
+    vt.add_argument("--proposal", required=True, help="Proposal ID")
+    vt.add_argument("--voter", required=True)
+    vt.add_argument("--against", action="store_true", help="Vote against (default is for)")
+
+    sub.add_parser("proposals", help="List governance proposals")
+
+    tls_p = sub.add_parser("tls", help="TLS 1.3 handshake simulation")
+    tls_p.add_argument("--client", required=True, help="Client IPv6")
+    tls_p.add_argument("--server", required=True, help="Server IPv6")
+
+    sub.add_parser("dnssec-sign", help="Sign all DNS records (DNSSEC)")
+
+    dv = sub.add_parser("dnssec-verify", help="Verify a DNSSEC-signed record")
+    dv.add_argument("--domain", required=True)
+
+    vpn_p = sub.add_parser("vpn", help="Establish VPN tunnel between two nodes")
+    vpn_p.add_argument("--node-a", required=True, help="First peer IPv6")
+    vpn_p.add_argument("--node-b", required=True, help="Second peer IPv6")
+
     args = parser.parse_args()
 
     generate_ca_keys()
@@ -972,6 +1344,33 @@ def main():
 
     elif args.command == "security-demo":
         security_demo()
+
+    elif args.command == "revoke":
+        revoke_node(args.ipv6)
+
+    elif args.command == "renew":
+        renew_certificate(args.user)
+
+    elif args.command == "propose":
+        create_proposal(args.title, args.proposer, args.category)
+
+    elif args.command == "vote":
+        cast_vote(args.proposal, args.voter, not args.against)
+
+    elif args.command == "proposals":
+        list_proposals_cli()
+
+    elif args.command == "tls":
+        tls_handshake(args.client, args.server)
+
+    elif args.command == "dnssec-sign":
+        dnssec_sign_records()
+
+    elif args.command == "dnssec-verify":
+        dnssec_verify(args.domain)
+
+    elif args.command == "vpn":
+        vpn_establish_tunnel(args.node_a, args.node_b)
 
     else:
         parser.print_help()

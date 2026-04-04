@@ -50,7 +50,17 @@ python -m pip install -r requirements-web.txt
 python web/server.py
 ```
 
-Open **http://127.0.0.1:5050** — animated trust console with live registry/assess cards, audit tail, and actions (issue, bind, verify, send, assess, demos). The API is the same data as `cli.py` (`/api/meta`, `/api/report`, etc.).
+Open **http://127.0.0.1:5050** — five-tab animated trust console:
+
+| Tab | Features |
+|-----|----------|
+| **Dashboard** | Live stats (8 metric cards), node cards with posture badges, revoke/renew per-node, recent audit tail |
+| **Topology** | SVG force-directed graph — nodes colored by trust posture, VPN tunnels (solid green lines) and TLS sessions (dashed blue lines) as edges |
+| **Actions** | Identity (issue, bind, quick onboard), verify/handshake/send, DNS resolve/assess, TLS 1.3 handshake, DNSSEC sign/verify, VPN tunnel, demos |
+| **Governance** | Create proposals, cast votes (for/against), live proposal cards with status |
+| **Audit** | Full scrollable event log with color-coded status badges |
+
+**Auto-refresh:** Dashboard polls every 5 seconds with toast notifications for new events.
 
 **Dev mode (hot reload UI):** terminal A: `python web/server.py` · terminal B: `cd web/client` then `npm run dev` — Vite proxies `/api` to port 5050; open **http://127.0.0.1:5173**.
 
@@ -61,7 +71,7 @@ Open **http://127.0.0.1:5050** — animated trust console with live registry/ass
 If you want a clean demo state, remove old generated files first:
 
 ```powershell
-Remove-Item -ErrorAction SilentlyContinue registry.json,dns_records.json,cert.json,audit_log.json
+Remove-Item -ErrorAction SilentlyContinue registry.json,dns_records.json,cert.json,audit_log.json,revoked_nodes.json,proposals.json,tls_sessions.json,vpn_tunnels.json,dnssec_signed.json
 ```
 
 ---
@@ -80,9 +90,10 @@ python cli.py list
 
 Expected:
 
-- `✔ Certificate issued -> cert.json`
-- `✔ IPv6 Assigned -> <ipv6>`
-- `✔ DNS Record Added -> <user>.whitenet.local -> <ipv6>`
+- `✔ Certificate issued → cert.json`
+- `  Expires: <UTC timestamp 24h from now>`
+- `✔ IPv6 Assigned → <ipv6>`
+- `✔ DNS Record Added → <user>.whitenet.local → <ipv6>`
 - `list` shows 2 bound nodes and 2 DNS records
 
 ---
@@ -112,10 +123,6 @@ Expected:
 
 ## 4b) Trust Audit Trail (Hash Chain + CA Signatures)
 
-Security-relevant actions append events to `audit_log.json`. Each event links to the previous hash (`prev_hash`), carries a SHA-256 `event_hash`, and is signed with the CA private key so tampering is detectable.
-
-View recent events and verify the full chain:
-
 ```powershell
 python cli.py audit --limit 20
 python cli.py audit --limit 50 --verify-chain
@@ -123,14 +130,14 @@ python cli.py audit --limit 50 --verify-chain
 
 Expected:
 
-- `✔ Total Events: N | Showing: ...` with lines for `issue_certificate`, `verify_node`, `handshake`, `send_secure`, `resolve_domain`, etc.
-- With `--verify-chain`: `✔ Audit chain verified (hash+signature valid)` on an intact log; otherwise a failure at a specific event index.
+- `✔ Total Events: N | Showing: ...` with event lines
+- With `--verify-chain`: `✔ Audit chain verified (hash+signature valid)`
 
 ---
 
-## 4c) Trust Posture Scorecard (Differentiator: `assess`)
+## 4c) Trust Posture Scorecard (`assess`)
 
-One command summarizes **verdict** (TRUSTED / WARNING / BLOCKED), a **0–100 score**, and checks for: registry presence, CA signature, DNS name alignment with `{user_id}.whitenet.local`, audit-chain integrity, and recent blocked/tamper signals for that node.
+Now includes **revocation status** and **certificate expiry** checks in addition to registry, certificate, DNS, audit chain, and recent signals.
 
 ```powershell
 python cli.py assess --ipv6 "<NODE_IP>"
@@ -140,89 +147,152 @@ python cli.py assess --ipv6 "<NODE_IP>" --json
 
 Expected:
 
-- On a healthy bound node with matching DNS and a valid audit chain: `Verdict: TRUSTED | Score: 100/100` with green check lines.
-- After tamper demos or DNS mismatch: `WARNING` or `BLOCKED` with specific failing checks.
+- On a healthy bound node: `Verdict: TRUSTED | Score: 100/100` with 7 green check lines
+- After revocation: `Verdict: BLOCKED` with `✖ revocation: CERTIFICATE REVOKED`
 
 ---
 
-## 4d) “+5” Tier: Automated Demo, Export Bundle, Operations
+## 5) Certificate Lifecycle (v3.0)
 
-**One-command full demo** (issue/bind alice & bob, handshake, send, resolve, assess, audit verify). For a clean slate first:
+### 5a) Revocation
+
+```powershell
+python cli.py revoke --ipv6 "<ALICE_IP>"
+python cli.py assess --domain "alice.whitenet.local"
+```
+
+Expected: Assess shows `BLOCKED` with revocation check failed.
+
+### 5b) Renewal
+
+```powershell
+python cli.py renew --user "alice"
+python cli.py assess --domain "alice.whitenet.local"
+```
+
+Expected: New certificate issued with fresh expiry, previous revocation cleared, assess returns to `TRUSTED`.
+
+---
+
+## 6) Security Protocols (v3.0)
+
+### 6a) TLS 1.3 Handshake
+
+```powershell
+python cli.py tls --client "<ALICE_IP>" --server "<BOB_IP>"
+```
+
+Expected:
+
+- `✔ TLS 1.3 session established`
+- Session ID, cipher suite (`TLS_AES_256_GCM_SHA384`)
+- Session persisted to `tls_sessions.json`
+
+### 6b) DNSSEC
+
+```powershell
+python cli.py dnssec-sign
+python cli.py dnssec-verify --domain "alice.whitenet.local"
+```
+
+Expected:
+
+- `✔ N DNS records signed (DNSSEC)`
+- `✔ DNSSEC VERIFIED: alice.whitenet.local → <ipv6>`
+
+### 6c) VPN Tunnel
+
+```powershell
+python cli.py vpn --node-a "<ALICE_IP>" --node-b "<BOB_IP>"
+```
+
+Expected:
+
+- `✔ VPN Tunnel established`
+- Tunnel ID, peers, encryption (`AES-256-GCM + HMAC-SHA384`)
+- Tunnel persisted to `vpn_tunnels.json`
+- Visible as green edge in web dashboard Topology tab
+
+---
+
+## 7) Governance (v3.0)
+
+```powershell
+python cli.py propose --title "Rotate CA keys quarterly" --proposer "alice"
+python cli.py proposals
+python cli.py vote --proposal "<PROPOSAL_ID>" --voter "bob"
+python cli.py vote --proposal "<PROPOSAL_ID>" --voter "charlie"
+python cli.py vote --proposal "<PROPOSAL_ID>" --voter "dave"
+python cli.py proposals
+```
+
+Expected:
+
+- Proposal created with unique ID
+- Votes tallied; after 3 votes, proposal auto-resolves to `APPROVED` or `REJECTED`
+- All governance events logged in audit trail
+
+---
+
+## 8) One-Command Full Demo
 
 ```powershell
 python cli.py demo --fresh --quiet
 ```
 
-- `--fresh` removes `registry.json`, `dns_records.json`, `cert.json`, `audit_log.json` (your CA keys stay unless you add `--regen-ca`).
-- `--quiet` skips loading-dot delays (faster for stage demos).
+- `--fresh` removes all data files (registry, DNS, cert, audit, revoked, proposals, TLS, VPN, DNSSEC)
+- `--quiet` skips loading delays
 
-**Judge-ready export** — single JSON file with version, CA public-key fingerprint, every node’s computed `assess`, audit tail, and chain summary:
+---
+
+## 9) Export & Operations
 
 ```powershell
 python cli.py report -o trust_report.json
-python cli.py report -o - | Out-File -Encoding utf8 report.json   # stdout: no banner, JSON only
-```
-
-**Operations snapshot** — counts, CA SHA-256, audit chain status:
-
-```powershell
 python cli.py status
 python cli.py version
 ```
 
 ---
 
-## 5) Attack/Tamper Demonstration
+## 10) Web Dashboard Quick Tour
 
-Run:
-
-```powershell
-python cli.py security-demo
-```
-
-Expected:
-
-- Baseline verification succeeds
-- Spoof/tamper step is injected
-- Re-verification fails with tamper/fake detection message
-
----
-
-## 6) One-Line Demo Sequence (Quick Copy/Paste)
-
-```powershell
-python -m pip install -r requirements.txt; `
-python cli.py issue --user "alice"; `
-python cli.py bind --cert "cert.json"; `
-python cli.py issue --user "bob"; `
-python cli.py bind --cert "cert.json"; `
-python cli.py list; `
-python cli.py resolve --domain "alice.whitenet.local"; `
-python cli.py security-demo; `
-python cli.py audit --limit 30 --verify-chain; `
-python cli.py assess --domain "alice.whitenet.local"
-```
+1. Start server: `python web/server.py`
+2. Open **http://127.0.0.1:5050**
+3. **Dashboard tab**: See all 8 stat cards, node posture cards
+4. Click **Actions tab** → enter a user ID → click **⚡ Quick Onboard** (issues + binds in one step)
+5. Use **source/destination IPv6** fields with **TLS 1.3 Handshake** and **VPN Tunnel** buttons
+6. Click **DNSSEC Sign All** → then **DNSSEC Verify** to validate
+7. **Topology tab**: See nodes as circles colored by posture, with VPN/TLS connections drawn
+8. **Governance tab**: Create a proposal, cast votes
+9. **Audit tab**: Full scrollable event log with status badges
+10. Watch **toast notifications** appear as actions execute
 
 ---
 
-## 7) Demo Talking Points
+## 11) Demo Talking Points
 
 - WhiteNet enforces identity-first participation (certificate + IPv6 binding).
 - Trust checks happen before communication (Zero Trust behavior).
+- **Certificate lifecycle**: issuance with expiry, renewal, and revocation.
+- **TLS 1.3**: cipher suite negotiation and session management between verified nodes.
+- **DNSSEC**: CA-signed DNS records with independent verification.
+- **VPN**: encrypted tunnel establishment with peer authentication.
+- **Governance**: decentralised proposal and voting system with audit trail.
 - Name resolution is tied to trusted identity records.
 - Tampering/spoofing is detectible via signature verification.
-- The audit trail provides governance-style traceability: append-only hash chain plus per-event CA signatures (`audit` command).
-- **`assess` is the judge-friendly differentiator**: one screen explains trust posture across crypto, naming, and operations—not just a single pass/fail check.
+- **`assess` is the judge-friendly differentiator**: 7-factor trust scorecard including revocation and expiry.
+- **Network topology visualization**: live graph showing nodes and secure connections.
 - Prototype runs as an overlay model on existing infrastructure.
-- **`demo` + `report` + `status`** turn the prototype into something you can hand to judges as a reproducible bundle (version **2.0.0**).
+- **Version 3.0.0** with full-stack web dashboard, CLI, and desktop GUI.
 
 ---
 
-## 8) Automated tests (optional, for credibility)
+## 12) Automated tests (optional, for credibility)
 
 ```powershell
 python -m pip install -r requirements-dev.txt
 python -m pytest tests/ -q
 ```
 
-Expected: all tests pass (isolated temp directories; no changes to your repo’s JSON files).
+Expected: all tests pass (isolated temp directories; no changes to your repo's JSON files).

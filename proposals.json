@@ -1,0 +1,15 @@
+[
+    {
+        "proposal_id": "cb95b71a",
+        "title": "will we win hackathon",
+        "proposer": "Ved",
+        "category": "policy",
+        "status": "open",
+        "votes_for": 0,
+        "votes_against": 1,
+        "voters": [
+            "Ubaid"
+        ],
+        "created_at": "2026-04-04T05:01:12.392830+00:00"
+    }
+]

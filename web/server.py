@@ -63,6 +63,10 @@ def meta():
             "registry_nodes": len(cli.load_registry()),
             "dns_entries": len(cli.load_dns_records()),
             "audit_events": len(cli.load_audit_log()),
+            "revoked_count": len(cli.load_revoked()),
+            "proposals_count": len(cli.load_proposals()),
+            "tls_sessions": len(cli.load_tls_sessions()),
+            "vpn_tunnels": len(cli.load_vpn_tunnels()),
         }
     )
 
@@ -101,6 +105,20 @@ def bind():
         return jsonify({"ok": False, "error": "cert_path required"}), 400
     r = _capture(cli.bind_identity, path)
     return jsonify(r), 200 if r.get("ok") else 500
+
+
+@app.route("/api/quick-onboard", methods=["POST"])
+def quick_onboard():
+    data = request.get_json(silent=True) or {}
+    uid = (data.get("user_id") or "").strip()
+    if not uid:
+        return jsonify({"ok": False, "error": "user_id required"}), 400
+    r1 = _capture(cli.issue_certificate, uid)
+    if not r1.get("ok"):
+        return jsonify(r1), 500
+    r2 = _capture(cli.bind_identity, cli.CERT_FILE)
+    log = (r1.get("log", "") + "\n" + r2.get("log", "")).strip()
+    return jsonify({"ok": r2.get("ok", False), "log": log})
 
 
 @app.route("/api/verify", methods=["POST"])
@@ -165,6 +183,26 @@ def audit():
     )
 
 
+@app.route("/api/revoke", methods=["POST"])
+def revoke():
+    data = request.get_json(silent=True) or {}
+    ipv6 = (data.get("ipv6") or "").strip()
+    if not ipv6:
+        return jsonify({"ok": False, "error": "ipv6 required"}), 400
+    r = _capture(cli.revoke_node, ipv6)
+    return jsonify(r), 200 if r.get("ok") else 500
+
+
+@app.route("/api/renew", methods=["POST"])
+def renew():
+    data = request.get_json(silent=True) or {}
+    uid = (data.get("user_id") or "").strip()
+    if not uid:
+        return jsonify({"ok": False, "error": "user_id required"}), 400
+    r = _capture(cli.renew_certificate, uid)
+    return jsonify(r), 200 if r.get("ok") else 500
+
+
 @app.route("/api/demo", methods=["POST"])
 def demo():
     data = request.get_json(silent=True) or {}
@@ -187,6 +225,94 @@ def security_demo():
 def spoof_test():
     r = _capture(cli.spoof_test)
     return jsonify(r), 200 if r.get("ok") else 500
+
+
+@app.route("/api/governance/proposals")
+def governance_proposals():
+    return jsonify(cli.load_proposals())
+
+
+@app.route("/api/governance/propose", methods=["POST"])
+def governance_propose():
+    data = request.get_json(silent=True) or {}
+    title = (data.get("title") or "").strip()
+    proposer = (data.get("proposer") or "").strip()
+    if not title or not proposer:
+        return jsonify({"ok": False, "error": "title and proposer required"}), 400
+    r = _capture(cli.create_proposal, title, proposer, data.get("category", "policy"))
+    return jsonify(r), 200 if r.get("ok") else 500
+
+
+@app.route("/api/governance/vote", methods=["POST"])
+def governance_vote():
+    data = request.get_json(silent=True) or {}
+    pid = (data.get("proposal_id") or "").strip()
+    voter = (data.get("voter") or "").strip()
+    if not pid or not voter:
+        return jsonify({"ok": False, "error": "proposal_id and voter required"}), 400
+    r = _capture(cli.cast_vote, pid, voter, not data.get("against", False))
+    return jsonify(r), 200 if r.get("ok") else 500
+
+
+@app.route("/api/tls-handshake", methods=["POST"])
+def tls_handshake_api():
+    data = request.get_json(silent=True) or {}
+    c = (data.get("client") or "").strip()
+    s = (data.get("server") or "").strip()
+    if not c or not s:
+        return jsonify({"ok": False, "error": "client and server required"}), 400
+    r = _capture(cli.tls_handshake, c, s)
+    return jsonify(r), 200 if r.get("ok") else 500
+
+
+@app.route("/api/dnssec-sign", methods=["POST"])
+def dnssec_sign_api():
+    r = _capture(cli.dnssec_sign_records)
+    return jsonify(r), 200 if r.get("ok") else 500
+
+
+@app.route("/api/dnssec-verify", methods=["POST"])
+def dnssec_verify_api():
+    data = request.get_json(silent=True) or {}
+    domain = (data.get("domain") or "").strip()
+    if not domain:
+        return jsonify({"ok": False, "error": "domain required"}), 400
+    r = _capture(cli.dnssec_verify, domain)
+    return jsonify(r), 200 if r.get("ok") else 500
+
+
+@app.route("/api/vpn-tunnel", methods=["POST"])
+def vpn_tunnel_api():
+    data = request.get_json(silent=True) or {}
+    a = (data.get("node_a") or "").strip()
+    b = (data.get("node_b") or "").strip()
+    if not a or not b:
+        return jsonify({"ok": False, "error": "node_a and node_b required"}), 400
+    r = _capture(cli.vpn_establish_tunnel, a, b)
+    return jsonify(r), 200 if r.get("ok") else 500
+
+
+@app.route("/api/topology")
+def topology():
+    reg = cli.load_registry()
+    dns = cli.load_dns_records()
+    revoked = cli.load_revoked()
+    tunnels = cli.load_vpn_tunnels()
+    tls_sess = cli.load_tls_sessions()
+    nodes = []
+    for ipv6, cert in reg.items():
+        nodes.append({
+            "ipv6": ipv6,
+            "user_id": cert.get("user_id", "unknown"),
+            "revoked": ipv6 in revoked,
+            "assess": cli.compute_assess_posture(ipv6=ipv6),
+        })
+    edges = []
+    for tid, t in tunnels.items():
+        edges.append({"type": "vpn", "id": tid, "a": t["node_a"], "b": t["node_b"]})
+    for sid, s in tls_sess.items():
+        edges.append({"type": "tls", "id": sid, "a": s["client_ipv6"], "b": s["server_ipv6"]})
+    return jsonify({"nodes": nodes, "edges": edges})
 
 
 @app.route("/", defaults={"path": ""})
