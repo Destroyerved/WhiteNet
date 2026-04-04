@@ -186,7 +186,7 @@ python cli.py
         <div>
           <img src="https://avatars.githubusercontent.com/Destroyerved?s=120" width="120px;" height="120px;" alt="Rohan"/>
         </div>
-        <div><strong>Teammate</strong></div>
+        <div><strong>Architecture Designer</strong></div>
         <div><strong>Ved</strong></div>
         <a href="https://github.com/Destroyerved">🌐 GitHub</a>
       </td>
