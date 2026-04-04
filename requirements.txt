@@ -2,3 +2,4 @@ uuid
 hashlib
 secrets
 cryptography
+dnspython
