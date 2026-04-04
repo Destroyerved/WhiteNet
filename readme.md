@@ -210,6 +210,4 @@ MIT License
 
 ---
 
-<p align="center">
-  Built with ⚡ by Bhavesh Kumar
-</p>
+
