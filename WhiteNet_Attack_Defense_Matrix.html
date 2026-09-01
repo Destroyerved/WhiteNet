@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhiteNet — Attack Defense Matrix</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#0a0e17;--bg2:#111827;--bg3:#1a2236;--bg4:#232d44;
+--cyan:#22d3ee;--cyan-dim:#0e7490;--cyan-glow:rgba(34,211,238,.12);
+--green:#34d399;--green-dim:#065f46;--green-bg:rgba(52,211,153,.08);
+--red:#f87171;--red-dim:#991b1b;--red-bg:rgba(248,113,113,.08);
+--amber:#fbbf24;--amber-dim:#92400e;--amber-bg:rgba(251,191,36,.08);
+--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+--border:rgba(148,163,184,.1);--border2:rgba(148,163,184,.2);
+}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden}
+.noise{position:fixed;inset:0;opacity:.03;pointer-events:none;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.grid-bg{position:fixed;inset:0;opacity:.04;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px}
+.glow-orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;opacity:.15}
+.glow-orb.a{width:500px;height:500px;background:var(--cyan);top:-150px;right:-100px;animation:drift 12s ease-in-out infinite}
+.glow-orb.b{width:400px;height:400px;background:#8b5cf6;bottom:-100px;left:-80px;animation:drift 15s ease-in-out infinite reverse}
+@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,20px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+.container{max-width:1100px;margin:0 auto;padding:3rem 2rem;position:relative;z-index:1}
+header{text-align:center;margin-bottom:3rem;animation:fadeUp .6s ease}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:20px;border:1px solid var(--cyan-dim);background:var(--cyan-glow);color:var(--cyan);font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:500;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+.badge .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
+h1{font-size:clamp(28px,5vw,42px);font-weight:700;letter-spacing:-.5px;line-height:1.1;margin-bottom:8px}
+h1 span{color:var(--cyan)}
+.subtitle{color:var(--text2);font-size:15px;font-weight:300}
+.attack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.attack-card{position:relative;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:all .3s ease;overflow:hidden}
+.attack-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0;opacity:0;transition:opacity .3s}
+.attack-card:hover{border-color:var(--border2);transform:translateY(-2px);background:var(--bg3)}
+.attack-card:hover::before{opacity:1}
+.attack-card.active{border-color:var(--cyan-dim);background:var(--bg3)}
+.attack-card.active::before{opacity:1}
+.attack-card[data-sev="critical"]::before{background:linear-gradient(90deg,var(--red),var(--red-dim))}
+.attack-card[data-sev="high"]::before{background:linear-gradient(90deg,var(--amber),var(--amber-dim))}
+.attack-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:18px}
+.attack-card[data-sev="critical"] .attack-icon{background:var(--red-bg);color:var(--red)}
+.attack-card[data-sev="high"] .attack-icon{background:var(--amber-bg);color:var(--amber)}
+.attack-name{font-weight:600;font-size:15px;margin-bottom:4px}
+.attack-desc{font-size:12px;color:var(--text3);line-height:1.5;margin-bottom:10px}
+.sev-pill{font-size:10px;font-family:'JetBrains Mono',monospace;padding:3px 10px;border-radius:6px;font-weight:500;letter-spacing:.5px;text-transform:uppercase}
+.sev-pill.critical{background:var(--red-bg);color:var(--red);border:1px solid rgba(248,113,113,.2)}
+.sev-pill.high{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(251,191,36,.2)}
+
+.detail-panel{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;min-height:300px}
+.detail-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:between;gap:12px}
+.detail-title{font-weight:600;font-size:18px;flex:1}
+.detail-body{padding:24px}
+
+.flow-pipeline{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-bottom:24px;position:relative}
+.flow-stage{padding:20px;position:relative}
+.flow-stage:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;height:60%;width:1px;background:var(--border2)}
+.stage-label{font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.stage-label .num{width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.flow-stage.attack .stage-label{color:var(--red)}
+.flow-stage.attack .num{background:var(--red-bg);color:var(--red)}
+.flow-stage.detect .stage-label{color:var(--amber)}
+.flow-stage.detect .num{background:var(--amber-bg);color:var(--amber)}
+.flow-stage.defend .stage-label{color:var(--green)}
+.flow-stage.defend .num{background:var(--green-bg);color:var(--green)}
+.stage-text{font-size:13px;line-height:1.7;color:var(--text2)}
+
+.arrow-row{display:flex;justify-content:center;gap:0;margin:0 0 24px;position:relative}
+.arrow-step{flex:1;height:44px;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:500;letter-spacing:.5px;position:relative;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,0 100%,16px 50%)}
+.arrow-step:first-child{clip-path:polygon(0 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,0 100%)}
+.arrow-step.s1{background:rgba(248,113,113,.15);color:var(--red)}
+.arrow-step.s2{background:rgba(251,191,36,.15);color:var(--amber)}
+.arrow-step.s3{background:rgba(52,211,153,.15);color:var(--green)}
+
+.terminal{background:#0d1117;border:1px solid rgba(148,163,184,.08);border-radius:10px;overflow:hidden}
+.terminal-bar{height:32px;background:#161b22;display:flex;align-items:center;padding:0 12px;gap:6px;border-bottom:1px solid rgba(148,163,184,.06)}
+.terminal-dot{width:8px;height:8px;border-radius:50%}
+.terminal-dot.r{background:#ff5f57}.terminal-dot.y{background:#febc2e}.terminal-dot.g{background:#28c840}
+.terminal-title{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-left:8px}
+.terminal-body{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;overflow-x:auto}
+.terminal-body .prompt{color:var(--text3)}
+.terminal-body .cmd{color:var(--cyan)}
+.terminal-body .ok{color:var(--green)}
+.terminal-body .err{color:var(--red)}
+.terminal-body .warn{color:var(--amber)}
+.terminal-body .dim{color:var(--text3)}
+
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:280px;color:var(--text3);gap:8px;font-size:14px}
+.empty-state svg{opacity:.3}
+
+.checks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.check-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text2);line-height:1.5}
+.check-icon{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:10px}
+.check-icon.pass{background:var(--green-bg);color:var(--green)}
+.check-icon.fail{background:var(--red-bg);color:var(--red)}
+
+@media(max-width:800px){
+.attack-grid{grid-template-columns:repeat(2,1fr)}
+.flow-pipeline{grid-template-columns:1fr}
+.flow-stage:not(:last-child)::after{display:none}
+.arrow-row{flex-direction:column}.arrow-step{clip-path:none;border-radius:6px;height:36px}
+.checks{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="grid-bg"></div>
+<div class="glow-orb a"></div>
+<div class="glow-orb b"></div>
+
+<div class="container">
+<header>
+<div class="badge"><span class="dot"></span>Security analysis</div>
+<h1><span>WhiteNet</span> Attack Defense Matrix</h1>
+<p class="subtitle">How every attack vector is detected and neutralized at the network layer</p>
+</header>
+
+<div class="attack-grid" id="attackGrid"></div>
+
+<div class="detail-panel" id="detailPanel">
+<div class="empty-state">
+<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+<span>Select an attack type to see the defense flow</span>
+</div>
+</div>
+</div>
+
+<script>
+const attacks = [
+  {
+    id: 'spoof', name: 'IP spoofing', severity: 'critical',
+    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/></svg>`,
+    desc: 'Forges source IPv6 to impersonate a trusted node',
+    attack: 'Attacker changes their IPv6 address to match a verified node and sends packets under that stolen identity. Traditional networks cannot distinguish the real node from the impostor.',
+    detect: 'Verification engine re-checks the CA-signed certificate bound to the claimed IPv6. The certificate payload signature is recomputed and compared against the registry. Signature mismatch is detected instantly.',
+    defend: 'Communication blocked by Zero Trust policy. The tampered identity is logged to the append-only audit chain with event hash + CA signature. Node is flagged in trust posture score, dropping it from TRUSTED to BLOCKED.',
+    cli: [
+      {type:'prompt', text:'$ python cli.py spoof-test'},
+      {type:'warn', text:'[!] Injecting Spoofed Identity...'},
+      {type:'dim', text:'[ Verification Engine ]'},
+      {type:'dim', text:'Verifying node...'},
+      {type:'err', text:'🚨 Tampered or Fake Node Detected'},
+      {type:'err', text:'✖ Communication blocked (Zero Trust policy)'},
+      {type:'ok', text:'✔ audit_log: spoof_test_tamper | blocked'},
+    ],
+    checks: [
+      {pass:true, text:'CA signature verified against registry'},
+      {pass:false, text:'Certificate payload mismatch detected'},
+      {pass:true, text:'Event hash-chained to audit log'},
+    ]
+  },
+  {
+    id: 'mitm', name: 'Man-in-the-middle', severity: 'critical',
+    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 9h6v6H9z"/><path d="M4 12h5M15 12h5M12 4v5M12 15v5"/></svg>`,
+    desc: 'Intercepts and relays traffic between two verified nodes',
+    attack: 'Attacker positions themselves between Alice and Bob, intercepting all packets. They relay messages while secretly reading or modifying data in transit, pretending to be each endpoint.',
+    detect: 'TLS 1.3 handshake requires mutual challenge-response authentication. Both endpoints must present valid CA-signed certificates with matching IPv6 bindings. The interceptor cannot produce a valid certificate for either identity.',
+    defend: 'Handshake fails for the attacker node — it has no valid certificate in the registry. Both legitimate peers independently verify each other before any data is exchanged. An unverified relay is structurally impossible.',
+    cli: [
+      {type:'prompt', text:'$ python cli.py handshake --ipv6 <attacker_ipv6>'},
+      {type:'dim', text:'[ Handshake Layer ]'},
+      {type:'dim', text:'Performing certificate + challenge-response...'},
+      {type:'err', text:'✖ Node not found'},
+      {type:'err', text:'✖ Handshake failed: untrusted node'},
+      {type:'ok', text:'✔ audit_log: handshake | blocked'},
+    ],
+    checks: [
+      {pass:false, text:'Attacker cert not in trusted registry'},
+      {pass:true, text:'Challenge-response requires valid CA sig'},
+      {pass:true, text:'Both peers verified independently'},
+    ]
+  },
+  {
+    id: 'sybil', name: 'Sybil attack', severity: 'high',
+    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><path d="M16 3.13a4 4 0 010 7.75M21 21v-2a4 4 0 00-3-3.87"/></svg>`,
+    desc: 'Creates many fake identities to overwhelm the network',
+    attack: 'Attacker generates dozens of fake node identities to flood the network, manipulate governance votes, or create the illusion of consensus. Each fake node tries to register and participate as a legitimate peer.',
+    detect: 'Every identity requires a certificate signed by the trusted Certificate Authority. Certificates are bound 1:1 to unique IPv6 addresses in the registry. Self-signed or unsigned identities are rejected at verification.',
+    defend: 'All fake nodes fail verification — they lack valid CA signatures. Governance votes only count from verified identities. The registry enforces unique identity-to-IPv6 binding, preventing mass-creation at the issuance layer.',
+    cli: [
+      {type:'prompt', text:'$ python cli.py verify --ipv6 <fake_node_01>'},
+      {type:'dim', text:'[ Verification Engine ]'},
+      {type:'err', text:'✖ Node not found'},
+      {type:'prompt', text:'$ python cli.py verify --ipv6 <fake_node_02>'},
+      {type:'err', text:'🚨 Tampered or Fake Node Detected'},
+      {type:'ok', text:'✔ audit_log: verify_node | blocked x2'},
+    ],
+    checks: [
+      {pass:true, text:'CA issuance is the single trust anchor'},
+      {pass:true, text:'1:1 IPv6-to-certificate binding enforced'},
+      {pass:false, text:'Fake nodes rejected at verify step'},
+    ]
+  },
+  {
+    id: 'forgery', name: 'Certificate forgery', severity: 'high',
+    icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/><circle cx="12" cy="16" r="1"/></svg>`,
+    desc: 'Crafts a fake certificate to bypass identity checks',
+    attack: 'Attacker creates a self-signed certificate with a forged user_id and public_key, then attempts to inject it into the registry to appear as a legitimate, trusted node on the network.',
+    detect: 'The verification engine recomputes the certificate hash and validates it against the CA public key using RSA signature verification. Any certificate not signed by the real CA produces an immediate signature mismatch.',
+    defend: 'RSA 2048-bit CA signatures are computationally infeasible to forge. The node is marked as tampered in the registry. The forgery attempt is logged to the audit chain with cryptographic evidence (hash + signature).',
+    cli: [
+      {type:'prompt', text:'$ python cli.py verify --ipv6 <forged_node>'},
+      {type:'dim', text:'[ Verification Engine ]'},
+      {type:'dim', text:'Verifying node...'},
+      {type:'warn', text:'Re-computing certificate signature...'},
+      {type:'err', text:'🚨 CA signature mismatch'},
+      {type:'err', text:'🚨 Tampered or Fake Node Detected'},
+      {type:'ok', text:'✔ audit_log: verify_node | blocked | tampered_or_fake'},
+    ],
+    checks: [
+      {pass:true, text:'RSA 2048-bit makes forgery infeasible'},
+      {pass:false, text:'Self-signed cert fails CA validation'},
+      {pass:true, text:'Forgery evidence hash-chained to log'},
+    ]
+  }
+];
+
+const grid = document.getElementById('attackGrid');
+const panel = document.getElementById('detailPanel');
+let activeId = null;
+
+attacks.forEach((a, i) => {
+  const card = document.createElement('div');
+  card.className = 'attack-card';
+  card.dataset.sev = a.severity;
+  card.id = 'card-' + a.id;
+  card.style.animation = `fadeUp .5s ease ${i * .08}s both`;
+  card.innerHTML = `
+    <div class="attack-icon">${a.icon}</div>
+    <div class="attack-name">${a.name}</div>
+    <div class="attack-desc">${a.desc}</div>
+    <span class="sev-pill ${a.severity}">${a.severity}</span>
+  `;
+  card.onclick = () => showAttack(a);
+  grid.appendChild(card);
+});
+
+function showAttack(a) {
+  if (activeId) document.getElementById('card-' + activeId).classList.remove('active');
+  activeId = a.id;
+  document.getElementById('card-' + a.id).classList.add('active');
+
+  const cliLines = a.cli.map(l =>
+    `<div class="${l.type}">${l.text}</div>`
+  ).join('');
+
+  const checkItems = a.checks.map(c =>
+    `<div class="check-item">
+      <div class="check-icon ${c.pass ? 'pass' : 'fail'}">${c.pass ? '✓' : '✗'}</div>
+      <span>${c.text}</span>
+    </div>`
+  ).join('');
+
+  const sevColor = a.severity === 'critical' ? 'var(--red)' : 'var(--amber)';
+
+  panel.innerHTML = `
+    <div class="detail-header">
+      <div class="detail-title" style="animation:slideIn .3s ease">${a.name}</div>
+      <span class="sev-pill ${a.severity}">${a.severity}</span>
+    </div>
+    <div class="detail-body" style="animation:fadeUp .4s ease">
+      <div class="arrow-row">
+        <div class="arrow-step s1">ATTACK VECTOR</div>
+        <div class="arrow-step s2">DETECTION LAYER</div>
+        <div class="arrow-step s3">DEFENSE RESPONSE</div>
+      </div>
+      <div class="flow-pipeline">
+        <div class="flow-stage attack">
+          <div class="stage-label"><span class="num">1</span> Attack</div>
+          <div class="stage-text">${a.attack}</div>
+        </div>
+        <div class="flow-stage detect">
+          <div class="stage-label"><span class="num">2</span> Detection</div>
+          <div class="stage-text">${a.detect}</div>
+        </div>
+        <div class="flow-stage defend">
+          <div class="stage-label"><span class="num">3</span> Defense</div>
+          <div class="stage-text">${a.defend}</div>
+        </div>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot r"></span>
+          <span class="terminal-dot y"></span>
+          <span class="terminal-dot g"></span>
+          <span class="terminal-title">whitenet cli — ${a.name} simulation</span>
+        </div>
+        <div class="terminal-body">${cliLines}</div>
+      </div>
+      <div class="checks">${checkItems}</div>
+    </div>
+  `;
+}
+
+showAttack(attacks[0]);
+</script>
+</body>
+</html>
