@@ -53,9 +53,10 @@ popd
 
 echo.
 echo [3/3] Starting server...
-echo   Dashboard:  http://127.0.0.1:5050/
-echo   About:      http://127.0.0.1:5050/about
-echo   Use cases:  http://127.0.0.1:5050/use-cases
+echo   Dashboard:      http://127.0.0.1:5050/
+echo   About:          http://127.0.0.1:5050/about
+echo   Use cases:      http://127.0.0.1:5050/use-cases
+echo   Attack matrix:  http://127.0.0.1:5050/attack-matrix
 echo.
 echo Press Ctrl+C to stop the server.
 echo.

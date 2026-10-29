@@ -117,13 +117,15 @@ footer{text-align:center;padding:40px 0;border-top:1px solid rgba(0,255,255,.08)
 <!-- NAV -->
 <nav>
   <div class="inner">
-    <a class="logo" href="/about">WHITE<span>NET</span></a>
+    <a class="logo" href="/">WHITE<span>NET</span></a>
     <div class="links">
+      <a href="/">Console</a>
       <a href="#banking">Banking</a>
       <a href="#agents">Agent Verify</a>
       <a href="#egov">E-Gov</a>
       <a href="#health">Healthcare</a>
       <a href="#corporate">Corporate</a>
+      <a href="/attack-matrix">Attack Matrix</a>
       <a href="/about">About</a>
     </div>
   </div>
@@ -531,25 +533,28 @@ async function runEgovDemo(){
   log('log-egov','[WhiteNet] Initializing e-governance scenario...','info');
   await wait(300);
 
-  // Use banking-demo API to create nodes (resets + creates 2 identities)
-  // We'll repurpose with different naming in the log
-  const data=await api('/api/banking-demo')||SIM.banking;
+  const data=await api('/api/egov-demo')||{
+    citizen_ipv6:'c101:8a2b:3c4d:5e6f:1122:3344:5566:7788',
+    portal_ipv6:'c102:9b3c:4d5e:6f70:2233:4455:6677:8899',
+    dnssec_verified:true,
+    posture:{verdict:'TRUSTED',score:100}
+  };
 
   log('log-egov','[CA] Issuing digital identity for citizen_priya...','info');
-  await wait(300);
-  log('log-egov','✔ Citizen identity issued + IPv6 bound','ok');
+  await wait(250);
+  log('log-egov','✔ Citizen identity issued + IPv6 bound → '+(data.citizen_ipv6||'assigned'),'ok');
   await wait(200);
   log('log-egov','[CA] Registering egov_portal_server...','info');
   await wait(200);
-  log('log-egov','✔ Government portal registered','ok');
-  await wait(300);
-  log('log-egov','[DNSSEC] Signing DNS records...','info');
-  await wait(300);
-  log('log-egov','✔ DNS records signed with CA key (RRSIG)','ok');
+  log('log-egov','✔ Government portal registered → '+(data.portal_ipv6||'assigned'),'ok');
+  await wait(250);
+  log('log-egov','[DNSSEC] Signing and verifying citizen_priya.whitenet.local...','info');
+  await wait(250);
+  log('log-egov','✔ DNSSEC RRSIG verified: '+(data.dnssec_verified!==false?'VALID':'CHECK'),'ok');
   await wait(200);
   log('log-egov','[Trust Engine] Assessing citizen identity...','info');
-  await wait(400);
-  const p=data?.steps?.[2]?.posture||{verdict:'TRUSTED',score:100};
+  await wait(300);
+  const p=data?.posture||data?.steps?.[3]?.posture||{verdict:'TRUSTED',score:100};
   logHtml('log-egov',verdictBadge(p.verdict,p.score));
   logHtml('log-egov',scoreBar(p.score));
   await wait(200);
@@ -568,19 +573,23 @@ async function runHealthDemo(){
   log('log-health','[WhiteNet] Initializing healthcare access scenario...','info');
   await wait(300);
 
-  const data=await api('/api/banking-demo')||SIM.banking;
+  const data=await api('/api/health-demo')||{
+    doctor:{ipv6:'d201:1a2b:3c4d:5e6f:aabb:ccdd:eeff:0011',posture:{verdict:'TRUSTED',score:100}},
+    hospital_ipv6:'d202:2b3c:4d5e:6f70:bbcc:ddee:ff00:1122',
+    unauthorized:{ipv6:'d203:3c4d:5e6f:7081:ccdd:eeff:0011:2233',posture:{verdict:'BLOCKED',score:40}}
+  };
 
   log('log-health','[CA] Issuing identity for dr_sharma (cardiologist)...','info');
-  await wait(300);
-  log('log-health','✔ Doctor identity issued + IPv6 bound','ok');
+  await wait(250);
+  log('log-health','✔ Doctor identity issued + IPv6 bound → '+(data.doctor?.ipv6||'assigned'),'ok');
   await wait(200);
   log('log-health','[CA] Registering hospital_records_server...','info');
   await wait(200);
-  log('log-health','✔ Hospital records server registered','ok');
-  await wait(300);
+  log('log-health','✔ Hospital records server registered → '+(data.hospital_ipv6||'assigned'),'ok');
+  await wait(250);
   log('log-health','[Trust Engine] Verifying dr_sharma before record access...','info');
-  await wait(400);
-  const p=data?.steps?.[2]?.posture||{verdict:'TRUSTED',score:100};
+  await wait(300);
+  const p=data?.doctor?.posture||{verdict:'TRUSTED',score:100};
   logHtml('log-health',verdictBadge(p.verdict,p.score));
   logHtml('log-health',scoreBar(p.score));
   await wait(200);
@@ -589,11 +598,12 @@ async function runHealthDemo(){
   log('log-health','✔ Dr. Sharma verified — patient records accessed securely.','ok');
   log('log-health','','');
   log('log-health','⚡ Simulating unauthorized nurse (revoked certificate)...','err');
-  await wait(400);
-  log('log-health','[WhiteNet] nurse_unverified has NO valid certificate','err');
-  logHtml('log-health',verdictBadge('BLOCKED',0));
-  logHtml('log-health',scoreBar(0));
-  log('log-health','🚨 ACCESS DENIED — unverified personnel cannot access records.','err');
+  await wait(350);
+  const up=data?.unauthorized?.posture||{verdict:'BLOCKED',score:0};
+  log('log-health','[WhiteNet] nurse_unverified certificate is REVOKED','err');
+  logHtml('log-health',verdictBadge(up.verdict||'BLOCKED',up.score??0));
+  logHtml('log-health',scoreBar(up.score??0));
+  log('log-health','🚨 ACCESS DENIED — revoked/unverified personnel cannot access records.','err');
   log('log-health','✔ Patient data protected. HIPAA compliance maintained.','ok');
   btn.textContent='✔ Complete';btn.disabled=false;
   setTimeout(()=>{btn.textContent='▶ Run Healthcare Demo'},3000);
@@ -606,36 +616,42 @@ async function runCorpDemo(){
   log('log-corp','[WhiteNet] Initializing corporate Zero Trust scenario...','info');
   await wait(300);
 
-  const data=await api('/api/banking-demo')||SIM.banking;
+  const data=await api('/api/corporate-demo')||{
+    employee_ipv6:'e301:4a5b:6c7d:8e9f:1234:5678:9abc:def0',
+    server_ipv6:'e302:5b6c:7d8e:9f01:2345:6789:abcd:ef01',
+    before:{verdict:'TRUSTED',score:100},
+    after:{verdict:'BLOCKED',score:40}
+  };
 
   log('log-corp','[HR] Onboarding employee_vikram...','info');
-  await wait(300);
-  log('log-corp','✔ Employee certificate issued + IPv6 bound','ok');
+  await wait(250);
+  log('log-corp','✔ Employee certificate issued + IPv6 bound → '+(data.employee_ipv6||'assigned'),'ok');
   await wait(200);
   log('log-corp','[IT] Registering corporate_server...','info');
   await wait(200);
-  log('log-corp','✔ Corporate server registered','ok');
-  await wait(300);
+  log('log-corp','✔ Corporate server registered → '+(data.server_ipv6||'assigned'),'ok');
+  await wait(250);
   log('log-corp','[Trust Engine] Assessing employee identity...','info');
-  await wait(300);
-  const p=data?.steps?.[2]?.posture||{verdict:'TRUSTED',score:100};
+  await wait(250);
+  const p=data?.before||{verdict:'TRUSTED',score:100};
   logHtml('log-corp',verdictBadge(p.verdict,p.score));
   logHtml('log-corp',scoreBar(p.score));
   await wait(200);
   log('log-corp','[VPN] Establishing encrypted tunnel...','info');
-  await wait(300);
+  await wait(250);
   log('log-corp','✔ VPN Tunnel active — AES-256-GCM + HMAC-SHA384','ok');
   log('log-corp','✔ Employee connected to internal systems securely.','ok');
   log('log-corp','','');
-  await wait(400);
+  await wait(350);
   log('log-corp','⚡ Simulating employee termination...','err');
-  await wait(300);
+  await wait(250);
   log('log-corp','[HR] Certificate REVOKED for employee_vikram','err');
-  await wait(300);
+  await wait(250);
   log('log-corp','[WhiteNet] Re-assessing revoked employee...','warn');
-  await wait(300);
-  logHtml('log-corp',verdictBadge('BLOCKED',0));
-  logHtml('log-corp',scoreBar(0));
+  await wait(250);
+  const ap=data?.after||{verdict:'BLOCKED',score:0};
+  logHtml('log-corp',verdictBadge(ap.verdict||'BLOCKED',ap.score??0));
+  logHtml('log-corp',scoreBar(ap.score??0));
   log('log-corp','🚨 ACCESS DENIED — terminated employee blocked from VPN.','err');
   log('log-corp','✔ Corporate security maintained. Zero Trust enforced.','ok');
   btn.textContent='✔ Complete';btn.disabled=false;

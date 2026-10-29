@@ -98,6 +98,14 @@ h1 span{color:var(--cyan)}
 .check-icon{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:10px}
 .check-icon.pass{background:var(--green-bg);color:var(--green)}
 .check-icon.fail{background:var(--red-bg);color:var(--red)}
+.top-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;margin-bottom:28px;background:var(--bg2);border:1px solid var(--border);border-radius:12px}
+.top-nav .brand{font-weight:700;color:var(--cyan);text-decoration:none;letter-spacing:.5px}
+.top-nav .brand span{color:var(--text);font-weight:400}
+.top-nav .nav-links{display:flex;gap:16px;flex-wrap:wrap}
+.top-nav .nav-links a{color:var(--text2);text-decoration:none;font-size:13px;transition:color .2s}
+.top-nav .nav-links a:hover{color:var(--cyan)}
+.live-btn{padding:6px 14px;border-radius:8px;border:1px solid var(--cyan-dim);background:var(--cyan-glow);color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;transition:all .2s}
+.live-btn:hover{background:rgba(34,211,238,.25)}
 
 @media(max-width:800px){
 .attack-grid{grid-template-columns:repeat(2,1fr)}
@@ -115,6 +123,15 @@ h1 span{color:var(--cyan)}
 <div class="glow-orb b"></div>
 
 <div class="container">
+<nav class="top-nav">
+  <a class="brand" href="/">WHITE<span>NET</span></a>
+  <div class="nav-links">
+    <a href="/">Console</a>
+    <a href="/about">About</a>
+    <a href="/use-cases">Use Cases</a>
+    <a href="/attack-matrix" style="color:var(--cyan)">Attack Matrix</a>
+  </div>
+</nav>
 <header>
 <div class="badge"><span class="dot"></span>Security analysis</div>
 <h1><span>WhiteNet</span> Attack Defense Matrix</h1>
@@ -262,6 +279,7 @@ function showAttack(a) {
   panel.innerHTML = `
     <div class="detail-header">
       <div class="detail-title" style="animation:slideIn .3s ease">${a.name}</div>
+      <button class="live-btn" id="runLiveBtn" onclick="runLiveAttack('${a.id}')">▶ Execute Live Attack on Server</button>
       <span class="sev-pill ${a.severity}">${a.severity}</span>
     </div>
     <div class="detail-body" style="animation:fadeUp .4s ease">
@@ -291,11 +309,44 @@ function showAttack(a) {
           <span class="terminal-dot g"></span>
           <span class="terminal-title">whitenet cli — ${a.name} simulation</span>
         </div>
-        <div class="terminal-body">${cliLines}</div>
+        <div class="terminal-body" id="termBody">${cliLines}</div>
       </div>
       <div class="checks">${checkItems}</div>
     </div>
   `;
+}
+
+async function runLiveAttack(typeId) {
+  const btn = document.getElementById('runLiveBtn');
+  const term = document.getElementById('termBody');
+  if (!btn || !term) return;
+  btn.disabled = true;
+  btn.textContent = '⏳ Executing on WhiteNet Engine...';
+  try {
+    const res = await fetch('/api/attack-sim', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: typeId })
+    });
+    const data = await res.json();
+    const sim = (data.simulations && data.simulations[0]) || null;
+    if (sim) {
+      term.innerHTML += `
+        <div class="prompt" style="margin-top:10px">$ POST /api/attack-sim {"type": "${typeId}"}</div>
+        <div class="warn">⚡ ${sim.attack}</div>
+        <div class="ok">✔ Detected: ${sim.detected ? 'YES (Zero Trust Enforced)' : 'NO'} | Verdict: ${sim.verdict}</div>
+        <div class="ok">🛡️ ${sim.defense}</div>
+      `;
+    }
+    btn.textContent = '✔ Blocked by WhiteNet';
+  } catch (e) {
+    term.innerHTML += `<div class="warn" style="margin-top:10px">[Offline simulation mode active]</div>`;
+    btn.textContent = '✔ Simulated';
+  }
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.textContent = '▶ Execute Live Attack on Server';
+  }, 2500);
 }
 
 showAttack(attacks[0]);

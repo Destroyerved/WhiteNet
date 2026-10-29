@@ -98,6 +98,9 @@ export default function App() {
   const [domain, setDomain] = useState("");
   const [sendFrom, setSendFrom] = useState("");
   const [sendTo, setSendTo] = useState("");
+  const [routeHops, setRouteHops] = useState("");
+  const [routeResult, setRouteResult] = useState(null);
+  const [attackResults, setAttackResults] = useState([]);
   const [propTitle, setPropTitle] = useState("");
   const [propProposer, setPropProposer] = useState("");
   const [voteId, setVoteId] = useState("");
@@ -156,11 +159,19 @@ export default function App() {
     try {
       const res = await api(url, { method: "POST", body: JSON.stringify(body) });
       const data = await res.json();
+      if (url === "/api/route" && data.route) {
+        setRouteResult(data.route);
+      }
+      if (url === "/api/attack-sim" && Array.isArray(data.simulations)) {
+        setAttackResults(data.simulations);
+      }
       appendLog(url, data);
       toast(`${url.split("/").pop()} ✔`);
       await refresh();
+      return data;
     } catch (e) {
       appendLog(url, String(e));
+      return null;
     } finally {
       setBusy(false);
     }
@@ -186,6 +197,28 @@ export default function App() {
       </AnimatePresence>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-10 md:py-14">
+        {/* top navigation bar */}
+        <nav className="glass-panel px-4 py-2.5 mb-8 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-xs font-mono text-cyan-300">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+            <span>WHITENET ZERO-TRUST NETWORK</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 text-xs font-display">
+            <a href="/" className="px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-medium">
+              🛡️ Console
+            </a>
+            <a href="/about" className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-cyan-300 hover:bg-white/5 transition-colors">
+              📄 About & Architecture
+            </a>
+            <a href="/use-cases" className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-cyan-300 hover:bg-white/5 transition-colors">
+              🏦 Sector Use Cases
+            </a>
+            <a href="/attack-matrix" className="px-3 py-1.5 rounded-lg text-slate-300 hover:text-cyan-300 hover:bg-white/5 transition-colors">
+              ⚔️ Attack Defense Matrix
+            </a>
+          </div>
+        </nav>
+
         {/* header */}
         <motion.header initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
           className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
@@ -201,10 +234,15 @@ export default function App() {
               <span className="text-slate-300 font-light"> Identity</span>
             </h1>
             <p className="mt-3 text-slate-400 max-w-xl text-sm leading-relaxed">
-              Zero Trust · IPv6 · PKI · TLS 1.3 · DNSSEC · VPN · Governance — all in your browser.
+              Zero Trust · IPv6 · PKI · TLS 1.3 · DNSSEC · VPN · Multi-Hop Routing · Governance — all in your browser.
             </p>
           </div>
-          <Btn onClick={refresh} disabled={busy || loading}>{loading ? "Syncing…" : "⟳ Refresh"}</Btn>
+          <div className="flex flex-wrap items-center gap-2">
+            <Btn variant="success" onClick={() => postJson("/api/showcase", {})} disabled={busy || loading}>
+              ★ Run 12-Phase Showcase
+            </Btn>
+            <Btn onClick={refresh} disabled={busy || loading}>{loading ? "Syncing…" : "⟳ Refresh"}</Btn>
+          </div>
         </motion.header>
 
         {/* tabs */}
@@ -383,10 +421,79 @@ export default function App() {
               <p className="text-xs text-slate-500">Use source/destination IPv6 fields above for TLS & VPN peers.</p>
             </div>
 
+            {/* Trust-Based Multi-Hop Router */}
+            <div className="glass-panel p-5 space-y-4">
+              <h2 className="text-sm font-semibold text-slate-300 font-display">🧭 Trust-Based Multi-Hop Routing</h2>
+              <Input
+                value={routeHops}
+                onChange={(e) => setRouteHops(e.target.value)}
+                placeholder="Optional relay hop IPv6s (comma-separated, or blank for auto-relay)"
+              />
+              <div className="flex flex-wrap gap-2">
+                <Btn
+                  variant="primary"
+                  onClick={() => postJson("/api/route", { source: sendFrom, destination: sendTo, hops: routeHops || undefined })}
+                  disabled={busy || !sendFrom || !sendTo}
+                >
+                  🚀 Route Packet (Zero Trust)
+                </Btn>
+              </div>
+              {routeResult && (
+                <div className="bg-black/40 border border-white/10 rounded-xl p-3 space-y-2 text-xs font-mono">
+                  <div className="flex items-center justify-between">
+                    <span className={routeResult.ok ? "text-emerald-400 font-bold" : "text-rose-400 font-bold"}>
+                      {routeResult.ok ? `✔ DELIVERED (${routeResult.hop_count} hops)` : `✖ BLOCKED (${routeResult.reason})`}
+                    </span>
+                    {routeResult.route_proof && (
+                      <span className="text-slate-500">proof: {routeResult.route_proof.slice(0, 12)}…</span>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                    {(routeResult.hops || []).map((h, idx) => (
+                      <span key={idx} className="inline-flex items-center gap-1">
+                        <span className={`px-2 py-0.5 rounded ${h.verified ? "bg-emerald-500/20 text-emerald-300" : "bg-rose-500/20 text-rose-300"}`}>
+                          {h.user_id} ({h.role})
+                        </span>
+                        {idx < (routeResult.hops?.length ?? 0) - 1 && <span className="text-cyan-400">──▶</span>}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 4-Vector Attack Simulator */}
+            <div className="glass-panel p-5 space-y-4">
+              <h2 className="text-sm font-semibold text-slate-300 font-display">⚔️ 4-Vector Security Attack Simulator</h2>
+              <div className="flex flex-wrap gap-2">
+                <Btn small variant="danger" onClick={() => postJson("/api/attack-sim", { type: "spoof" })} disabled={busy}>IP Spoofing</Btn>
+                <Btn small variant="danger" onClick={() => postJson("/api/attack-sim", { type: "mitm" })} disabled={busy}>MITM Attack</Btn>
+                <Btn small variant="danger" onClick={() => postJson("/api/attack-sim", { type: "sybil" })} disabled={busy}>Sybil Flood</Btn>
+                <Btn small variant="danger" onClick={() => postJson("/api/attack-sim", { type: "forgery" })} disabled={busy}>Cert Forgery</Btn>
+                <Btn small variant="primary" onClick={() => postJson("/api/attack-sim", { type: "all" })} disabled={busy}>⚡ Run All 4 Vectors</Btn>
+              </div>
+              {attackResults.length > 0 && (
+                <div className="space-y-2 max-h-48 overflow-auto">
+                  {attackResults.map((sim, idx) => (
+                    <div key={sim.id || idx} className="bg-black/40 border border-white/10 rounded-xl p-2.5 text-xs">
+                      <div className="flex items-center justify-between font-mono">
+                        <span className="text-white font-semibold">{sim.name}</span>
+                        <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px]">
+                          {sim.detected ? "✔ DETECTED & BLOCKED" : "⚠ CHECK"}
+                        </span>
+                      </div>
+                      <p className="text-slate-400 text-[11px] mt-1">{sim.defense}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Demos */}
             <div className="glass-panel p-5 space-y-3">
-              <h2 className="text-sm font-semibold text-slate-300 font-display">🧪 Demos</h2>
+              <h2 className="text-sm font-semibold text-slate-300 font-display">🧪 Demos & Judge Showcase</h2>
               <div className="flex flex-col gap-2">
+                <Btn variant="success" onClick={() => postJson("/api/showcase", {})} disabled={busy}>★ Full 12-Phase Judge Showcase</Btn>
                 <Btn onClick={() => postJson("/api/demo", { fresh: false, quiet: true })} disabled={busy}>Full demo (keep data)</Btn>
                 <Btn variant="danger" onClick={() => {
                   if (window.confirm("Fresh demo deletes all JSON data. Continue?"))
@@ -445,11 +552,25 @@ export default function App() {
                 <motion.div key={p.proposal_id} layout className="glass-panel p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
                     <p className="font-display font-medium text-white">{p.title}</p>
-                    <p className="text-xs text-slate-500 font-mono">ID: {p.proposal_id} · by {p.proposer} · {p.category}</p>
+                    <p className="text-xs text-slate-500 font-mono">
+                      ID: <button onClick={() => setVoteId(p.proposal_id)} className="text-cyan-400 hover:underline">{p.proposal_id}</button> · by {p.proposer} · {p.category}
+                    </p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xs text-emerald-400 font-mono">▲ {p.votes_for}</span>
                     <span className="text-xs text-rose-400 font-mono">▼ {p.votes_against}</span>
+                    {p.status === "open" && (
+                      <>
+                        <Btn small variant="success" disabled={busy}
+                          onClick={() => postJson("/api/governance/vote", { proposal_id: p.proposal_id, voter: voter || userId || "alice", against: false })}>
+                          👍 For
+                        </Btn>
+                        <Btn small variant="danger" disabled={busy}
+                          onClick={() => postJson("/api/governance/vote", { proposal_id: p.proposal_id, voter: voter || userId || "alice", against: true })}>
+                          👎 Against
+                        </Btn>
+                      </>
+                    )}
                     <span className={`text-xs font-bold px-3 py-1 rounded-full font-mono
                       ${p.status === "approved" ? "bg-emerald-500/20 text-emerald-300"
                         : p.status === "rejected" ? "bg-rose-500/20 text-rose-300"

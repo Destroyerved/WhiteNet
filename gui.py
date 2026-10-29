@@ -300,17 +300,71 @@ def main() -> None:
         def do_spoof() -> None:
             run_in_gui(root, log, cli.spoof_test)
 
+        def do_showcase() -> None:
+            run_in_gui(root, log, cli.run_showcase)
+
+        def do_attack_all() -> None:
+            run_in_gui(root, log, cli.attack_simulation, "all")
+
+        ttk.Button(fr, text="★ Run 12-Phase Judge Showcase", command=do_showcase).grid(row=4, column=0, sticky=tk.W, pady=14)
         ttk.Button(fr, text="Run full demo (alice/bob)", command=do_demo).grid(row=4, column=1, sticky=tk.W, pady=14)
-        ttk.Button(fr, text="Security demo (tamper)", command=do_sec).grid(row=5, column=1, sticky=tk.W)
-        ttk.Button(fr, text="Spoof test", command=do_spoof).grid(row=6, column=1, sticky=tk.W, pady=(6, 0))
+        ttk.Button(fr, text="Security demo (tamper)", command=do_sec).grid(row=5, column=0, sticky=tk.W)
+        ttk.Button(fr, text="4-Vector Attack Sim (All)", command=do_attack_all).grid(row=5, column=1, sticky=tk.W)
+        ttk.Button(fr, text="Spoof test", command=do_spoof).grid(row=6, column=0, sticky=tk.W, pady=(6, 0))
+        return fr
+
+    def tab_protocols() -> ttk.Frame:
+        fr = ttk.Frame(nb, padding=10)
+        ttk.Label(fr, text="Peer A / Source IPv6").grid(row=0, column=0, sticky=tk.W)
+        pa_var = tk.StringVar()
+        ttk.Entry(fr, textvariable=pa_var, width=52).grid(row=0, column=1, columnspan=2, sticky=tk.W, padx=6)
+
+        ttk.Label(fr, text="Peer B / Dest IPv6").grid(row=1, column=0, sticky=tk.W, pady=(6, 0))
+        pb_var = tk.StringVar()
+        ttk.Entry(fr, textvariable=pb_var, width=52).grid(row=1, column=1, columnspan=2, sticky=tk.W, padx=6, pady=(6, 0))
+
+        ttk.Label(fr, text="Domain (DNSSEC) / User (Renew)").grid(row=2, column=0, sticky=tk.W, pady=(6, 0))
+        dom_var = tk.StringVar(value="alice.whitenet.local")
+        ttk.Entry(fr, textvariable=dom_var, width=52).grid(row=2, column=1, columnspan=2, sticky=tk.W, padx=6, pady=(6, 0))
+
+        ttk.Button(fr, text="TLS 1.3 Handshake", command=lambda: run_in_gui(root, log, cli.tls_handshake, pa_var.get().strip(), pb_var.get().strip())).grid(row=3, column=0, sticky=tk.W, pady=10)
+        ttk.Button(fr, text="VPN Tunnel", command=lambda: run_in_gui(root, log, cli.vpn_establish_tunnel, pa_var.get().strip(), pb_var.get().strip())).grid(row=3, column=1, sticky=tk.W, pady=10)
+        ttk.Button(fr, text="Multi-Hop Route", command=lambda: run_in_gui(root, log, cli.route_packet, pa_var.get().strip(), pb_var.get().strip())).grid(row=3, column=2, sticky=tk.W, pady=10)
+
+        ttk.Button(fr, text="DNSSEC Sign All", command=lambda: run_in_gui(root, log, cli.dnssec_sign_records)).grid(row=4, column=0, sticky=tk.W, pady=4)
+        ttk.Button(fr, text="DNSSEC Verify", command=lambda: run_in_gui(root, log, cli.dnssec_verify, dom_var.get().strip())).grid(row=4, column=1, sticky=tk.W, pady=4)
+        ttk.Button(fr, text="Revoke Peer A", command=lambda: run_in_gui(root, log, cli.revoke_node, pa_var.get().strip())).grid(row=5, column=0, sticky=tk.W, pady=8)
+        ttk.Button(fr, text="Renew User (Domain box)", command=lambda: run_in_gui(root, log, cli.renew_certificate, dom_var.get().strip().replace(".whitenet.local", ""))).grid(row=5, column=1, sticky=tk.W, pady=8)
+        return fr
+
+    def tab_governance() -> ttk.Frame:
+        fr = ttk.Frame(nb, padding=10)
+        ttk.Label(fr, text="Proposal Title").grid(row=0, column=0, sticky=tk.W)
+        title_var = tk.StringVar()
+        ttk.Entry(fr, textvariable=title_var, width=48).grid(row=0, column=1, columnspan=2, sticky=tk.W, padx=6)
+
+        ttk.Label(fr, text="Proposer / Voter").grid(row=1, column=0, sticky=tk.W, pady=(6, 0))
+        actor_var = tk.StringVar(value="alice")
+        ttk.Entry(fr, textvariable=actor_var, width=32).grid(row=1, column=1, sticky=tk.W, padx=6, pady=(6, 0))
+
+        ttk.Label(fr, text="Proposal ID (vote)").grid(row=2, column=0, sticky=tk.W, pady=(6, 0))
+        pid_var = tk.StringVar()
+        ttk.Entry(fr, textvariable=pid_var, width=32).grid(row=2, column=1, sticky=tk.W, padx=6, pady=(6, 0))
+
+        ttk.Button(fr, text="Create Proposal", command=lambda: run_in_gui(root, log, cli.create_proposal, title_var.get().strip(), actor_var.get().strip())).grid(row=3, column=0, sticky=tk.W, pady=10)
+        ttk.Button(fr, text="Vote FOR", command=lambda: run_in_gui(root, log, cli.cast_vote, pid_var.get().strip(), actor_var.get().strip(), True)).grid(row=3, column=1, sticky=tk.W, pady=10)
+        ttk.Button(fr, text="Vote AGAINST", command=lambda: run_in_gui(root, log, cli.cast_vote, pid_var.get().strip(), actor_var.get().strip(), False)).grid(row=3, column=2, sticky=tk.W, pady=10)
+        ttk.Button(fr, text="List Proposals", command=lambda: run_in_gui(root, log, cli.list_proposals_cli)).grid(row=4, column=0, sticky=tk.W)
         return fr
 
     nb.add(tab_identity(), text="Identity")
     nb.add(tab_verify(), text="Verify")
     nb.add(tab_transport(), text="Send / DNS")
+    nb.add(tab_protocols(), text="Protocols + Route")
+    nb.add(tab_governance(), text="Governance")
     nb.add(tab_trust(), text="Trust + Audit")
     nb.add(tab_network(), text="Network + Report")
-    nb.add(tab_demos(), text="Demos")
+    nb.add(tab_demos(), text="Demos + Showcase")
 
     log.insert(tk.END, f"WhiteNet GUI {cli.WHITENET_VERSION} — working directory: {os.getcwd()}\n")
     log.insert(tk.END, "Use CLI anytime: python cli.py …\n\n")
