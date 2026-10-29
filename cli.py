@@ -17,6 +17,32 @@ try:
 except Exception:
     pass
 
+# Optional Firebase Initialization (only active when credentials + firebase_admin exist)
+FIREBASE_INITIALIZED = False
+
+
+def init_firebase():
+    global FIREBASE_INITIALIZED
+    if FIREBASE_INITIALIZED:
+        return True
+    cred_path = os.environ.get("FIREBASE_CRED_PATH", "serviceAccountKey.json")
+    if not os.path.exists(cred_path):
+        return False
+    import firebase_admin
+    from firebase_admin import credentials
+
+    cred = credentials.Certificate(cred_path)
+    firebase_admin.initialize_app(
+        cred,
+        {
+            "databaseURL": os.environ.get(
+                "FIREBASE_DB_URL",
+                "https://white-net-2aa08-default-rtdb.firebaseio.com/",
+            )
+        },
+    )
+    FIREBASE_INITIALIZED = True
+    return True
 
 # =========================
 # ASCII BANNER
@@ -202,8 +228,23 @@ def load_registry():
 
 
 def save_registry(reg):
+    # Save locally
     with open(REGISTRY_FILE, "w") as f:
         json.dump(reg, f, indent=4)
+
+    # Optional cloud sync to Firebase when enabled and credentials are present
+    if os.environ.get("WHITENET_FIREBASE_SYNC") == "1":
+        try:
+            if init_firebase():
+                from firebase_admin import db
+
+                ref = db.reference("registry")
+                ref.set(reg)
+                if not os.environ.get("WHITENET_QUIET"):
+                    print("[Firebase] Registry synced successfully")
+        except Exception as e:
+            if not os.environ.get("WHITENET_QUIET"):
+                print(f"[Firebase ERROR] {e}")
 
 
 def load_dns_records():

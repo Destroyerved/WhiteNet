@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Test cache
+.pytest_cache/
+.coverage
+
+# Node / Frontend dependencies
+node_modules/
+web/client/node_modules/
+
+# Secrets & local credentials
+serviceAccountKey.json
+.env
+*.local
