@@ -497,15 +497,22 @@ def _dns_alignment(reg, dns_records, ipv6):
 
 
 def _recent_audit_flags_for_ipv6(ipv6, limit=80):
-    """Heuristic: recent blocked verify/tamper signals for this address."""
+    """Heuristic: recent blocked verify/tamper signals for this address since last renewal/restore."""
     events = load_audit_log()
     hits = []
     for ev in events[-limit:]:
+        action = ev.get("action")
         d = ev.get("details") or {}
+        if action == "renew_certificate" and d.get("ipv6") == ipv6 and ev.get("status") == "success":
+            hits.clear()
+            continue
+        if action == "security_demo_restore" and d.get("victim_ipv6") == ipv6:
+            hits.clear()
+            continue
         if d.get("ipv6") == ipv6 and ev.get("status") == "blocked":
-            hits.append(ev.get("action"))
-        if d.get("victim_ipv6") == ipv6:
-            hits.append(ev.get("action"))
+            hits.append(action)
+        if d.get("victim_ipv6") == ipv6 and action != "security_demo_restore":
+            hits.append(action)
     return hits
 
 
