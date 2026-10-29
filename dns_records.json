@@ -1,4 +1,5 @@
 {
-    "customer_ankit.whitenet.local": "514:8052:b129:4941:893b:793a:68ac:df42",
-    "securebank_server.whitenet.local": "98fa:207f:3f2d:4cdc:ac13:f4c9:e1db:37f3"
+    "alice.whitenet.local": "2d1b:1381:a22a:44a9:a93f:e0e4:efae:5660",
+    "bob.whitenet.local": "95b7:f59d:3b1f:448a:9e50:4d45:687e:6e57",
+    "charlie.whitenet.local": "54db:c7e3:b88c:442b:a8b5:bfb4:bc69:3bee"
 }

@@ -6,22 +6,22 @@ This document is updated using the current `Problemstatement.md` goals and live 
 
 Based on `Problemstatement.md`, WhiteNet should be identity-first, Zero Trust, IPv6-bound, and resistant to spoofing.
 
-### Covered in current prototype (v3.0.0)
+### Covered in current prototype (v3.1.0)
 
-- **Certified identity issuance** via `issue` (certificate JSON signed by CA key, now with `valid_until` expiry and `issued_at` timestamps).
+- **Certified identity issuance** via `issue` (certificate JSON signed by CA key, with `valid_until` expiry and `issued_at` timestamps).
 - **IPv6 identity binding** via `bind` (cert <-> generated IPv6 in `registry.json`).
-- **Certificate expiry & renewal** via `renew` (re-issues with fresh validity window, preserves IPv6 binding, clears revocation if applicable).
-- **Certificate revocation** via `revoke` (appends to `revoked_nodes.json`; revoked nodes are BLOCKED in `assess` and rejected by TLS/VPN).
-- **Trust verification before communication** via `verify`, `handshake`, and `send`.
-- **Spoof/tamper detection** via signature verification and `security-demo` / `spoof-test`.
+- **Certificate expiry & renewal** via `renew` (re-issues with fresh validity window, preserves IPv6 binding, clears revocation and resets prior blocked audit warnings).
+- **Certificate revocation** via `revoke` (appends to `revoked_nodes.json`; revoked and expired nodes are strictly rejected across `verify`, `handshake`, `send`, `route`, `tls`, `vpn`, and `assess`).
+- **Trust-based multi-hop routing** via `route` (`/api/route`): Hop-by-hop Zero Trust verification across source, intermediate relay hops, and destination with chained SHA-256 route proofs.
+- **4-Vector Security Attack Simulator** via `attack-sim` (`/api/attack-sim`): Live simulations and automatic remediation for IP Spoofing, Man-in-the-Middle (MITM), Sybil Identity Flood, and Certificate Forgery.
 - **Trust audit trail** (`audit_log.json`): append-only event log with `prev_hash` linkage, per-event SHA-256 `event_hash`, and RSA signature of each hash by the CA. Use `python cli.py audit --verify-chain` to validate integrity.
 - **Trust posture scorecard** (`assess`): multi-factor verdict (TRUSTED / WARNING / BLOCKED) and 0–100 score combining: registry presence, certificate validity, **revocation status**, **certificate expiry**, `{user_id}.whitenet.local` DNS alignment, audit-chain health, and recent risk signals. Optional `--json` for tooling.
-- **Automated demo** (`demo`): end-to-end happy path (alice/bob) with optional `--fresh` / `--regen-ca` / `--quiet`.
-- **Trust report export** (`report`): JSON bundle with `WHITENET_VERSION` (**3.0.0**), CA public key SHA-256, per-node `assess` via `compute_assess_posture`, `audit_tail`, and audit summary.
+- **Automated demo & 12-phase showcase** (`demo` and `showcase`): end-to-end happy path plus full 12-phase network simulation.
+- **Trust report export** (`report`): JSON bundle with `WHITENET_VERSION` (**3.1.0**), CA public key SHA-256, per-node `assess` via `compute_assess_posture`, `audit_tail`, and audit summary.
 - **Operations** (`status`, `version`): live counts, CA fingerprint, audit chain OK/FAIL; version string for CI/scripts.
-- **Desktop GUI** (`gui.py`): tkinter front-end calling the same functions as `cli.py`.
-- **Web dashboard** (`web/server.py` + `web/client`): Flask JSON API (`/api/*`) and a React (Vite) + Tailwind + Framer Motion SPA. Five-tab interface: **Dashboard** (live stats, node cards with posture badges, revoke/renew actions), **Topology** (SVG force-directed graph showing nodes colored by trust posture with VPN/TLS edge visualization), **Actions** (identity, verify, send, TLS, DNSSEC, VPN controls), **Governance** (proposal creation, voting), **Audit** (full event log with color-coded statuses). Auto-refresh (5s polling) with toast notifications.
-- **Overlay-style software prototype** (runs on existing internet stack as CLI, no hardware dependency).
+- **Desktop GUI** (`gui.py`): 7-tab tkinter front-end calling the same functions as `cli.py` (Identity, Verify, Send/DNS, Protocols + Route, Governance, Trust + Audit, Demos + Showcase).
+- **Web dashboard & interactive pages** (`web/server.py` + `web/client` + `/about` + `/use-cases` + `/attack-matrix`): Flask JSON API (`/api/*`) and React (Vite) SPA with unified navigation to the Architecture page, Sector Use Cases (E-Governance, Healthcare, Corporate), and Interactive Attack Defense Matrix.
+- **Automated Test Suite** (`tests/test_cli.py` & `tests/test_server.py`): 14 comprehensive pytest tests covering CLI protocols, certificate lifecycle, routing, 4-vector attacks, and Flask REST API endpoints.
 
 ### Security protocol integrations (v3.0.0 — simulated)
 

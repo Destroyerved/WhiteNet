@@ -1,0 +1,22 @@
+{
+    "4fcf73e28b92d786": {
+        "tunnel_id": "4fcf73e28b92d786",
+        "node_a": "2d1b:1381:a22a:44a9:a93f:e0e4:efae:5660",
+        "node_b": "95b7:f59d:3b1f:448a:9e50:4d45:687e:6e57",
+        "encryption": "AES-256-GCM",
+        "auth": "HMAC-SHA384",
+        "shared_key_hash": "5db3cfd59e42eabc7e5280d19ab73bba0cc6a5000b7545d57b6c9385bbc0d5dc",
+        "established_at": "2026-10-29T22:23:07.973827+00:00",
+        "status": "active"
+    },
+    "0ab4446c74fd9280": {
+        "tunnel_id": "0ab4446c74fd9280",
+        "node_a": "2d1b:1381:a22a:44a9:a93f:e0e4:efae:5660",
+        "node_b": "54db:c7e3:b88c:442b:a8b5:bfb4:bc69:3bee",
+        "encryption": "AES-256-GCM",
+        "auth": "HMAC-SHA384",
+        "shared_key_hash": "e0c681242b7ef48a42fe1434409a6338c7833e297e0809cda12a08c3d2996fc2",
+        "established_at": "2026-10-29T22:23:08.020534+00:00",
+        "status": "active"
+    }
+}

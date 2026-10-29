@@ -215,7 +215,36 @@ Expected:
 
 ---
 
-## 7) Governance (v3.0)
+### 6d) Trust-Based Multi-Hop Routing (v3.1)
+
+```powershell
+python cli.py route --from "<ALICE_IP>" --to "<BOB_IP>"
+python cli.py route --from "<ALICE_IP>" --to "<BOB_IP>" --hops "<CHARLIE_IP>" --payload "CLASSIFIED_GOV_PACKET"
+```
+
+Expected:
+
+- Hop-by-hop Zero Trust verification (CA signature, revocation, expiry, and posture check on every hop)
+- Cryptographic SHA-256 route proof chained across every hop
+
+### 6e) 4-Vector Attack Simulation Suite (v3.1)
+
+```powershell
+python cli.py attack-sim --type all
+python cli.py attack-sim --type spoof
+python cli.py attack-sim --type mitm
+python cli.py attack-sim --type sybil
+python cli.py attack-sim --type forgery
+```
+
+Expected:
+
+- Simulates IP Spoofing, Man-in-the-Middle (certificate tamper + DNS poisoning), Sybil Identity Flood, and Certificate Forgery
+- Blocks all 4 attacks, logs tamper-evident audit records, and automatically restores clean node state
+
+---
+
+## 7) Governance (v3.0+)
 
 ```powershell
 python cli.py propose --title "Rotate CA keys quarterly" --proposer "alice"
@@ -234,14 +263,15 @@ Expected:
 
 ---
 
-## 8) One-Command Full Demo
+## 8) One-Command Full Demo & 12-Phase Showcase
 
 ```powershell
 python cli.py demo --fresh --quiet
+python cli.py showcase
 ```
 
-- `--fresh` removes all data files (registry, DNS, cert, audit, revoked, proposals, TLS, VPN, DNSSEC)
-- `--quiet` skips loading delays
+- `demo --fresh --quiet` runs the baseline alice/bob flow
+- `showcase` runs the full 12-phase Zero Trust showcase (multi-node onboarding, TLS 1.3, VPN tunnels, DNSSEC, trust routing, revocation & renewal lifecycle, 4-vector attack defense, and governance quorum)
 
 ---
 
@@ -255,18 +285,17 @@ python cli.py version
 
 ---
 
-## 10) Web Dashboard Quick Tour
+## 10) Web Dashboard & Interactive Pages Quick Tour
 
-1. Start server: `python web/server.py`
-2. Open **http://127.0.0.1:5050**
-3. **Dashboard tab**: See all 8 stat cards, node posture cards
-4. Click **Actions tab** → enter a user ID → click **⚡ Quick Onboard** (issues + binds in one step)
-5. Use **source/destination IPv6** fields with **TLS 1.3 Handshake** and **VPN Tunnel** buttons
-6. Click **DNSSEC Sign All** → then **DNSSEC Verify** to validate
-7. **Topology tab**: See nodes as circles colored by posture, with VPN/TLS connections drawn
-8. **Governance tab**: Create a proposal, cast votes
-9. **Audit tab**: Full scrollable event log with status badges
-10. Watch **toast notifications** appear as actions execute
+1. Start server: `python web/server.py` (or run `run-web.bat`)
+2. Open **http://127.0.0.1:5050** (React Trust Console)
+   - Also visit **http://127.0.0.1:5050/about**, **http://127.0.0.1:5050/use-cases**, and **http://127.0.0.1:5050/attack-matrix** from the top navigation bar
+3. Click **★ Run 12-Phase Showcase** in the top header to populate the entire network in one click
+4. **Dashboard tab**: See all 8 stat cards, node posture cards, and recent audit tail
+5. **Actions tab**: Test Identity onboarding, Verify/Handshake/Send, TLS 1.3, DNSSEC, VPN, **Trust-Based Multi-Hop Routing**, and the **4-Vector Security Attack Simulator**
+6. **Topology tab**: See nodes colored by trust posture, with VPN/TLS connections drawn
+7. **Governance tab**: Create a proposal and click **👍 For** / **👎 Against** directly on open proposals
+8. **Audit tab**: Full scrollable event log with status badges
 
 ---
 
@@ -274,25 +303,24 @@ python cli.py version
 
 - WhiteNet enforces identity-first participation (certificate + IPv6 binding).
 - Trust checks happen before communication (Zero Trust behavior).
-- **Certificate lifecycle**: issuance with expiry, renewal, and revocation.
+- **Certificate lifecycle**: issuance with expiry, renewal, and revocation enforced across all layers.
+- **Trust-based multi-hop routing**: hop-by-hop verification with chained SHA-256 route proofs.
 - **TLS 1.3**: cipher suite negotiation and session management between verified nodes.
-- **DNSSEC**: CA-signed DNS records with independent verification.
+- **DNSSEC**: CA-signed DNS records with independent verification and DNS poisoning detection.
 - **VPN**: encrypted tunnel establishment with peer authentication.
+- **4-Vector Attack Defense**: live defense against IP Spoofing, MITM, Sybil Identity Flood, and Certificate Forgery.
 - **Governance**: decentralised proposal and voting system with audit trail.
-- Name resolution is tied to trusted identity records.
-- Tampering/spoofing is detectible via signature verification.
 - **`assess` is the judge-friendly differentiator**: 7-factor trust scorecard including revocation and expiry.
 - **Network topology visualization**: live graph showing nodes and secure connections.
-- Prototype runs as an overlay model on existing infrastructure.
-- **Version 3.0.0** with full-stack web dashboard, CLI, and desktop GUI.
+- **Version 3.1.0** with full-stack web dashboard, interactive sector use-case simulators, attack defense matrix, CLI, desktop GUI, and 14 automated pytest tests.
 
 ---
 
-## 12) Automated tests (optional, for credibility)
+## 12) Automated tests (for credibility & CI)
 
 ```powershell
 python -m pip install -r requirements-dev.txt
-python -m pytest tests/ -q
+python -m pytest tests/ -v
 ```
 
-Expected: all tests pass (isolated temp directories; no changes to your repo's JSON files).
+Expected: all 14 tests in `tests/test_cli.py` and `tests/test_server.py` pass (isolated temp directories; no changes to your repo's JSON files).
