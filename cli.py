@@ -60,7 +60,7 @@ BANNER = r"""
    Zero Trust • IPv6 Bound • Cryptographic Identity
 """
 
-WHITENET_VERSION = "3.0.0"
+WHITENET_VERSION = "3.1.0"
 
 
 # =========================
@@ -422,6 +422,20 @@ def verify_certificate_payload(cert_dict):
         return False
 
 
+def is_cert_expired(cert_dict):
+    """Return True if the certificate's valid_until timestamp is in the past."""
+    vu = (cert_dict or {}).get("valid_until")
+    if not vu:
+        return False
+    try:
+        expiry = datetime.fromisoformat(vu)
+        if expiry.tzinfo is None:
+            expiry = expiry.replace(tzinfo=timezone.utc)
+        return datetime.now(timezone.utc) > expiry
+    except Exception:
+        return False
+
+
 def verify_node(ipv6):
     print(Colors.CYAN + "\n[ Verification Engine ]" + Colors.RESET)
     loading("Verifying node")
@@ -434,23 +448,33 @@ def verify_node(ipv6):
         return False
 
     cert = reg[ipv6]
-    if verify_certificate_payload(cert):
-        print(Colors.GREEN + "✔ Trusted Node (Identity Verified)" + Colors.RESET)
-        append_audit_event("verify_node", "allowed", {"ipv6": ipv6})
-        return True
+    if not verify_certificate_payload(cert):
+        print()
+        print(Colors.RED + "  ╔══════════════════════════════════════════════════╗" + Colors.RESET)
+        print(Colors.RED + "  ║  🚨  TAMPERED OR FAKE NODE DETECTED  🚨         ║" + Colors.RESET)
+        print(Colors.RED + "  ║                                                  ║" + Colors.RESET)
+        print(Colors.RED + f"  ║  IPv6: {ipv6[:42]:<42}  ║" + Colors.RESET)
+        print(Colors.RED + "  ║  Certificate signature INVALID                   ║" + Colors.RESET)
+        print(Colors.RED + "  ║  Identity was modified after CA signing           ║" + Colors.RESET)
+        print(Colors.RED + "  ║  ACCESS DENIED — Zero Trust enforced              ║" + Colors.RESET)
+        print(Colors.RED + "  ╚══════════════════════════════════════════════════╝" + Colors.RESET)
+        print()
+        append_audit_event("verify_node", "blocked", {"ipv6": ipv6, "reason": "tampered_or_fake"})
+        return False
 
-    print()
-    print(Colors.RED + "  ╔══════════════════════════════════════════════════╗" + Colors.RESET)
-    print(Colors.RED + "  ║  🚨  TAMPERED OR FAKE NODE DETECTED  🚨         ║" + Colors.RESET)
-    print(Colors.RED + "  ║                                                  ║" + Colors.RESET)
-    print(Colors.RED + f"  ║  IPv6: {ipv6[:42]:<42}  ║" + Colors.RESET)
-    print(Colors.RED + "  ║  Certificate signature INVALID                   ║" + Colors.RESET)
-    print(Colors.RED + "  ║  Identity was modified after CA signing           ║" + Colors.RESET)
-    print(Colors.RED + "  ║  ACCESS DENIED — Zero Trust enforced              ║" + Colors.RESET)
-    print(Colors.RED + "  ╚══════════════════════════════════════════════════╝" + Colors.RESET)
-    print()
-    append_audit_event("verify_node", "blocked", {"ipv6": ipv6, "reason": "tampered_or_fake"})
-    return False
+    if is_revoked(ipv6):
+        print(Colors.RED + f"✖ Certificate REVOKED for node {ipv6} — ACCESS DENIED" + Colors.RESET)
+        append_audit_event("verify_node", "blocked", {"ipv6": ipv6, "reason": "revoked"})
+        return False
+
+    if is_cert_expired(cert):
+        print(Colors.RED + f"✖ Certificate EXPIRED for node {ipv6} — ACCESS DENIED" + Colors.RESET)
+        append_audit_event("verify_node", "blocked", {"ipv6": ipv6, "reason": "expired"})
+        return False
+
+    print(Colors.GREEN + "✔ Trusted Node (Identity Verified)" + Colors.RESET)
+    append_audit_event("verify_node", "allowed", {"ipv6": ipv6})
+    return True
 
 
 # =========================
@@ -1020,6 +1044,14 @@ def tls_handshake(client_ipv6, server_ipv6):
         print(Colors.RED + "✖ Revoked node cannot participate in TLS" + Colors.RESET)
         append_audit_event("tls_handshake", "blocked", {"client": client_ipv6, "server": server_ipv6, "reason": "revoked"})
         return None
+    if not verify_certificate_payload(reg[client_ipv6]) or not verify_certificate_payload(reg[server_ipv6]):
+        print(Colors.RED + "✖ Tampered/invalid certificate detected — TLS handshake aborted" + Colors.RESET)
+        append_audit_event("tls_handshake", "blocked", {"client": client_ipv6, "server": server_ipv6, "reason": "invalid_certificate"})
+        return None
+    if is_cert_expired(reg[client_ipv6]) or is_cert_expired(reg[server_ipv6]):
+        print(Colors.RED + "✖ Expired certificate detected — TLS handshake aborted" + Colors.RESET)
+        append_audit_event("tls_handshake", "blocked", {"client": client_ipv6, "server": server_ipv6, "reason": "expired"})
+        return None
     import secrets as _secrets
     session_id = _secrets.token_hex(16)
     client_random = _secrets.token_hex(32)
@@ -1071,7 +1103,7 @@ def dnssec_sign_records():
     return signed
 
 def dnssec_verify(domain):
-    """Verify a DNSSEC-signed DNS record."""
+    """Verify a DNSSEC-signed DNS record and detect live DNS poisoning."""
     print(Colors.CYAN + "\n[ DNSSEC Verification ]" + Colors.RESET)
     loading("Verifying DNSSEC signature")
     if not os.path.exists("dnssec_signed.json"):
@@ -1083,16 +1115,22 @@ def dnssec_verify(domain):
     if not entry:
         print(Colors.RED + f"✖ No DNSSEC record for {domain}" + Colors.RESET)
         return False
+    live_records = load_dns_records()
+    live_ipv6 = live_records.get(domain)
+    if live_ipv6 != entry.get("ipv6"):
+        print(Colors.RED + f"🚨 DNSSEC FAILED: live DNS record poisoned/mismatched for {domain} (live={live_ipv6}, signed={entry.get('ipv6')})" + Colors.RESET)
+        append_audit_event("dnssec_verify", "blocked", {"domain": domain, "reason": "dns_poisoned_mismatch"})
+        return False
     public_key = load_ca_public()
     record_data = f"{domain}:{entry['ipv6']}".encode()
     try:
         public_key.verify(bytes.fromhex(entry["rrsig"]), record_data, padding.PKCS1v15(), hashes.SHA256())
         print(Colors.GREEN + f"✔ DNSSEC VERIFIED: {domain} → {entry['ipv6']}" + Colors.RESET)
-        append_audit_event("dnssec_verify", "success", {"domain": domain})
+        append_audit_event("dnssec_verify", "success", {"domain": domain, "ipv6": entry["ipv6"]})
         return True
     except Exception:
         print(Colors.RED + f"🚨 DNSSEC FAILED: signature mismatch for {domain}" + Colors.RESET)
-        append_audit_event("dnssec_verify", "blocked", {"domain": domain})
+        append_audit_event("dnssec_verify", "blocked", {"domain": domain, "reason": "invalid_rrsig"})
         return False
 
 
@@ -1124,6 +1162,14 @@ def vpn_establish_tunnel(node_a_ipv6, node_b_ipv6):
             print(Colors.RED + f"✖ {n} is revoked" + Colors.RESET)
             append_audit_event("vpn_tunnel", "blocked", {"reason": "revoked", "node": n})
             return None
+        if not verify_certificate_payload(reg[n]):
+            print(Colors.RED + f"✖ {n} has a tampered or invalid certificate" + Colors.RESET)
+            append_audit_event("vpn_tunnel", "blocked", {"reason": "invalid_certificate", "node": n})
+            return None
+        if is_cert_expired(reg[n]):
+            print(Colors.RED + f"✖ {n} certificate is expired" + Colors.RESET)
+            append_audit_event("vpn_tunnel", "blocked", {"reason": "expired", "node": n})
+            return None
     import secrets as _secrets
     tunnel_id = _secrets.token_hex(8)
     shared_key_hash = hashlib.sha256((_secrets.token_hex(32) + tunnel_id).encode()).hexdigest()
@@ -1148,6 +1194,275 @@ def vpn_establish_tunnel(node_a_ipv6, node_b_ipv6):
     print(Colors.YELLOW + f"  Encryption: AES-256-GCM + HMAC-SHA384" + Colors.RESET)
     append_audit_event("vpn_tunnel", "success", {"tunnel_id": tunnel_id, "node_a": node_a_ipv6, "node_b": node_b_ipv6})
     return tunnel
+
+
+# =========================
+# TRUST-BASED MULTI-HOP ROUTING
+# =========================
+
+def route_packet(source_ipv6, dest_ipv6, hops=None, payload="SECURE_PACKET"):
+    """
+    Trust-Based Routing Protocol: forwards packets only across cryptographically
+    verified, non-revoked, non-expired WhiteNet hops, recording an authenticated
+    hop-by-hop hash chain trace.
+    """
+    print(Colors.CYAN + "\n[ Trust-Based Multi-Hop Router ]" + Colors.RESET)
+    loading("Evaluating hop-by-hop Zero Trust route")
+
+    if not source_ipv6 or not dest_ipv6:
+        print(Colors.RED + "✖ Source and destination IPv6 required" + Colors.RESET)
+        return {"ok": False, "status": "BLOCKED", "reason": "missing_endpoints", "hops": []}
+
+    if source_ipv6 == dest_ipv6:
+        print(Colors.RED + "✖ Source and destination cannot be the same" + Colors.RESET)
+        append_audit_event("trust_route", "blocked", {"source": source_ipv6, "destination": dest_ipv6, "reason": "same_endpoint"})
+        return {"ok": False, "status": "BLOCKED", "reason": "same_endpoint", "hops": []}
+
+    reg = load_registry()
+    if isinstance(hops, str):
+        hop_list = [h.strip() for h in hops.split(",") if h.strip()]
+    elif isinstance(hops, list):
+        hop_list = [str(h).strip() for h in hops if str(h).strip()]
+    else:
+        # Auto-discover verified intermediate relay hops when available
+        hop_list = [
+            ip for ip in reg.keys()
+            if ip not in (source_ipv6, dest_ipv6)
+            and verify_certificate_payload(reg[ip])
+            and not is_revoked(ip)
+            and not is_cert_expired(reg[ip])
+        ][:2]
+
+    path = [source_ipv6] + hop_list + [dest_ipv6]
+    hop_trace = []
+    prev_proof = "ROUTE_GENESIS"
+
+    for idx, hop_ip in enumerate(path, start=1):
+        role = "source" if idx == 1 else ("destination" if idx == len(path) else "relay")
+        in_reg = hop_ip in reg
+        cert = reg.get(hop_ip, {})
+        user_id = cert.get("user_id", "unregistered")
+        sig_ok = verify_certificate_payload(cert) if in_reg else False
+        revoked = is_revoked(hop_ip) if in_reg else False
+        expired = is_cert_expired(cert) if in_reg else False
+
+        if not in_reg or not sig_ok or revoked or expired:
+            reason = (
+                "unregistered" if not in_reg
+                else ("revoked" if revoked else ("expired" if expired else "invalid_signature"))
+            )
+            hop_trace.append({
+                "hop": idx,
+                "ipv6": hop_ip,
+                "user_id": user_id,
+                "role": role,
+                "verified": False,
+                "verdict": "BLOCKED",
+                "reason": reason,
+                "hop_proof": None,
+            })
+            print(Colors.RED + f"  ✖ Hop #{idx} [{role.upper()}] {user_id} ({hop_ip[:18]}…) — BLOCKED ({reason})" + Colors.RESET)
+            print(Colors.RED + "  🚨 Packet DROPPED by Trust-Based Router (Zero Trust enforced)" + Colors.RESET)
+            append_audit_event(
+                "trust_route",
+                "blocked",
+                {"source": source_ipv6, "destination": dest_ipv6, "failed_hop": hop_ip, "hop_index": idx, "reason": reason},
+            )
+            return {
+                "ok": False,
+                "status": "BLOCKED",
+                "failed_hop": hop_ip,
+                "failed_hop_index": idx,
+                "reason": reason,
+                "hops": hop_trace,
+            }
+
+        posture = compute_assess_posture(ipv6=hop_ip)
+        hop_proof = hashlib.sha256(
+            f"{prev_proof}|{hop_ip}|{cert.get('cert_id', '')}|{payload}".encode()
+        ).hexdigest()[:24]
+        prev_proof = hop_proof
+
+        hop_trace.append({
+            "hop": idx,
+            "ipv6": hop_ip,
+            "user_id": user_id,
+            "role": role,
+            "verified": True,
+            "verdict": posture.get("verdict", "TRUSTED"),
+            "score": posture.get("score", 100),
+            "hop_proof": hop_proof,
+        })
+        print(Colors.GREEN + f"  ✔ Hop #{idx} [{role.upper()}] {user_id} ({hop_ip[:18]}…) | Score: {posture.get('score', 100)}/100 | Proof: {hop_proof[:12]}…" + Colors.RESET)
+
+    route_visual = " ──▶ ".join(f"[{h['user_id']}]" for h in hop_trace)
+    print(Colors.CYAN + f"  Route Path:  {route_visual}" + Colors.RESET)
+    print(Colors.GREEN + f"✔ Packet DELIVERED across {len(path)} verified hops (Route Proof: {prev_proof})" + Colors.RESET)
+    append_audit_event(
+        "trust_route",
+        "allowed",
+        {"source": source_ipv6, "destination": dest_ipv6, "hop_count": len(path), "route_proof": prev_proof},
+    )
+    return {
+        "ok": True,
+        "status": "DELIVERED",
+        "hop_count": len(path),
+        "route_proof": prev_proof,
+        "hops": hop_trace,
+    }
+
+
+# =========================
+# 4-VECTOR ATTACK SIMULATION ENGINE
+# =========================
+
+def attack_simulation(attack_type="all"):
+    """
+    Execute live cryptographic attack simulations for:
+    - spoof: IPv6 identity spoofing / registry tampering
+    - mitm: Man-in-the-middle TLS 1.3 interception attempt
+    - sybil: Sybil attack flooding uncertified identities
+    - forgery: Self-signed / rogue CA certificate forgery
+    - all: runs all 4 vectors sequentially
+    Restores legitimate registry state after each simulation.
+    """
+    attack_type = (attack_type or "all").strip().lower()
+    valid_types = ("spoof", "mitm", "sybil", "forgery", "all")
+    if attack_type not in valid_types:
+        print(Colors.RED + f"✖ Unknown attack type '{attack_type}'. Choose from: {', '.join(valid_types)}" + Colors.RESET)
+        return {"ok": False, "error": f"Unknown attack type: {attack_type}"}
+
+    generate_ca_keys()
+    reg = load_registry()
+    if len(reg) < 2:
+        for u in ("alice", "bob"):
+            issue_certificate(u)
+            bind_identity(CERT_FILE)
+        reg = load_registry()
+
+    keys = list(reg.keys())
+    node_a = keys[0]
+    node_b = keys[1] if len(keys) > 1 else keys[0]
+    user_a = reg[node_a].get("user_id", "alice")
+    user_b = reg[node_b].get("user_id", "bob")
+
+    to_run = ["spoof", "mitm", "sybil", "forgery"] if attack_type == "all" else [attack_type]
+    simulations = []
+
+    for vec in to_run:
+        if vec == "spoof":
+            print(Colors.CYAN + "\n[ Attack Vector 1/4 — IP Spoofing ]" + Colors.RESET)
+            reg = load_registry()
+            orig_user = reg[node_a]["user_id"]
+            reg[node_a]["user_id"] = "spoofed_impostor"
+            save_registry(reg)
+            verified = verify_node(node_a)
+            posture = compute_assess_posture(ipv6=node_a)
+            # Restore
+            reg = load_registry()
+            reg[node_a]["user_id"] = orig_user
+            save_registry(reg)
+            append_audit_event("attack_sim_spoof", "blocked", {"target_ipv6": node_a, "detected": not verified})
+            simulations.append({
+                "id": "spoof",
+                "name": "IP Spoofing",
+                "attack": f"Attacker hijacks {node_a[:18]}… and rewrites user_id from '{orig_user}' to 'spoofed_impostor'.",
+                "detected": not verified,
+                "verdict": posture.get("verdict", "BLOCKED"),
+                "score": posture.get("score", 0),
+                "defense": "CA signature verification failed on modified payload; packet dropped and registry restored.",
+            })
+
+        elif vec == "mitm":
+            print(Colors.CYAN + "\n[ Attack Vector 2/4 — Man-in-the-Middle (MITM) ]" + Colors.RESET)
+            rogue_ip = generate_ipv6()
+            print(Colors.YELLOW + f"  ⚡ Rogue interceptor ({rogue_ip[:18]}…) attempting to hijack TLS 1.3 between {user_a} and {user_b}" + Colors.RESET)
+            mitm_session = tls_handshake(node_a, rogue_ip)
+            legit_session = tls_handshake(node_a, node_b)
+            append_audit_event("attack_sim_mitm", "blocked", {"rogue_ipv6": rogue_ip, "mitm_blocked": mitm_session is None})
+            simulations.append({
+                "id": "mitm",
+                "name": "Man-in-the-Middle (MITM)",
+                "attack": f"Rogue node {rogue_ip[:18]}… intercepts traffic between {user_a} and {user_b} during TLS 1.3 key exchange.",
+                "detected": mitm_session is None,
+                "verdict": "BLOCKED" if mitm_session is None else "WARNING",
+                "score": 0,
+                "defense": f"Mutual PKI check rejected uncertified MITM relay; direct {legit_session['cipher_suite'] if legit_session else 'TLS 1.3'} session established between verified peers.",
+            })
+
+        elif vec == "sybil":
+            print(Colors.CYAN + "\n[ Attack Vector 3/4 — Sybil Identity Flood ]" + Colors.RESET)
+            reg = load_registry()
+            sybil_ips = []
+            for idx_s in range(1, 4):
+                sip = generate_ipv6()
+                sybil_ips.append(sip)
+                reg[sip] = {
+                    "cert_id": str(uuid.uuid4()),
+                    "user_id": f"sybil_bot_{idx_s}",
+                    "public_key": "FAKE_KEY",
+                    "signature": "00" * 128,
+                }
+            save_registry(reg)
+            blocked_count = 0
+            for sip in sybil_ips:
+                if not verify_node(sip):
+                    blocked_count += 1
+            # Purge sybil bots
+            reg = load_registry()
+            for sip in sybil_ips:
+                reg.pop(sip, None)
+            save_registry(reg)
+            append_audit_event("attack_sim_sybil", "blocked", {"flood_count": len(sybil_ips), "blocked_count": blocked_count})
+            simulations.append({
+                "id": "sybil",
+                "name": "Sybil Identity Flood",
+                "attack": f"Attacker floods network with {len(sybil_ips)} pseudonymous Sybil bot identities to manipulate governance/routing.",
+                "detected": blocked_count == len(sybil_ips),
+                "verdict": "BLOCKED",
+                "score": 0,
+                "defense": f"All {blocked_count}/{len(sybil_ips)} uncertified Sybil identities rejected by CA signature gate and purged.",
+            })
+
+        elif vec == "forgery":
+            print(Colors.CYAN + "\n[ Attack Vector 4/4 — Certificate Forgery ]" + Colors.RESET)
+            rogue_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+            forged_ip = generate_ipv6()
+            forged_cert = {
+                "cert_id": str(uuid.uuid4()),
+                "user_id": "forged_root_admin",
+                "public_key": rogue_key.public_key().public_bytes(
+                    serialization.Encoding.PEM,
+                    serialization.PublicFormat.SubjectPublicKeyInfo,
+                ).decode(),
+                "issued_at": datetime.now(timezone.utc).isoformat(),
+            }
+            forged_sig = rogue_key.sign(
+                json.dumps(forged_cert).encode(),
+                padding.PKCS1v15(),
+                hashes.SHA256(),
+            )
+            forged_cert["signature"] = forged_sig.hex()
+            reg = load_registry()
+            reg[forged_ip] = forged_cert
+            save_registry(reg)
+            verified = verify_node(forged_ip)
+            # Clean up forged cert
+            reg = load_registry()
+            reg.pop(forged_ip, None)
+            save_registry(reg)
+            append_audit_event("attack_sim_forgery", "blocked", {"forged_ipv6": forged_ip, "detected": not verified})
+            simulations.append({
+                "id": "forgery",
+                "name": "Certificate Forgery",
+                "attack": f"Attacker generates rogue RSA-2048 keypair and self-signs certificate for 'forged_root_admin' on {forged_ip[:18]}….",
+                "detected": not verified,
+                "verdict": "BLOCKED",
+                "score": 0,
+                "defense": "RSA-2048 signature verification against authentic CA public key failed; forged certificate rejected and quarantined.",
+            })
+
+    return {"ok": True, "type": attack_type, "simulations": simulations}
 
 
 # =========================
@@ -1293,7 +1608,7 @@ def run_showcase():
 
     print(Colors.CYAN + BANNER + Colors.RESET)
     print(Colors.GREEN + "  ╔════════════════════════════════════════════════════╗" + Colors.RESET)
-    print(Colors.GREEN + "  ║      WhiteNet v3.0.0  ─  FULL JUDGE SHOWCASE      ║" + Colors.RESET)
+    print(Colors.GREEN + f"  ║      WhiteNet v{WHITENET_VERSION}  ─  FULL JUDGE SHOWCASE      ║" + Colors.RESET)
     print(Colors.GREEN + "  ╚════════════════════════════════════════════════════╝" + Colors.RESET)
 
     # ── PHASE 1: Identity ──
@@ -1344,10 +1659,11 @@ def run_showcase():
     dnssec_verify("alice.whitenet.local")
     dnssec_verify("bob.whitenet.local")
 
-    # ── PHASE 7: VPN ──
-    section(7, "VPN TUNNEL ESTABLISHMENT")
+    # ── PHASE 7: VPN + Trust-Based Multi-Hop Routing ──
+    section(7, "VPN TUNNEL + TRUST-BASED MULTI-HOP ROUTING")
     vpn_establish_tunnel(alice_ip, bob_ip)
     vpn_establish_tunnel(alice_ip, charlie_ip)
+    route_packet(alice_ip, bob_ip, hops=[charlie_ip])
 
     # ── PHASE 8: Trust Posture ──
     section(8, "TRUST POSTURE ASSESSMENT (all nodes)")
@@ -1500,6 +1816,15 @@ def main():
     vpn_p.add_argument("--node-a", required=True, help="First peer IPv6")
     vpn_p.add_argument("--node-b", required=True, help="Second peer IPv6")
 
+    rt_p = sub.add_parser("route", help="Trust-based multi-hop packet routing across verified nodes")
+    rt_p.add_argument("--from", dest="source", required=True, help="Source IPv6")
+    rt_p.add_argument("--to", dest="destination", required=True, help="Destination IPv6")
+    rt_p.add_argument("--hops", default=None, help="Comma-separated intermediate relay IPv6 addresses")
+    rt_p.add_argument("--payload", default="SECURE_PACKET", help="Packet payload label")
+
+    atk_p = sub.add_parser("attack-sim", help="Run 4-vector security attack simulations (spoof, mitm, sybil, forgery, all)")
+    atk_p.add_argument("--type", default="all", choices=["all", "spoof", "mitm", "sybil", "forgery"])
+
     sub.add_parser("showcase", help="★ FULL JUDGE DEMO — runs every feature in 12 phases")
 
     args = parser.parse_args()
@@ -1592,6 +1917,12 @@ def main():
 
     elif args.command == "vpn":
         vpn_establish_tunnel(args.node_a, args.node_b)
+
+    elif args.command == "route":
+        route_packet(args.source, args.destination, hops=args.hops, payload=args.payload)
+
+    elif args.command == "attack-sim":
+        attack_simulation(args.type)
 
     elif args.command == "showcase":
         run_showcase()
