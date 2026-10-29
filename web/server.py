@@ -37,8 +37,11 @@ def _capture(fn, *args, **kwargs):
     os.environ["WHITENET_QUIET"] = "1"
     try:
         with redirect_stdout(buf):
-            fn(*args, **kwargs)
-        return {"ok": True, "log": buf.getvalue()}
+            res = fn(*args, **kwargs)
+        out = {"ok": True, "log": buf.getvalue()}
+        if res is not None:
+            out["result"] = res
+        return out
     except Exception as e:
         return {"ok": False, "error": str(e)}
     finally:
@@ -56,6 +59,12 @@ def about_page():
 @app.route("/use-cases")
 def use_cases_page():
     return send_from_directory(PROJECT_ROOT, "use_cases.html")
+
+
+@app.route("/attack-matrix")
+@app.route("/WhiteNet_Attack_Defense_Matrix.html")
+def attack_matrix_page():
+    return send_from_directory(PROJECT_ROOT, "WhiteNet_Attack_Defense_Matrix.html")
 
 
 @app.route("/api/banking-demo", methods=["POST"])
@@ -138,6 +147,104 @@ def agent_verify_demo():
         cli.save_registry(reg)
     results["ok"] = True
     return jsonify(results)
+
+
+@app.route("/api/egov-demo", methods=["POST"])
+def egov_demo():
+    """E-Governance scenario: citizen + portal onboarding, DNSSEC signing & verification, posture, TLS 1.3."""
+    cli.demo_reset_data_files(regen_ca=True)
+    cli.generate_ca_keys()
+    _capture(cli.issue_certificate, "citizen_priya")
+    _capture(cli.bind_identity, cli.CERT_FILE)
+    _capture(cli.issue_certificate, "egov_portal_server")
+    _capture(cli.bind_identity, cli.CERT_FILE)
+    dns = cli.load_dns_records()
+    cit_ip = dns.get("citizen_priya.whitenet.local")
+    portal_ip = dns.get("egov_portal_server.whitenet.local")
+    _capture(cli.dnssec_sign_records)
+    dnssec_r = _capture(cli.dnssec_verify, "citizen_priya.whitenet.local")
+    posture = cli.compute_assess_posture(domain="citizen_priya.whitenet.local")
+    if cit_ip and portal_ip:
+        _capture(cli.tls_handshake, cit_ip, portal_ip)
+    return jsonify({
+        "ok": True,
+        "citizen": "citizen_priya",
+        "citizen_ipv6": cit_ip,
+        "portal_ipv6": portal_ip,
+        "dnssec_verified": bool(dnssec_r.get("result", True)),
+        "posture": posture,
+        "steps": [
+            {"action": "onboard_citizen", "user": "citizen_priya", "ipv6": cit_ip, "ok": bool(cit_ip)},
+            {"action": "onboard_portal", "user": "egov_portal_server", "ipv6": portal_ip, "ok": bool(portal_ip)},
+            {"action": "dnssec_sign_verify", "domain": "citizen_priya.whitenet.local", "ok": bool(dnssec_r.get("result", True))},
+            {"action": "assess_citizen", "posture": posture},
+            {"action": "tls_session", "ok": bool(cit_ip and portal_ip)},
+        ],
+    })
+
+
+@app.route("/api/health-demo", methods=["POST"])
+def health_demo():
+    """Healthcare scenario: verified cardiologist TLS access + blocked revoked nurse."""
+    cli.demo_reset_data_files(regen_ca=True)
+    cli.generate_ca_keys()
+    for u in ("dr_sharma", "hospital_records_server", "nurse_unverified"):
+        _capture(cli.issue_certificate, u)
+        _capture(cli.bind_identity, cli.CERT_FILE)
+    dns = cli.load_dns_records()
+    doc_ip = dns.get("dr_sharma.whitenet.local")
+    hosp_ip = dns.get("hospital_records_server.whitenet.local")
+    nurse_ip = dns.get("nurse_unverified.whitenet.local")
+    doc_posture = cli.compute_assess_posture(domain="dr_sharma.whitenet.local")
+    if doc_ip and hosp_ip:
+        _capture(cli.tls_handshake, doc_ip, hosp_ip)
+    if nurse_ip:
+        _capture(cli.revoke_node, nurse_ip)
+    nurse_posture = cli.compute_assess_posture(ipv6=nurse_ip) if nurse_ip else {"verdict": "BLOCKED", "score": 0}
+    return jsonify({
+        "ok": True,
+        "doctor": {"user": "dr_sharma", "ipv6": doc_ip, "posture": doc_posture},
+        "hospital_ipv6": hosp_ip,
+        "unauthorized": {"user": "nurse_unverified", "ipv6": nurse_ip, "posture": nurse_posture},
+        "steps": [
+            {"action": "onboard_doctor", "user": "dr_sharma", "ipv6": doc_ip, "posture": doc_posture},
+            {"action": "onboard_hospital", "user": "hospital_records_server", "ipv6": hosp_ip},
+            {"action": "tls_session", "ok": bool(doc_ip and hosp_ip)},
+            {"action": "block_unauthorized", "user": "nurse_unverified", "ipv6": nurse_ip, "posture": nurse_posture},
+        ],
+    })
+
+
+@app.route("/api/corporate-demo", methods=["POST"])
+def corporate_demo():
+    """Corporate Zero Trust scenario: employee VPN tunnel + revocation block upon termination."""
+    cli.demo_reset_data_files(regen_ca=True)
+    cli.generate_ca_keys()
+    for u in ("employee_vikram", "corporate_server"):
+        _capture(cli.issue_certificate, u)
+        _capture(cli.bind_identity, cli.CERT_FILE)
+    dns = cli.load_dns_records()
+    emp_ip = dns.get("employee_vikram.whitenet.local")
+    srv_ip = dns.get("corporate_server.whitenet.local")
+    before = cli.compute_assess_posture(domain="employee_vikram.whitenet.local")
+    tunnel_res = _capture(cli.vpn_establish_tunnel, emp_ip, srv_ip) if (emp_ip and srv_ip) else {}
+    if emp_ip:
+        _capture(cli.revoke_node, emp_ip)
+    after = cli.compute_assess_posture(ipv6=emp_ip) if emp_ip else {"verdict": "BLOCKED", "score": 0}
+    return jsonify({
+        "ok": True,
+        "employee": "employee_vikram",
+        "employee_ipv6": emp_ip,
+        "server_ipv6": srv_ip,
+        "before": before,
+        "after": after,
+        "tunnel": tunnel_res.get("result"),
+        "steps": [
+            {"action": "onboard_employee", "user": "employee_vikram", "ipv6": emp_ip, "posture": before},
+            {"action": "vpn_tunnel", "ok": bool(tunnel_res.get("result"))},
+            {"action": "terminate_revoke", "user": "employee_vikram", "ipv6": emp_ip, "posture": after},
+        ],
+    })
 
 
 @app.route("/api/health")
@@ -387,6 +494,46 @@ def vpn_tunnel_api():
     return jsonify(r), 200 if r.get("ok") else 500
 
 
+@app.route("/api/route", methods=["POST"])
+def route_api():
+    data = request.get_json(silent=True) or {}
+    src = (data.get("source") or data.get("from") or "").strip()
+    dst = (data.get("destination") or data.get("to") or "").strip()
+    hops = data.get("hops")
+    payload = (data.get("payload") or "SECURE_PACKET").strip()
+    if not src or not dst:
+        return jsonify({"ok": False, "error": "source and destination required"}), 400
+    r = _capture(cli.route_packet, src, dst, hops=hops, payload=payload)
+    route_res = r.get("result") or {}
+    return jsonify({
+        "ok": r.get("ok", False) and route_res.get("ok", False),
+        "log": r.get("log", ""),
+        "route": route_res,
+    }), 200 if r.get("ok") else 500
+
+
+@app.route("/api/attack-sim", methods=["POST"])
+def attack_sim_api():
+    data = request.get_json(silent=True) or {}
+    atype = (data.get("type") or "all").strip().lower()
+    r = _capture(cli.attack_simulation, atype)
+    res = r.get("result") or {}
+    if not r.get("ok") or res.get("ok") is False:
+        return jsonify({"ok": False, "error": res.get("error") or r.get("error", "attack simulation failed")}), 400
+    return jsonify({
+        "ok": True,
+        "type": res.get("type", atype),
+        "simulations": res.get("simulations", []),
+        "log": r.get("log", ""),
+    })
+
+
+@app.route("/api/showcase", methods=["POST"])
+def showcase_api():
+    r = _capture(cli.run_showcase)
+    return jsonify(r), 200 if r.get("ok") else 500
+
+
 @app.route("/api/topology")
 def topology():
     reg = cli.load_registry()
@@ -418,6 +565,8 @@ def spa(path):
         return send_from_directory(PROJECT_ROOT, "about.html")
     if path == "use-cases" or path == "use_cases.html":
         return send_from_directory(PROJECT_ROOT, "use_cases.html")
+    if path == "attack-matrix" or path == "WhiteNet_Attack_Defense_Matrix.html":
+        return send_from_directory(PROJECT_ROOT, "WhiteNet_Attack_Defense_Matrix.html")
     if path.startswith("api"):
         return jsonify({"error": "not found"}), 404
     # Serve React dashboard from dist
@@ -428,25 +577,26 @@ def spa(path):
         index = os.path.join(app.static_folder, "index.html")
         if os.path.isfile(index):
             return send_from_directory(app.static_folder, "index.html")
-    # Fallback landing — links to all 3 pages
+    # Fallback landing — links to all pages
     return (
         "<html><head><title>WhiteNet</title>"
         "<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui;background:#030508;color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center}"
-        ".wrap{text-align:center;max-width:600px;padding:2rem}"
+        ".wrap{text-align:center;max-width:720px;padding:2rem}"
         "h1{font-size:2.5rem;margin-bottom:.5rem;background:linear-gradient(135deg,#0ff,#00a8ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}"
         "p{color:#7a9ab8;margin-bottom:2rem;font-size:1.1rem}"
-        ".cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}"
+        ".cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}"
         "a{display:block;padding:24px 16px;background:rgba(0,255,255,.04);border:1px solid rgba(0,255,255,.15);border-radius:12px;color:#0ff;text-decoration:none;transition:all .3s;font-weight:600}"
         "a:hover{background:rgba(0,255,255,.1);border-color:rgba(0,255,255,.4);box-shadow:0 0 20px rgba(0,255,255,.1)}"
         "a span{display:block;font-size:.75rem;color:#5a7a94;margin-top:6px;font-weight:400}"
         "</style></head><body>"
         "<div class='wrap'>"
         "<h1>WhiteNet</h1>"
-        "<p>Identity-First Zero Trust Network — v3.0.0</p>"
+        f"<p>Identity-First Zero Trust Network — v{cli.WHITENET_VERSION}</p>"
         "<div class='cards'>"
-        "<a href='/about'>📄 About<span>Project overview</span></a>"
-        "<a href='/use-cases'>🏦 Use Cases<span>Banking, healthcare & more</span></a>"
-        "<a href='/api/meta'>⚡ API<span>Live API endpoint</span></a>"
+        "<a href='/about'>📄 About<span>Project overview & architecture</span></a>"
+        "<a href='/use-cases'>🏦 Use Cases<span>Banking, E-Gov, Healthcare & Corporate</span></a>"
+        "<a href='/attack-matrix'>⚔️ Attack Matrix<span>Spoofing, MITM, Sybil & Forgery Defense</span></a>"
+        "<a href='/api/meta'>⚡ API<span>Live API status endpoint</span></a>"
         "</div></div></body></html>",
         200,
         {"Content-Type": "text/html; charset=utf-8"},
